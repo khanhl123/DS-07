@@ -1,4 +1,4 @@
-function generateDailyData(year, month, baseTemp, baseHumidity, baseWind, baseUv) {
+﻿function generateDailyData(year, month, baseTemp, baseHumidity, baseWind, baseUv) {
   const daysInMonth = new Date(year, month, 0).getDate();
   const data = {};
   for (let d = 1; d <= daysInMonth; d++) {
@@ -134,3 +134,4 @@ export function getDataForGranularity(location, granularity, selectedYear = 2025
   }
   return [];
 }
+

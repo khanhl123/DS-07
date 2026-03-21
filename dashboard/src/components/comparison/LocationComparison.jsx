@@ -1,8 +1,8 @@
-import { useState, useMemo } from "react";
+﻿import { useState, useMemo } from "react";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from "recharts";
 import { locations, getDataForGranularity, weatherAttributes } from "../../data/placeholderData";
 
-const COLORS = ["#0d1b2a", "#e76f51", "#2a9d8f", "#e9c46a"];
+const COLORS = ["#1e3a5f", "#3182ce", "#2b8a3e", "#dd6b20"];
 
 export default function LocationComparison({ granularity, selectedYear, selectedMonth }) {
   const [selectedIds, setSelectedIds] = useState(["melbourne", "sydney", "perth"]);
@@ -21,9 +21,7 @@ export default function LocationComparison({ granularity, selectedYear, selected
       const row = { attribute: attr.label };
       selected.forEach((loc) => {
         const data = getDataForGranularity(loc, granularity, selectedYear, selectedMonth);
-        const avg = data.length
-          ? +(data.reduce((s, d) => s + (d[attr.key] || 0), 0) / data.length).toFixed(1)
-          : 0;
+        const avg = data.length ? +(data.reduce((s, d) => s + (d[attr.key] || 0), 0) / data.length).toFixed(1) : 0;
         row[loc.name] = avg;
       });
       return row;
@@ -36,40 +34,23 @@ export default function LocationComparison({ granularity, selectedYear, selected
     <div className="space-y-4">
       <div className="flex flex-wrap gap-1.5">
         {locations.map((loc) => (
-          <button
-            key={loc.id}
-            type="button"
-            onClick={() => toggleLocation(loc.id)}
-            className={`rounded-xl px-3 py-1.5 text-xs font-semibold transition ${
-              selectedIds.includes(loc.id)
-                ? "bg-[linear-gradient(135deg,rgba(231,111,81,0.2),rgba(244,132,95,0.28))] text-[#9b422d] ring-1 ring-[rgba(231,111,81,0.4)] shadow-[0_10px_18px_rgba(231,111,81,0.12)]"
-                : "bg-[#f1e7dc] text-[#6e5d52] hover:bg-[#eadccd]"
+          <button key={loc.id} type="button" onClick={() => toggleLocation(loc.id)}
+            className={`rounded-lg px-3 py-1.5 text-xs font-medium transition ${
+              selectedIds.includes(loc.id) ? "bg-blue-50 text-[var(--accent-blue)] ring-1 ring-blue-200" : "bg-[var(--surface-alt)] text-[var(--text-secondary)] hover:bg-[var(--border)]"
             }`}
             aria-pressed={selectedIds.includes(loc.id)}
-          >
-            {loc.name}
-          </button>
+          >{loc.name}</button>
         ))}
       </div>
-
       {selectedLocations.length >= 2 ? (
-        <div className="relative overflow-hidden rounded-2xl border border-[var(--marathon-line)] bg-[rgba(255,249,243,0.7)] p-3">
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-[rgba(231,111,81,0.85)] via-[rgba(233,196,106,0.55)] to-transparent" />
+        <div className="rounded-xl border border-[var(--border)] bg-white p-3">
           <ResponsiveContainer width="100%" height={260}>
             <BarChart data={comparisonData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e5d7c9" />
-              <XAxis dataKey="attribute" tick={{ fontSize: 11, fill: "#5d4f45" }} axisLine={{ stroke: "#dccabb" }} tickLine={false} />
-              <YAxis tick={{ fontSize: 11, fill: "#8d7768" }} axisLine={false} tickLine={false} width={40} />
-              <Tooltip
-                contentStyle={{
-                  borderRadius: 14,
-                  border: "1px solid #e7b296",
-                  backgroundColor: "#fff8f1",
-                  fontSize: 12,
-                  boxShadow: "0 14px 28px rgba(61, 46, 33, 0.12)",
-                }}
-              />
-              <Legend wrapperStyle={{ fontSize: 11, color: "#5d4f45" }} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#edf2f7" />
+              <XAxis dataKey="attribute" tick={{ fontSize: 11, fill: "#4a5568" }} axisLine={{ stroke: "#e2e8f0" }} tickLine={false} />
+              <YAxis tick={{ fontSize: 11, fill: "#718096" }} axisLine={false} tickLine={false} width={40} />
+              <Tooltip contentStyle={{ borderRadius: 8, border: "1px solid #e2e8f0", backgroundColor: "#fff", fontSize: 12 }} />
+              <Legend wrapperStyle={{ fontSize: 11 }} />
               {selectedLocations.map((loc, i) => (
                 <Bar key={loc.id} dataKey={loc.name} fill={COLORS[i % COLORS.length]} radius={[4, 4, 0, 0]} barSize={24} />
               ))}
@@ -77,7 +58,7 @@ export default function LocationComparison({ granularity, selectedYear, selected
           </ResponsiveContainer>
         </div>
       ) : (
-        <div className="flex h-40 items-center justify-center rounded-2xl border border-dashed border-[#d8c8b8] bg-[#fbf4ed] text-sm text-[#8a7768]">
+        <div className="flex h-40 items-center justify-center rounded-xl border border-dashed border-[var(--border)] text-sm text-[var(--text-muted)]">
           Select at least 2 locations to compare
         </div>
       )}

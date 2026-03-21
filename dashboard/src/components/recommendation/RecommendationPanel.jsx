@@ -1,11 +1,10 @@
-import { MapPin, Calendar, Clock3, Gauge, ShieldCheck, RotateCcw, Download } from "lucide-react";
+﻿import { MapPin, Calendar, Clock3, Gauge, ShieldCheck, RotateCcw, Download } from "lucide-react";
 import SummaryMetric from "../common/SummaryMetric";
 import RiskIndicator from "../common/RiskIndicator";
 import { suitabilityConfig } from "../../data/placeholderData";
 
 export default function RecommendationPanel({ location, selectedSuburb, dayData, granularity, onReset }) {
   if (!dayData) return null;
-
   const cfg = suitabilityConfig[dayData.suitability] || suitabilityConfig.slightly_suitable;
 
   const exportSummary = () => {
@@ -25,20 +24,17 @@ export default function RecommendationPanel({ location, selectedSuburb, dayData,
     ];
     const blob = new Blob([lines.join("\n")], { type: "text/plain;charset=utf-8" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `marathon-summary-${location.id}.txt`;
-    a.click();
+    const a = document.createElement("a"); a.href = url;
+    a.download = `marathon-summary-${location.id}.txt`; a.click();
     URL.revokeObjectURL(url);
   };
 
   return (
     <div className="space-y-4">
-      <div className="relative overflow-hidden rounded-2xl border border-[var(--marathon-line)] bg-[linear-gradient(180deg,#fff8f2_0%,#f7ede2_100%)] p-4">
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-[rgba(231,111,81,0.9)] via-[rgba(233,196,106,0.65)] to-transparent" />
-        <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#8b7260]">Selected Location</p>
-        <p className="mt-1 text-base font-semibold text-[#251d18]">{selectedSuburb}</p>
-        <p className="mt-1.5 text-sm text-[#78665a]">{location.name}, {location.state}</p>
+      <div className="rounded-xl border border-[var(--border)] bg-[var(--bg)] p-4">
+        <p className="text-xs font-medium text-[var(--text-muted)]">Selected Location</p>
+        <p className="mt-1 text-base font-semibold text-[var(--text)]">{selectedSuburb}</p>
+        <p className="mt-1 text-sm text-[var(--text-secondary)]">{location.name}, {location.state}</p>
       </div>
 
       <div className="grid grid-cols-2 gap-3">
@@ -48,18 +44,14 @@ export default function RecommendationPanel({ location, selectedSuburb, dayData,
 
       <div className="flex flex-wrap items-center gap-2">
         <RiskIndicator suitability={dayData.suitability} />
-        <span className="inline-flex items-center gap-1 rounded-full border border-[rgba(233,196,106,0.35)] bg-[rgba(233,196,106,0.14)] px-2.5 py-1 text-xs font-medium text-[#8d6a18]">
-          <ShieldCheck className="h-3 w-3 text-[var(--marathon-gold)]" aria-hidden="true" />
+        <span className="inline-flex items-center gap-1 rounded-full border border-[var(--border)] bg-[var(--bg)] px-2.5 py-1 text-xs font-medium text-[var(--text-secondary)]">
+          <ShieldCheck className="h-3 w-3" aria-hidden="true" />
           {location.confidence} confidence
         </span>
       </div>
 
-      <div className="relative overflow-hidden rounded-2xl bg-[linear-gradient(145deg,#07111b_0%,var(--marathon-ink)_38%,var(--marathon-ink-soft)_72%,#0a0f18_100%)] p-4 shadow-[0_20px_40px_rgba(13,27,42,0.28)]">
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-[rgba(231,111,81,0.9)] via-[rgba(233,196,106,0.7)] to-transparent" />
-        <div className="pointer-events-none absolute right-0 top-0 h-full w-32 bg-[radial-gradient(circle_at_center,_rgba(231,111,81,0.16),_transparent_64%)] blur-xl" />
-        <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--marathon-gold)]">
-          Event Summary
-        </p>
+      <div className="rounded-xl border-l-4 border-l-[var(--accent-blue)] bg-[var(--primary)] p-4">
+        <p className="mb-3 text-[10px] font-semibold uppercase tracking-wider text-blue-200">Event Summary</p>
         <div className="grid grid-cols-2 gap-3">
           <SummaryMetric icon={MapPin} label="Location" value={selectedSuburb} dark />
           <SummaryMetric icon={Gauge} label="Score" value={`${dayData.score}/100`} dark />
@@ -69,21 +61,13 @@ export default function RecommendationPanel({ location, selectedSuburb, dayData,
       </div>
 
       <div className="grid grid-cols-2 gap-3">
-        <button
-          type="button"
-          onClick={onReset}
-          className="inline-flex items-center justify-center gap-2 rounded-xl border border-[var(--marathon-line)] bg-[#fff8ef] px-4 py-2.5 text-sm font-semibold text-[#4a3c32] transition hover:bg-[#f7ede2] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--marathon-accent)]"
-        >
-          <RotateCcw className="h-3.5 w-3.5 text-[#8d7563]" aria-hidden="true" />
-          Reset
+        <button type="button" onClick={onReset}
+          className="inline-flex items-center justify-center gap-2 rounded-lg border border-[var(--border)] bg-white px-4 py-2.5 text-sm font-semibold text-[var(--text-secondary)] transition hover:bg-[var(--bg)]">
+          <RotateCcw className="h-3.5 w-3.5" aria-hidden="true" /> Reset
         </button>
-        <button
-          type="button"
-          onClick={exportSummary}
-          className="inline-flex items-center justify-center gap-2 rounded-xl bg-[linear-gradient(135deg,var(--marathon-accent)_0%,var(--marathon-accent-soft)_100%)] px-4 py-2.5 text-sm font-semibold text-white shadow-[0_12px_24px_rgba(231,111,81,0.28)] transition hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--marathon-accent)]"
-        >
-          <Download className="h-3.5 w-3.5" aria-hidden="true" />
-          Export
+        <button type="button" onClick={exportSummary}
+          className="inline-flex items-center justify-center gap-2 rounded-lg bg-[var(--accent)] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[var(--accent-light)]">
+          <Download className="h-3.5 w-3.5" aria-hidden="true" /> Export
         </button>
       </div>
     </div>

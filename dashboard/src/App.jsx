@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+﻿import { useState, useMemo } from "react";
 import DashboardLayout from "./components/layout/DashboardLayout";
 import AustraliaMap from "./components/map/AustraliaMap";
 import SuitabilityCalendar from "./components/calendar/SuitabilityCalendar";
@@ -20,8 +20,6 @@ export default function App() {
   const [eventType, setEventType] = useState("Marathon");
   const [selectedDay, setSelectedDay] = useState(5);
   const [selectedSuburb, setSelectedSuburb] = useState("Melbourne CBD");
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [activeChartLabel, setActiveChartLabel] = useState(null);
 
   const location = locations.find((l) => l.id === locationId) || locations[0];
 
@@ -39,10 +37,6 @@ export default function App() {
     ? chartData.find((d) => d.day === selectedDay) || chartData[0]
     : chartData[0];
 
-  useEffect(() => {
-    setActiveChartLabel(null);
-  }, [locationId, granularity, selectedMonth, selectedYear]);
-
   const handleLocationChange = (id) => {
     setLocationId(id);
     const loc = locations.find((l) => l.id === id);
@@ -57,13 +51,6 @@ export default function App() {
     setEventType("Marathon");
     setSelectedDay(5);
     setSelectedSuburb("Melbourne CBD");
-    setActiveChartLabel(null);
-  };
-
-  const handleChartPointSelect = (point) => {
-    if (granularity === "daily" && typeof point?.day === "number") {
-      setSelectedDay(point.day);
-    }
   };
 
   const filterProps = {
@@ -79,17 +66,10 @@ export default function App() {
     onEventTypeChange: setEventType,
   };
 
-  const chartSharedProps = {
-    xKey,
-    granularity,
-    activeLabel: activeChartLabel,
-    onActiveLabelChange: setActiveChartLabel,
-    onPointSelect: handleChartPointSelect,
-  };
-
   return (
-    <DashboardLayout filterProps={filterProps} sidebarOpen={sidebarOpen} onToggleSidebar={setSidebarOpen}>
-      <section className="grid gap-6 xl:grid-cols-2" aria-label="Location and suitability">
+    <DashboardLayout filterProps={filterProps}>
+      {/* Row 1: Map + Recommendation */}
+      <section id="map-explorer" className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]" aria-label="Location explorer and recommendation">
         <Card title="Location Explorer" subtitle="Select a city on the map or from the list below" icon={MapPin}>
           <AustraliaMap
             locationId={locationId}
@@ -101,6 +81,19 @@ export default function App() {
           />
         </Card>
 
+        <Card title="Recommendation" subtitle="Summary for the selected date and location" icon={ShieldCheck}>
+          <RecommendationPanel
+            location={location}
+            selectedSuburb={selectedSuburb}
+            dayData={dayData}
+            granularity={granularity}
+            onReset={handleReset}
+          />
+        </Card>
+      </section>
+
+      {/* Row 2: Date Suitability */}
+      <section id="date-analysis" aria-label="Date suitability">
         {granularity === "daily" ? (
           <Card title="Date Suitability Calendar" subtitle="Colour-coded suitability for each day" icon={CalendarDays}>
             <SuitabilityCalendar
@@ -118,15 +111,15 @@ export default function App() {
                 const cfg = suitabilityConfig[item.suitability] || suitabilityConfig.slightly_suitable;
                 const periodLabel = item.label || item.key || item.year;
                 return (
-                  <div key={i} className="flex items-center gap-3 rounded-lg border border-slate-100 bg-white px-4 py-3">
+                  <div key={i} className="flex items-center gap-3 rounded-lg border border-[var(--border)] bg-white px-4 py-3">
                     <span className={`h-3 w-3 shrink-0 rounded-full ${cfg.color}`} aria-hidden="true" />
-                    <span className="min-w-[60px] text-sm font-semibold text-slate-700">{periodLabel}</span>
+                    <span className="min-w-[60px] text-sm font-semibold text-[var(--text)]">{periodLabel}</span>
                     <div className="flex-1">
-                      <div className="h-2 rounded-full bg-slate-100">
+                      <div className="h-2 rounded-full bg-[var(--surface-alt)]">
                         <div className={`h-2 rounded-full ${cfg.color} transition-all`} style={{ width: `${item.score}%` }} />
                       </div>
                     </div>
-                    <span className="text-xs font-medium text-slate-500">{item.score}/100</span>
+                    <span className="text-xs font-medium text-[var(--text-muted)]">{item.score}/100</span>
                     <span className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold ${cfg.chipBg} ${cfg.textColor}`}>
                       {cfg.label}
                     </span>
@@ -138,28 +131,20 @@ export default function App() {
         )}
       </section>
 
+      {/* Row 3: Weather Trend Charts */}
       <section aria-label="Weather trends">
         <Card title="Weather Trends" subtitle="Trend visualisations for key weather attributes" icon={BarChart3}>
           <div className="grid gap-4 md:grid-cols-2">
-            <TemperatureChart data={chartData} {...chartSharedProps} />
-            <HumidityChart data={chartData} {...chartSharedProps} />
-            <WindSpeedChart data={chartData} {...chartSharedProps} />
-            <UVIndexChart data={chartData} {...chartSharedProps} />
+            <TemperatureChart data={chartData} xKey={xKey} />
+            <HumidityChart data={chartData} xKey={xKey} />
+            <WindSpeedChart data={chartData} xKey={xKey} />
+            <UVIndexChart data={chartData} xKey={xKey} />
           </div>
         </Card>
       </section>
 
-      <section className="grid gap-6 xl:grid-cols-[1fr_1.5fr]" aria-label="Recommendations and comparison">
-        <Card title="Recommendation" subtitle="Summary for the selected date and location" icon={ShieldCheck}>
-          <RecommendationPanel
-            location={location}
-            selectedSuburb={selectedSuburb}
-            dayData={dayData}
-            granularity={granularity}
-            onReset={handleReset}
-          />
-        </Card>
-
+      {/* Row 4: Location Comparison */}
+      <section id="comparison" aria-label="Location comparison">
         <Card title="Location Comparison" subtitle="Compare weather attributes across locations" icon={GitCompareArrows}>
           <LocationComparison
             granularity={granularity}
