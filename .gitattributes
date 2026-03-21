@@ -1,0 +1,3 @@
+cleaned/full/*.csv filter=lfs diff=lfs merge=lfs -text
+cleaned/observed/*.csv filter=lfs diff=lfs merge=lfs -text
+cleaned/strict/*.csv filter=lfs diff=lfs merge=lfs -text

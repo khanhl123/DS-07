@@ -1,0 +1,715 @@
+station_number,metric_code,alias_source,alias_value
+014004,uv,folder_name,Darwin Berrimah Radar
+014004,uv,note_name,BERRIMAH RADAR
+014009,rainfall,folder_name,Darwin Channel Island
+014009,rainfall,note_name,CHANNEL ISLAND
+014009,uv,folder_name,Darwin Channel Island
+014009,uv,note_name,CHANNEL ISLAND
+014015,rainfall,folder_name,Darwin Airport
+014015,rainfall,note_name,DARWIN AIRPORT
+014015,max_temp,folder_name,Darwin Airport
+014015,max_temp,note_name,DARWIN AIRPORT
+014015,min_temp,folder_name,Darwin Airport
+014015,min_temp,note_name,DARWIN AIRPORT
+014015,uv,folder_name,Darwin Airport
+014015,uv,note_name,DARWIN AIRPORT
+014021,uv,folder_name,Darwin Buley Rockhole
+014021,uv,note_name,BULEY ROCKHOLE
+014022,rainfall,folder_name,Darwin River Ridge
+014022,rainfall,note_name,DARWIN RIVER RIDGE
+014022,uv,folder_name,Darwin River Ridge
+014022,uv,note_name,DARWIN RIVER RIDGE
+014031,max_temp,folder_name,Darwin Charles Point
+014031,max_temp,note_name,CHARLES POINT
+014031,min_temp,folder_name,Darwin Charles Point
+014031,min_temp,note_name,CHARLES POINT
+014041,max_temp,folder_name,Darwin Middle Point
+014041,max_temp,note_name,MIDDLE POINT
+014041,min_temp,folder_name,Darwin Middle Point
+014041,min_temp,note_name,MIDDLE POINT
+014042,max_temp,folder_name,Darwin Oenpelli
+014042,max_temp,note_name,OENPELLI
+014042,min_temp,folder_name,Darwin Oenpelli
+014042,min_temp,note_name,OENPELLI
+014049,rainfall,folder_name,Darwin Bowls Club
+014049,rainfall,note_name,DARWIN BOWLS CLUB
+014049,uv,folder_name,Darwin Bowls Club
+014049,uv,note_name,DARWIN BOWLS CLUB
+014050,rainfall,folder_name,Darwin Fort Hill Wharf
+014050,rainfall,note_name,FORT HILL WHARF
+014050,uv,folder_name,Darwin Fort Hill Wharf
+014050,uv,note_name,FORT HILL WHARF
+014090,max_temp,folder_name,Darwin Middle Point Rangers
+014090,max_temp,note_name,MIDDLE POINT RANGERS
+014090,min_temp,folder_name,Darwin Middle Point Rangers
+014090,min_temp,note_name,MIDDLE POINT RANGERS
+014112,rainfall,folder_name,Darwin Nightcliff Pool
+014112,rainfall,note_name,NIGHTCLIFF POOL
+014112,uv,folder_name,Darwin Nightcliff Pool
+014112,uv,note_name,NIGHTCLIFF POOL
+014116,rainfall,folder_name,Darwin Berrimah Research Farm
+014116,rainfall,note_name,BERRIMAH RESEARCH FARM
+014116,max_temp,folder_name,Darwin Berrimah Research Farm
+014116,max_temp,note_name,BERRIMAH RESEARCH FARM
+014116,min_temp,folder_name,Darwin Berrimah Research
+014116,min_temp,note_name,BERRIMAH RESEARCH FARM
+014142,max_temp,folder_name,Darwin Pirlangimpi Airport
+014142,max_temp,note_name,PIRLANGIMPI AIRPORT
+014142,min_temp,folder_name,Darwin Pirlangimpi Airport
+014142,min_temp,note_name,PIRLANGIMPI AIRPORT
+014143,rainfall,folder_name,Darwin Awillaway Fly Creek
+014143,rainfall,note_name,AWILLAWAY FLY CREEK
+014143,uv,folder_name,Darwin Awillaway Fly Creek
+014143,uv,note_name,AWILLAWAY FLY CREEK
+014144,rainfall,folder_name,Darwin Marrara
+014144,rainfall,note_name,MARRARA
+014144,uv,folder_name,Darwin Marrara
+014144,uv,note_name,MARRARA
+014147,uv,folder_name,Darwin Pioneer Creek
+014147,uv,note_name,PIONEER CREEK
+014148,uv,folder_name,Darwin Camp Creek
+014148,uv,note_name,CAMP CREEK
+014153,max_temp,folder_name,Darwin Black Point
+014153,max_temp,note_name,BLACK POINT
+014153,min_temp,folder_name,Darwin Black Point
+014153,min_temp,note_name,BLACK POINT
+014163,rainfall,folder_name,Darwin Botanic Garden
+014163,rainfall,note_name,DARWIN BOTANIC GARDENS
+014163,uv,folder_name,Darwin Botanic Garden
+014163,uv,note_name,DARWIN BOTANIC GARDENS
+014183,rainfall,folder_name,Darwin River Dam
+014183,rainfall,note_name,DARWIN RIVER DAM
+014183,uv,folder_name,Darwin River Dam
+014183,uv,note_name,DARWIN RIVER DAM
+014192,rainfall,folder_name,Darwin Girraween
+014192,rainfall,note_name,GIRRAWEEN
+014192,uv,folder_name,Darwin Girraween
+014192,uv,note_name,GIRRAWEEN
+014198,max_temp,folder_name,Darwin Jabiru Airport
+014198,max_temp,note_name,JABIRU AIRPORT
+014198,min_temp,folder_name,Darwin Jabiru Airport
+014198,min_temp,note_name,JABIRU AIRPORT
+014206,rainfall,folder_name,Darwin Southport
+014206,rainfall,note_name,SOUTHPORT
+014206,uv,folder_name,Darwin Southport
+014206,uv,note_name,SOUTHPORT
+014215,rainfall,folder_name,Darwin Berry Springs Rangers
+014215,rainfall,note_name,BERRY SPRINGS RANGERS
+014215,uv,folder_name,Darwin Berry Springs Ranger
+014215,uv,note_name,BERRY SPRINGS RANGERS
+014219,rainfall,folder_name,Darwin McMinns Lagoon
+014219,rainfall,note_name,MCMINNS LAGOON
+014219,uv,folder_name,Darwin McMinns Lagoon
+014219,uv,note_name,MCMINNS LAGOON
+014222,rainfall,folder_name,Darwin Elizabeth Valley
+014222,rainfall,note_name,ELIZABETH VALLEY
+014222,uv,folder_name,Darwin Elizabeth Valley
+014222,uv,note_name,ELIZABETH VALLEY
+014226,rainfall,folder_name,Darwin Humpty Doo Collard Road
+014226,rainfall,note_name,HUMPTY DOO COLLARD ROAD
+014226,uv,folder_name,Darwin Humpty Doo Collard Road
+014226,uv,note_name,HUMPTY DOO COLLARD ROAD
+014227,rainfall,folder_name,Darwin Karama
+014227,rainfall,note_name,KARAMA
+014235,rainfall,folder_name,Darwin Northlakes
+014235,rainfall,note_name,NORTHLAKES
+014235,uv,folder_name,Darwin Northlakes
+014235,uv,note_name,NORTHLAKES
+014238,rainfall,folder_name,Darwin Wagait Beach
+014238,rainfall,note_name,WAGAIT BEACH
+014238,uv,folder_name,Darwin Wagait Beach
+014238,uv,note_name,WAGAIT BEACH
+014244,rainfall,folder_name,Darwin Acacia Hills
+014244,rainfall,note_name,ACACIA HILLS
+014244,uv,folder_name,Darwin Acacia Hills
+014244,uv,note_name,ACACIA HILLS
+014246,rainfall,folder_name,Darwin Leanyer
+014246,rainfall,note_name,LEANYER
+014253,max_temp,folder_name,Darwin Channel Point
+014253,max_temp,note_name,CHANNEL POINT
+014253,min_temp,folder_name,Darwin Channel Point
+014253,min_temp,note_name,CHANNEL POINT
+014254,max_temp,folder_name,Darwin Point Stuart
+014254,max_temp,note_name,POINT STUART
+014254,min_temp,folder_name,Darwin Point Stuart
+014254,min_temp,note_name,POINT STUART
+014260,rainfall,folder_name,Darwin East Arm
+014260,rainfall,note_name,EAST ARM
+014260,uv,folder_name,Darwin East Arm
+014260,uv,note_name,EAST ARM
+014264,rainfall,folder_name,Darwin Territory Wildlife Park
+014264,rainfall,note_name,TERRITORY WILDLIFE PARK
+014264,uv,folder_name,Darwin Territory Wildlife Park
+014264,uv,note_name,TERRITORY WILDLIFE PARK
+014265,rainfall,folder_name,Darwin CSIRO
+014265,rainfall,note_name,CSIRO BERRIMAH
+014265,uv,folder_name,Darwin CSIRO Berrimah
+014265,uv,note_name,CSIRO BERRIMAH
+014266,rainfall,folder_name,Darwin Thorak Cemetery
+014266,rainfall,note_name,THORAK CEMETERY
+014270,rainfall,folder_name,Darwin Nightcliff Sports Club
+014270,rainfall,note_name,NIGHTCLIFF SPORTS CLUB
+014270,uv,folder_name,Darwin Nightcliff Sports Club
+014270,uv,note_name,NIGHTCLIFF SPORTS CLUB
+014272,rainfall,folder_name,Darwin Batchelor Airport
+014272,rainfall,note_name,BATCHELOR AIRPORT
+014272,max_temp,folder_name,Darwin Batchelor Airport
+014272,max_temp,note_name,BATCHELOR AIRPORT
+014272,min_temp,folder_name,Darwin Batchelor Airport
+014272,min_temp,note_name,BATCHELOR AIRPORT
+014272,uv,folder_name,Darwin Batchelor Airport
+014272,uv,note_name,BATCHELOR AIRPORT
+014277,max_temp,folder_name,Darwin Dum In Mirrie Airstrip
+014277,max_temp,note_name,DUM IN MIRRIE AIRSTRIP
+014277,min_temp,folder_name,Darwin Dum In Mirrie Airstrip
+014277,min_temp,note_name,DUM IN MIRRIE AIRSTRIP
+014285,rainfall,folder_name,Darwin Hospital
+014285,rainfall,note_name,DARWIN HOSPITAL
+014289,rainfall,folder_name,Darwin Charles Darwin University
+014289,rainfall,note_name,CHARLES DARWIN UNIVERSITY
+014289,uv,folder_name,Darwin Charles Darwin University
+014289,uv,note_name,CHARLES DARWIN UNIVERSITY
+014308,max_temp,folder_name,Darwin Croker Island Airport
+014308,max_temp,note_name,CROKER ISLAND AIRPORT
+014308,min_temp,folder_name,Darwin Croket Island Airport
+014308,min_temp,note_name,CROKER ISLAND AIRPORT
+014309,max_temp,folder_name,Darwin Murganella Airstrip
+014309,max_temp,note_name,MURGANELLA AIRSTRIP
+014309,min_temp,folder_name,Darwin Murganella Airstrip
+014309,min_temp,note_name,MURGANELLA AIRSTRIP
+014310,max_temp,folder_name,Darwin Oenpelli Airport
+014310,max_temp,note_name,OENPELLI AIRPORT
+014310,min_temp,folder_name,Darwin Oenpelli Airport
+014310,min_temp,note_name,OENPELLI AIRPORT
+014313,rainfall,folder_name,Darwin Knuckey Lagoon
+014313,rainfall,note_name,KNUCKEY LAGOON (PARADISE NURSERY)
+014314,rainfall,folder_name,Darwin Noonamah Airstrip
+014314,rainfall,note_name,NOONAMAH AIRSTRIP
+014314,max_temp,folder_name,Darwin Noonamah Airstrip
+014314,max_temp,note_name,NOONAMAH AIRSTRIP
+014314,min_temp,folder_name,Darwin Noonamah Airstrip
+014314,min_temp,note_name,NOONAMAH AIRSTRIP
+014314,uv,folder_name,Darwin Noonamah Airstrip
+014314,uv,note_name,NOONAMAH AIRSTRIP
+014316,rainfall,folder_name,Darwin Turf Club
+014316,rainfall,note_name,DARWIN TURF CLUB
+014316,uv,folder_name,Darwin Turf Club
+014316,uv,note_name,DARWIN TURF CLUB
+014318,rainfall,folder_name,Darwin East Point
+014318,rainfall,note_name,EAST POINT
+014318,max_temp,folder_name,Darwin East Point
+014318,max_temp,note_name,EAST POINT
+014318,min_temp,folder_name,Darwin East Point
+014318,min_temp,note_name,EAST POINT
+014318,uv,folder_name,Darwin East Point
+014318,uv,note_name,EAST POINT
+014901,max_temp,folder_name,Darwin Douglas River Research Farm
+014901,max_temp,note_name,DOUGLAS RIVER RESEARCH FARM
+014901,min_temp,folder_name,Darwin Douglas River Research Farm
+014901,min_temp,note_name,DOUGLAS RIVER RESEARCH FARM
+014903,max_temp,folder_name,Darwin Katherine Aviation Museum
+014903,max_temp,note_name,KATHERINE AVIATION MUSEUM
+014925,max_temp,folder_name,Darwin Tipperary
+014925,max_temp,note_name,TIPPERARY
+014925,min_temp,folder_name,Darwin Tipperary
+014925,min_temp,note_name,TIPPERARY
+014933,max_temp,folder_name,Darwin Pine Creek
+014933,max_temp,note_name,PINE CREEK
+014933,min_temp,folder_name,Darwin Pine Creek
+014933,min_temp,note_name,PINE CREEK
+014938,max_temp,folder_name,Darwin Mango Farm
+014938,max_temp,note_name,MANGO FARM
+014938,min_temp,folder_name,Darwin Mango Farm
+014938,min_temp,note_name,MANGO FARM
+014948,max_temp,folder_name,Darwin Port Keats Airport
+014948,max_temp,note_name,PORT KEATS AIRPORT
+014948,min_temp,folder_name,Darwin Port Keats Airport
+014948,min_temp,note_name,PORT KEATS AIRPORT
+014960,max_temp,folder_name,Darwin Pine Creek Council
+014960,max_temp,note_name,PINE CREEK COUNCIL
+014960,min_temp,folder_name,Darwin Pine Creek Council
+014960,min_temp,note_name,PINE CREEK COUNCIL
+014982,rainfall,folder_name,Darwin Kangaroo Flats
+014982,rainfall,note_name,KANGAROO FLATS (DEFENCE)
+014982,max_temp,folder_name,Darwin Kangaroo Flats
+014982,max_temp,note_name,KANGAROO FLATS (DEFENCE)
+014982,min_temp,folder_name,Darwin Kangaroo Flat
+014982,min_temp,note_name,KANGAROO FLATS (DEFENCE)
+014982,uv,folder_name,Darwin Kangaroo Flats
+014982,uv,note_name,KANGAROO FLATS (DEFENCE)
+014983,max_temp,folder_name,Darwin Mount Bundey North
+014983,max_temp,note_name,MOUNT BUNDEY NORTH (DEFENCE)
+014983,min_temp,folder_name,Darwin Mount Bundey North
+014983,min_temp,note_name,MOUNT BUNDEY NORTH (DEFENCE)
+014984,max_temp,folder_name,Darwin Mount Bundey South
+014984,max_temp,note_name,MOUNT BUNDEY SOUTH (DEFENCE)
+014984,min_temp,folder_name,Darwin Mount Bundey South
+014984,min_temp,note_name,MOUNT BUNDEY SOUTH (DEFENCE)
+014988,max_temp,folder_name,Darwin Knuckey Lagoon
+014988,max_temp,note_name,KNUCKEY LAGOON
+014988,min_temp,folder_name,Darwin Knuckey Lagoon
+014988,min_temp,note_name,KNUCKEY LAGOON
+069010,min_temp,folder_name,Canberra Braidwood
+069010,min_temp,note_name,BRAIDWOOD (MONKITTEE STREET)
+069049,max_temp,folder_name,Canberra Nerriga
+069049,max_temp,note_name,NERRIGA COMPOSITE
+069049,min_temp,folder_name,Canberra Nerriga
+069049,min_temp,note_name,NERRIGA COMPOSITE
+069128,max_temp,folder_name,Canberra Nerriga AWS
+069128,max_temp,note_name,NERRIGA AWS
+069128,min_temp,folder_name,Canberra Nerriga AWS
+069128,min_temp,note_name,NERRIGA AWS
+069132,max_temp,folder_name,Canberra Braidwood Racecourse
+069132,max_temp,note_name,BRAIDWOOD RACECOURSE AWS
+069132,min_temp,folder_name,Canberra Braidwood Racecourse
+069132,min_temp,note_name,BRAIDWOOD RACECOURSE AWS
+069134,max_temp,folder_name,Canberra Batemans Bay
+069134,max_temp,note_name,BATEMANS BAY (CATALINA COUNTRY CLUB)
+069134,min_temp,folder_name,Canberra Batemans Bay
+069134,min_temp,note_name,BATEMANS BAY (CATALINA COUNTRY CLUB)
+070025,max_temp,folder_name,Canberra Crookwell Post Office
+070025,max_temp,note_name,CROOKWELL POST OFFICE
+070025,min_temp,folder_name,Canberra Crookwell Post Office
+070025,min_temp,note_name,CROOKWELL POST OFFICE
+070231,rainfall,folder_name,Canberra Stromlo
+070231,rainfall,note_name,STROMLO FOREST
+070231,uv,folder_name,Canberra Stromlo Forest
+070231,uv,note_name,STROMLO FOREST
+070232,rainfall,folder_name,Canberra Sutton
+070232,rainfall,note_name,SUTTON (UBA)
+070232,uv,folder_name,Canberra Sutton
+070232,uv,note_name,SUTTON (UBA)
+070233,uv,folder_name,Canberra Sutton The Anchorage
+070233,uv,note_name,SUTTON THE ANCHORAGE
+070242,rainfall,folder_name,Canberra Aranda
+070242,rainfall,note_name,ARANDA (BINDAGA ST)
+070242,uv,folder_name,Canberra Aranda
+070242,uv,note_name,ARANDA (BINDAGA ST)
+070246,rainfall,folder_name,Canberra Parliament House
+070246,rainfall,note_name,CANBERRA PARLIAMENT HOUSE
+070246,uv,folder_name,Canberra Parliament House
+070246,uv,note_name,CANBERRA PARLIAMENT HOUSE
+070247,rainfall,folder_name,Canberra Botanic Garden
+070247,rainfall,note_name,CANBERRA (AUSTRALIAN NATIONAL BOTANIC GA
+070247,uv,folder_name,Canberra Botanic Garden
+070247,uv,note_name,CANBERRA (AUSTRALIAN NATIONAL BOTANIC GA
+070263,max_temp,folder_name,Canberra Goulburn TAFE
+070263,max_temp,note_name,GOULBURN TAFE
+070263,min_temp,folder_name,Canberra Goulburn TAFE
+070263,min_temp,note_name,GOULBURN TAFE
+070278,max_temp,folder_name,Canberra Cooma Vistors Centre
+070278,max_temp,note_name,COOMA VISITORS CENTRE
+070278,min_temp,folder_name,Canberra Cooma Visitors Centre
+070278,min_temp,note_name,COOMA VISITORS CENTRE
+070307,rainfall,folder_name,Canberra Bruce
+070307,rainfall,note_name,BRUCE (AUSTRALIAN INSTITUTE OF SPORT)
+070307,uv,folder_name,Canberra Bruce
+070307,uv,note_name,BRUCE (AUSTRALIAN INSTITUTE OF SPORT)
+070308,rainfall,folder_name,Canberra Torrens
+070308,rainfall,note_name,TORRENS (DARKE ST)
+070308,uv,folder_name,Canberra Torrens
+070308,uv,note_name,TORRENS (DARKE ST)
+070330,max_temp,folder_name,Canberra Goulburn Airport
+070330,max_temp,note_name,GOULBURN AIRPORT AWS
+070330,min_temp,folder_name,Canberra Goulburn Airport
+070330,min_temp,note_name,GOULBURN AIRPORT AWS
+070339,rainfall,folder_name,Canberra Tuggeranong
+070339,rainfall,note_name,TUGGERANONG (ISABELLA PLAINS) AWS
+070339,max_temp,folder_name,Canberra Tuggeranong
+070339,max_temp,note_name,TUGGERANONG (ISABELLA PLAINS) AWS
+070339,min_temp,folder_name,Canberra Tuggeranong
+070339,min_temp,note_name,TUGGERANONG (ISABELLA PLAINS) AWS
+070339,uv,folder_name,Canberra Tuggeranong
+070339,uv,note_name,TUGGERANONG (ISABELLA PLAINS) AWS
+070340,rainfall,folder_name,Canberra Nicholls
+070340,rainfall,note_name,NICHOLLS (GUNGAHLIN LAKES)
+070340,uv,folder_name,Canberra Nicholls
+070340,uv,note_name,NICHOLLS (GUNGAHLIN LAKES)
+070346,uv,folder_name,Canberra Goolabri Dve
+070346,uv,note_name,SUTTON (GOOLABRI DVE)
+070349,max_temp,folder_name,Canberra Mount Ginini
+070349,max_temp,note_name,MOUNT GININI AWS
+070349,min_temp,folder_name,Canberra Mount Ginini
+070349,min_temp,note_name,MOUNT GININI AWS
+070350,rainfall,folder_name,Canberra Ginninderra
+070350,rainfall,note_name,GINNINDERRA (CHARNWOOD (ACT))
+070351,rainfall,folder_name,Canberra Airport
+070351,rainfall,note_name,CANBERRA AIRPORT
+070351,max_temp,folder_name,Canberra Airport
+070351,max_temp,note_name,CANBERRA AIRPORT
+070351,min_temp,folder_name,Canberra Airport
+070351,min_temp,note_name,CANBERRA AIRPORT
+070351,uv,folder_name,Canberra Airport
+070351,uv,note_name,CANBERRA AIRPORT
+070357,uv,folder_name,Canberra Mt Stromlo
+070357,uv,note_name,CANBERRA (MT STROMLO)
+072161,max_temp,folder_name,Canberra Cabramurra
+072161,max_temp,note_name,CABRAMURRA SMHEA AWS
+072161,min_temp,folder_name,Canberra Cabramurra
+072161,min_temp,note_name,CABRAMURRA SMHEA AWS
+073007,max_temp,folder_name,Canberra Burrinjuck Dam
+073007,max_temp,note_name,BURRINJUCK DAM
+073007,min_temp,folder_name,Canberra Burrinjuck Dam
+073007,min_temp,note_name,BURRINJUCK DAM
+086006,rainfall,folder_name,Melbourne Bentleigh
+086006,rainfall,note_name,BENTLEIGH
+086018,rainfall,folder_name,Melbourne Caulfield
+086018,rainfall,note_name,CAULFIELD (RACECOURSE)
+086018,uv,folder_name,Melbourne Caulfield Racecourse
+086018,uv,note_name,CAULFIELD (RACECOURSE)
+086038,rainfall,folder_name,Melbourne Essendon Airport
+086038,rainfall,note_name,ESSENDON AIRPORT
+086038,max_temp,folder_name,Melbourne Essendon Airport
+086038,max_temp,note_name,ESSENDON AIRPORT
+086038,min_temp,folder_name,Melbourne Essendon Airport
+086038,min_temp,note_name,ESSENDON AIRPORT
+086038,uv,folder_name,Melbourne Essendon Airport
+086038,uv,note_name,ESSENDON AIRPORT
+086039,rainfall,folder_name,Melbourne Flemington Racecourse
+086039,rainfall,note_name,FLEMINGTON RACECOURSE
+086039,uv,folder_name,Melbourne Flemington Racecourse
+086039,uv,note_name,FLEMINGTON RACECOURSE
+086068,max_temp,folder_name,Melbourne Viewbank
+086068,max_temp,note_name,VIEWBANK
+086068,min_temp,folder_name,Melbourne Viewbank
+086068,min_temp,note_name,VIEWBANK
+086071,rainfall,folder_name,Melbourne Regional Office
+086071,rainfall,note_name,MELBOURNE REGIONAL OFFICE
+086077,max_temp,folder_name,Melbourne Moorabin Airport
+086077,max_temp,note_name,MOORABBIN AIRPORT
+086077,min_temp,folder_name,Melbourne Moorabbin Airport
+086077,min_temp,note_name,MOORABBIN AIRPORT
+086079,max_temp,folder_name,Melbourne Mornington
+086079,max_temp,note_name,MORNINGTON
+086079,min_temp,folder_name,Melbourne Mornington
+086079,min_temp,note_name,MORNINGTON
+086088,rainfall,folder_name,Melbourne Oakleigh
+086088,rainfall,note_name,OAKLEIGH (METROPOLITAN GOLF CLUB)
+086094,max_temp,folder_name,Melbourne Powelltown
+086094,max_temp,note_name,POWELLTOWN DNRE
+086094,min_temp,folder_name,Melbourne Powelltown
+086094,min_temp,note_name,POWELLTOWN DNRE
+086095,rainfall,folder_name,Melbourne Prahran
+086095,rainfall,note_name,PRAHRAN (COMO HOUSE)
+086096,rainfall,folder_name,Melbourne Preston Reservoir
+086096,rainfall,note_name,PRESTON RESERVOIR
+086096,uv,folder_name,Melbourne Preston Reservoir
+086096,uv,note_name,PRESTON RESERVOIR
+086104,max_temp,folder_name,Melbourne Scoreby Research Institute
+086104,max_temp,note_name,SCORESBY RESEARCH INSTITUTE
+086104,min_temp,folder_name,Melbourne Scoreby Research Insitute
+086104,min_temp,note_name,SCORESBY RESEARCH INSTITUTE
+086142,max_temp,folder_name,Melbourne Toolangi
+086142,max_temp,note_name,TOOLANGI (MOUNT ST LEONARD DPI)
+086142,min_temp,folder_name,Melbourne Toolangi
+086142,min_temp,note_name,TOOLANGI (MOUNT ST LEONARD DPI)
+086220,uv,folder_name,Melbourne St Kilda Harbour
+086220,uv,note_name,ST KILDA HARBOUR - RMYS
+086224,max_temp,folder_name,Melbourne Dandenong
+086224,max_temp,note_name,DANDENONG
+086224,min_temp,folder_name,Melbourne Dandenong
+086224,min_temp,note_name,DANDENONG
+086232,rainfall,folder_name,Melbourne Botanical Garden
+086232,rainfall,note_name,MELBOURNE BOTANICAL GARDENS
+086232,uv,folder_name,Melbourne Botanical Garden
+086232,uv,note_name,MELBOURNE BOTANICAL GARDENS
+086266,max_temp,folder_name,Melbourne Ferny Creek
+086266,max_temp,note_name,FERNY CREEK
+086266,min_temp,folder_name,Melbourne Ferny Creek
+086266,min_temp,note_name,FERNY CREEK
+086282,rainfall,folder_name,Melbourne Airport
+086282,rainfall,note_name,MELBOURNE AIRPORT
+086282,max_temp,folder_name,Melbourne Airport
+086282,max_temp,note_name,MELBOURNE AIRPORT
+086282,min_temp,folder_name,Melbourne Airport
+086282,min_temp,note_name,MELBOURNE AIRPORT
+086282,uv,folder_name,Melbourne Airport
+086282,uv,note_name,MELBOURNE AIRPORT
+086297,rainfall,folder_name,Melbourne Mount Waverley
+086297,rainfall,note_name,MOUNT WAVERLEY (RIVERSDALE GOLF CLUB)
+086304,rainfall,folder_name,Melbourne Hawthorn
+086304,rainfall,note_name,HAWTHORN (SCOTCH COLLEGE)
+086304,uv,folder_name,Melbourne Harthorn
+086304,uv,note_name,HAWTHORN (SCOTCH COLLEGE)
+086305,rainfall,folder_name,Melbourne Greenvale Reservoir
+086305,rainfall,note_name,GREENVALE RESERVOIR
+086305,uv,folder_name,Melbourne Greenvale Reservoir
+086305,uv,note_name,GREENVALE RESERVOIR
+086338,rainfall,folder_name,Melbourne Olympic Park
+086338,rainfall,note_name,MELBOURNE (OLYMPIC PARK)
+086338,max_temp,folder_name,Melbourne Olympic Park
+086338,max_temp,note_name,MELBOURNE (OLYMPIC PARK)
+086338,min_temp,folder_name,Melbourne Olympic Park
+086338,min_temp,note_name,MELBOURNE (OLYMPIC PARK)
+086338,uv,folder_name,Melbourne Olympic Park
+086338,uv,note_name,MELBOURNE (OLYMPIC PARK)
+086344,max_temp,folder_name,Melbourne South Channel Island
+086344,max_temp,note_name,SOUTH CHANNEL ISLAND
+086344,min_temp,folder_name,Melbourne South Channel Island
+086344,min_temp,note_name,SOUTH CHANNEL ISLAND
+086353,uv,folder_name,Melbourne Broadmeadows Radar
+086353,uv,note_name,BROADMEADOWS RADAR
+086361,max_temp,folder_name,Melbourne Cerberus
+086361,max_temp,note_name,CERBERUS
+086361,min_temp,folder_name,Melbourne Cerberus
+086361,min_temp,note_name,CERBERUS
+086364,max_temp,folder_name,Melbourne Tarrawarra Monstery
+086364,max_temp,note_name,TARRAWARRA MONASTERY
+086364,min_temp,folder_name,Melbourne Tarrawarra Monastery
+086364,min_temp,note_name,TARRAWARRA MONASTERY
+086371,max_temp,folder_name,Melbourne Frankston Beach
+086371,max_temp,note_name,FRANKSTON BEACH
+086371,min_temp,folder_name,Melbourne Frankston Beach
+086371,min_temp,note_name,FRANKSTON BEACH
+086376,uv,folder_name,Melbourne Fawkner Beacon
+086376,uv,note_name,FAWKNER BEACON
+086383,max_temp,folder_name,Melbourne Coldstream
+086383,max_temp,note_name,COLDSTREAM
+086383,min_temp,folder_name,Melbourne Coldstream
+086383,min_temp,note_name,COLDSTREAM
+086388,max_temp,folder_name,Melbourne Frankston Ballam Park
+086388,max_temp,note_name,FRANKSTON (BALLAM PARK)
+086388,min_temp,folder_name,Melbourne Frankston Ballam Park
+086388,min_temp,note_name,FRANKSTON (BALLAM PARK)
+087021,max_temp,folder_name,Melbourne Durdidwarrah
+087021,max_temp,note_name,DURDIDWARRAH
+087021,min_temp,folder_name,Melbourne Durdidwarrah
+087021,min_temp,note_name,DURDIDWARRAH
+087031,rainfall,folder_name,Melbourne Lavertion
+087031,rainfall,note_name,LAVERTON RAAF
+087031,max_temp,folder_name,Melbourne Laverton
+087031,max_temp,note_name,LAVERTON RAAF
+087031,min_temp,folder_name,Melbourne Laverton
+087031,min_temp,note_name,LAVERTON RAAF
+087031,uv,folder_name,Melbourne Laverton
+087031,uv,note_name,LAVERTON RAAF
+087036,max_temp,folder_name,Melbourne Macedon Forestry
+087036,max_temp,note_name,MACEDON FORESTRY
+087036,min_temp,folder_name,Melbourne Macedon Forestry
+087036,min_temp,note_name,MACEDON FORESTRY
+087061,rainfall,folder_name,Melbourne Sunbury
+087061,rainfall,note_name,SUNBURY (LACHLAN COURT)
+087061,uv,folder_name,Melbourne Sunbury
+087061,uv,note_name,SUNBURY (LACHLAN COURT)
+087113,max_temp,folder_name,Melbourne Avalon Airport
+087113,max_temp,note_name,AVALON AIRPORT
+087113,min_temp,folder_name,Melbournre Avalon Airport
+087113,min_temp,note_name,AVALON AIRPORT
+087121,rainfall,folder_name,Melbourne Rockbank (Melton)
+087121,rainfall,note_name,ROCKBANK (MELTON)
+087121,uv,folder_name,Melbourne Rockbank (Melton)
+087121,uv,note_name,ROCKBANK (MELTON)
+087131,rainfall,folder_name,Melbourne Altona
+087131,rainfall,note_name,ALTONA (CITY OFFICES OPERATIONS CENTRE)
+087131,uv,folder_name,Melbourne Altona
+087131,uv,note_name,ALTONA (CITY OFFICES OPERATIONS CENTRE)
+087166,max_temp,folder_name,Melbourne Point Wilson
+087166,max_temp,note_name,POINT WILSON
+087166,min_temp,folder_name,Melbourne Point Wilson
+087166,min_temp,note_name,POINT WILSON
+087168,max_temp,folder_name,Melbourne She Oaks
+087168,max_temp,note_name,SHE OAKS
+087168,min_temp,folder_name,Melbourne She Oaks
+087168,min_temp,note_name,SHE OAKS
+087184,max_temp,folder_name,Melbourne Breakwater
+087184,max_temp,note_name,BREAKWATER (GEELONG RACECOURSE)
+087184,min_temp,folder_name,Melbourne Breakwater
+087184,min_temp,note_name,BREAKWATER (GEELONG RACECOURSE)
+087185,max_temp,folder_name,Melbourne Point Cook
+087185,max_temp,note_name,POINT COOK RAAF
+087185,min_temp,folder_name,Melbourne Point Cook
+087185,min_temp,note_name,POINT COOK RAAF
+088123,min_temp,folder_name,Melbourne Kyneton
+088123,min_temp,note_name,KYNETON
+088162,max_temp,folder_name,Melbourne Wallan
+088162,max_temp,note_name,WALLAN (KILMORE GAP)
+088162,min_temp,folder_name,Melbourne Wallan
+088162,min_temp,note_name,WALLAN (KILMORE GAP)
+092027,max_temp,folder_name,Hobart Orford
+092027,max_temp,note_name,ORFORD (AUBIN COURT)
+092027,min_temp,folder_name,Hobart Orford
+092027,min_temp,note_name,ORFORD (AUBIN COURT)
+092124,max_temp,folder_name,Hobart Maria Island
+092124,max_temp,note_name,MARIA ISLAND (POINT LESUEUR)
+092124,min_temp,folder_name,Hobart Maria Island
+092124,min_temp,note_name,MARIA ISLAND (POINT LESUEUR)
+092133,max_temp,folder_name,Hobart Spring Bay
+092133,max_temp,note_name,SPRING BAY NTC AWS
+092133,min_temp,folder_name,Hobart Spring Bay
+092133,min_temp,note_name,SPRING BAY NTC AWS
+092148,max_temp,folder_name,Hobart Swansea
+092148,max_temp,note_name,SWANSEA (FRANCIS STREET)
+092148,min_temp,folder_name,Hobart Swansea
+092148,min_temp,note_name,SWANSEA (FRANCIS STREET)
+093014,max_temp,folder_name,Hobart Oatlands Post Office
+093014,max_temp,note_name,OATLANDS POST OFFICE
+093014,min_temp,folder_name,Hobart Oatlands Post Office
+093014,min_temp,note_name,OATLANDS POST OFFICE
+093053,max_temp,folder_name,Hobart Ross
+093053,max_temp,note_name,ROSS (THE BOULEVARDS)
+093053,min_temp,folder_name,Hobart Ross
+093053,min_temp,note_name,ROSS (THE BOULEVARDS)
+094008,max_temp,folder_name,Hobart Airport West
+094008,max_temp,note_name,HOBART AIRPORT WEST
+094008,min_temp,folder_name,Hobart Airport West
+094008,min_temp,note_name,HOBART AIRPORT WEST
+094010,max_temp,folder_name,Hobart Cape Brunny Lighthouse
+094010,max_temp,note_name,CAPE BRUNY LIGHTHOUSE
+094010,min_temp,folder_name,Hobart Cape Bruny Lighthouse
+094010,min_temp,note_name,CAPE BRUNY LIGHTHOUSE
+094020,max_temp,folder_name,Hobart Dover
+094020,max_temp,note_name,DOVER
+094020,min_temp,folder_name,Hobart Dover
+094020,min_temp,note_name,DOVER
+094025,rainfall,folder_name,Hobart Glenorchy
+094025,rainfall,note_name,GLENORCHY (GLENORCHY RESERVOIR)
+094025,uv,folder_name,Hobart Glenorchy
+094025,uv,note_name,GLENORCHY (GLENORCHY RESERVOIR)
+094027,max_temp,folder_name,Hobart Hastings Chalet
+094027,max_temp,note_name,HASTINGS CHALET
+094027,min_temp,folder_name,Hobart Hastings Chalet
+094027,min_temp,note_name,HASTINGS CHALET
+094029,rainfall,folder_name,Hobart Elllersile Road
+094029,rainfall,note_name,HOBART (ELLERSLIE ROAD)
+094029,max_temp,folder_name,Hobart Ellerslie
+094029,max_temp,note_name,HOBART (ELLERSLIE ROAD)
+094029,min_temp,folder_name,Hobart Ellerslie Road
+094029,min_temp,note_name,HOBART (ELLERSLIE ROAD)
+094029,uv,folder_name,Hobart Ellerslie Road
+094029,uv,note_name,HOBART (ELLERSLIE ROAD)
+094030,rainfall,folder_name,Hobart Botanical Garden
+094030,rainfall,note_name,HOBART BOTANICAL GARDENS
+094030,uv,folder_name,Hobart Botanical Garden
+094030,uv,note_name,HOBART BOTANICAL GARDENS
+094031,rainfall,folder_name,Hobart Waterworks Reserve
+094031,rainfall,note_name,HOBART (WATERWORKS RESERVE)
+094031,uv,folder_name,Hobart Waterworks Reserve
+094031,uv,note_name,HOBART (WATERWORKS RESERVE)
+094066,rainfall,folder_name,Hobart Mount Wellington
+094066,rainfall,note_name,MOUNT WELLINGTON (THE SPRINGS)
+094066,max_temp,folder_name,Hobart Mount Wellington
+094066,max_temp,note_name,MOUNT WELLINGTON (THE SPRINGS)
+094066,min_temp,folder_name,Hobart Mount Wellington
+094066,min_temp,note_name,MOUNT WELLINGTON (THE SPRINGS)
+094066,uv,folder_name,Hobart Mount Wellington
+094066,uv,note_name,MOUNT WELLINGTON (THE SPRINGS)
+094082,rainfall,folder_name,Hobart Mount Rummey
+094082,rainfall,note_name,MOUNT RUMNEY (MOUNT RUMNEY ROAD)
+094083,rainfall,folder_name,Hobart Strickland Reserve
+094083,rainfall,note_name,HOBART (STRICKLAND RESERVE)
+094083,uv,folder_name,Hobart Strickland Reserve
+094083,uv,note_name,HOBART (STRICKLAND RESERVE)
+094087,rainfall,folder_name,Hobart Kunanyi
+094087,rainfall,note_name,KUNANYI (MOUNT WELLINGTON PINNACLE)
+094087,max_temp,folder_name,Hobart Kunanyi
+094087,max_temp,note_name,KUNANYI (MOUNT WELLINGTON PINNACLE)
+094087,min_temp,folder_name,Hobart Kunanyi
+094087,min_temp,note_name,KUNANYI (MOUNT WELLINGTON PINNACLE)
+094087,uv,folder_name,Hobart Kunanyi
+094087,uv,note_name,KUNANYI (MOUNT WELLINGTON PINNACLE)
+094098,rainfall,folder_name,Hobart Mount Nelson
+094098,rainfall,note_name,MOUNT NELSON (RIALANNAH ROAD)
+094098,uv,folder_name,Hobart Mount Nelson
+094098,uv,note_name,MOUNT NELSON (RIALANNAH ROAD)
+094111,rainfall,folder_name,Hobart Taroona
+094111,rainfall,note_name,TAROONA (TAROONA CRESCENT)
+094111,uv,folder_name,Hobart Taroona
+094111,uv,note_name,TAROONA (TAROONA CRESCENT)
+094140,max_temp,folder_name,Hobart Melton Mowbray
+094140,max_temp,note_name,MELTON MOWBRAY (LOVELY BANKS)
+094140,min_temp,folder_name,Hobart Melton Mowbray
+094140,min_temp,note_name,MELTON MOWBRAY (LOVELY BANKS)
+094145,uv,folder_name,Hobart Knocklofty
+094145,uv,note_name,HOBART (KNOCKLOFTY)
+094155,max_temp,folder_name,Hobart Tasman Island
+094155,max_temp,note_name,TASMAN ISLAND
+094155,min_temp,folder_name,Hobart Tasman Island
+094155,min_temp,note_name,TASMAN ISLAND
+094191,max_temp,folder_name,Hobart Hartz Mountain
+094191,max_temp,note_name,HARTZ MOUNTAIN (KEOGHS PIMPLE)
+094191,min_temp,folder_name,Hobart Hartz Mountain
+094191,min_temp,note_name,HARTZ MOUNTAIN (KEOGHS PIMPLE)
+094193,uv,folder_name,Hobart Reserve Bank
+094193,uv,note_name,HOBART RESERVE BANK
+094195,max_temp,folder_name,Hobart Tunnack Fire Station
+094195,max_temp,note_name,TUNNACK FIRE STATION
+094195,min_temp,folder_name,Hobart Tunnack Fire Station
+094195,min_temp,note_name,TUNNACK FIRE STATION
+094196,rainfall,folder_name,Hobart Turnip Fields
+094196,rainfall,note_name,HOBART (TURNIP FIELDS)
+094196,uv,folder_name,Hobart Turnip Fields
+094196,uv,note_name,HOBART (TURNIP FIELDS)
+094198,min_temp,folder_name,Hobart Cape Bruny
+094198,min_temp,note_name,CAPE BRUNY (CAPE BRUNY)
+094212,max_temp,folder_name,Hobart Campania
+094212,max_temp,note_name,CAMPANIA (KINCORA)
+094212,min_temp,folder_name,Hobart Campania
+094212,min_temp,note_name,CAMPANIA (KINCORA)
+094220,max_temp,folder_name,Hobart Grove
+094220,max_temp,note_name,GROVE (RESEARCH STATION)
+094220,min_temp,folder_name,Hobart Grove
+094220,min_temp,note_name,GROVE (RESEARCH STATION)
+094222,rainfall,folder_name,Hobart Kingston
+094222,rainfall,note_name,KINGSTON (GREENHILL DRIVE)
+094222,uv,folder_name,Hobart Kingston
+094222,uv,note_name,KINGSTON (GREENHILL DRIVE)
+094223,rainfall,folder_name,Hobart Bonnet Hill
+094223,rainfall,note_name,BONNET HILL
+094223,uv,folder_name,Hobart Bonnet Hill
+094223,uv,note_name,BONNET HILL
+094232,rainfall,folder_name,Hobart Collinsvale
+094232,rainfall,note_name,COLLINSVALE
+094239,rainfall,folder_name,Hobart Leslie Vale
+094239,rainfall,note_name,LESLIE VALE
+094242,uv,folder_name,Hobart Bettery Point Jetty
+094242,uv,note_name,BATTERY POINT JETTY
+094250,max_temp,folder_name,Hobart Airport
+094250,max_temp,note_name,HOBART AIRPORT
+094250,min_temp,folder_name,Hobart Airport
+094250,min_temp,note_name,HOBART AIRPORT
+094251,uv,folder_name,Hobart South Lea
+094251,uv,note_name,SOUTH LEA
+094252,rainfall,folder_name,Hobart Hillborough Road
+094252,rainfall,note_name,SOUTH HOBART (HILLBOROUGH ROAD)
+094252,uv,folder_name,Hobart Hillborough Road
+094252,uv,note_name,SOUTH HOBART (HILLBOROUGH ROAD)
+094254,max_temp,folder_name,Hobart Dunalley
+094254,max_temp,note_name,DUNALLEY (STROUD POINT)
+094254,min_temp,folder_name,Hobart Dunalley
+094254,min_temp,note_name,DUNALLEY (STROUD POINT)
+094255,max_temp,folder_name,Hobart Dennes Point
+094255,max_temp,note_name,DENNES POINT
+094255,min_temp,folder_name,Hobart Dennes Point
+094255,min_temp,note_name,DENNES POINT
+094271,rainfall,folder_name,Hobart Risdon Vale
+094271,rainfall,note_name,RISDON VALE (LANTANA ROAD)
+094271,uv,folder_name,Hobart Risdon Vale
+094271,uv,note_name,RISDON VALE (LANTANA ROAD)
+094274,rainfall,folder_name,Hobart Fern Tree
+094274,rainfall,note_name,FERN TREE (WESTRINGA ROAD)
+094274,uv,folder_name,Hobart Fern Tree
+094274,uv,note_name,FERN TREE (WESTRINGA ROAD)
+095001,max_temp,folder_name,Hobart Bothwell
+095001,max_temp,note_name,BOTHWELL (FRANKLIN STREET)
+095001,min_temp,folder_name,Hobart Bothwell
+095001,min_temp,note_name,BOTHWELL (FRANKLIN STREET)
+095003,max_temp,folder_name,Hobart Bushy Park
+095003,max_temp,note_name,BUSHY PARK (BUSHY PARK ESTATES)
+095003,min_temp,folder_name,Hobart Bushy Park
+095003,min_temp,note_name,BUSHY PARK (BUSHY PARK ESTATES)
+095048,max_temp,folder_name,Hobart Ouse Fire Station
+095048,max_temp,note_name,OUSE FIRE STATION
+095048,min_temp,folder_name,Hobart Ouse Fire Station
+095048,min_temp,note_name,OUSE FIRE STATION
+097024,max_temp,folder_name,Hobart Warra
+097024,max_temp,note_name,WARRA
+097024,min_temp,folder_name,Hobart Warra
+097024,min_temp,note_name,WARRA
+097083,max_temp,folder_name,Hobart Scotts Peak Dam
+097083,max_temp,note_name,SCOTTS PEAK DAM
+097083,min_temp,folder_name,Hobart Scotts Peak Dam
+097083,min_temp,note_name,SCOTTS PEAK DAM
+200731,max_temp,folder_name,Darwin Point Fawcett
+200731,max_temp,note_name,POINT FAWCETT
+200731,min_temp,folder_name,Darwin Point Fawcett
+200731,min_temp,note_name,POINT FAWCETT
