@@ -1,8 +1,8 @@
-﻿import { useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from "recharts";
 import { locations, getDataForGranularity, weatherAttributes } from "../../data/placeholderData";
 
-const COLORS = ["#0284c7", "#7c3aed", "#059669", "#dc2626"];
+const COLORS = ["#0d1b2a", "#e76f51", "#2a9d8f", "#e9c46a"];
 
 export default function LocationComparison({ granularity, selectedYear, selectedMonth }) {
   const [selectedIds, setSelectedIds] = useState(["melbourne", "sydney", "perth"]);
@@ -40,10 +40,10 @@ export default function LocationComparison({ granularity, selectedYear, selected
             key={loc.id}
             type="button"
             onClick={() => toggleLocation(loc.id)}
-            className={`rounded-lg px-3 py-1.5 text-xs font-medium transition ${
+            className={`rounded-xl px-3 py-1.5 text-xs font-semibold transition ${
               selectedIds.includes(loc.id)
-                ? "bg-sky-100 text-sky-800 ring-1 ring-sky-200"
-                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                ? "bg-[linear-gradient(135deg,rgba(231,111,81,0.18),rgba(244,132,95,0.24))] text-[#9b422d] ring-1 ring-[rgba(231,111,81,0.4)]"
+                : "bg-[#f1e7dc] text-[#6e5d52] hover:bg-[#eadccd]"
             }`}
             aria-pressed={selectedIds.includes(loc.id)}
           >
@@ -55,18 +55,26 @@ export default function LocationComparison({ granularity, selectedYear, selected
       {selectedLocations.length >= 2 ? (
         <ResponsiveContainer width="100%" height={260}>
           <BarChart data={comparisonData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-            <XAxis dataKey="attribute" tick={{ fontSize: 11, fill: "#64748b" }} axisLine={{ stroke: "#e2e8f0" }} tickLine={false} />
-            <YAxis tick={{ fontSize: 11, fill: "#94a3b8" }} axisLine={false} tickLine={false} width={40} />
-            <Tooltip contentStyle={{ borderRadius: 8, border: "1px solid #e2e8f0", fontSize: 12 }} />
-            <Legend wrapperStyle={{ fontSize: 11 }} />
+            <CartesianGrid strokeDasharray="3 3" stroke="#e5d7c9" />
+            <XAxis dataKey="attribute" tick={{ fontSize: 11, fill: "#5d4f45" }} axisLine={{ stroke: "#dccabb" }} tickLine={false} />
+            <YAxis tick={{ fontSize: 11, fill: "#8d7768" }} axisLine={false} tickLine={false} width={40} />
+            <Tooltip
+              contentStyle={{
+                borderRadius: 14,
+                border: "1px solid #e7b296",
+                backgroundColor: "#fff8f1",
+                fontSize: 12,
+                boxShadow: "0 14px 28px rgba(61, 46, 33, 0.12)",
+              }}
+            />
+            <Legend wrapperStyle={{ fontSize: 11, color: "#5d4f45" }} />
             {selectedLocations.map((loc, i) => (
               <Bar key={loc.id} dataKey={loc.name} fill={COLORS[i % COLORS.length]} radius={[4, 4, 0, 0]} barSize={24} />
             ))}
           </BarChart>
         </ResponsiveContainer>
       ) : (
-        <div className="flex h-40 items-center justify-center rounded-xl border border-dashed border-slate-300 text-sm text-slate-400">
+        <div className="flex h-40 items-center justify-center rounded-2xl border border-dashed border-[#d8c8b8] bg-[#fbf4ed] text-sm text-[#8a7768]">
           Select at least 2 locations to compare
         </div>
       )}

@@ -1,4 +1,4 @@
-﻿function generateDailyData(year, month, baseTemp, baseHumidity, baseWind, baseUv) {
+function generateDailyData(year, month, baseTemp, baseHumidity, baseWind, baseUv) {
   const daysInMonth = new Date(year, month, 0).getDate();
   const data = {};
   for (let d = 1; d <= daysInMonth; d++) {
@@ -18,7 +18,7 @@
   return data;
 }
 
-const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 function generateMonthlyData(year, baseTemp, baseHumidity, baseWind, baseUv) {
   const data = {};
@@ -40,10 +40,10 @@ function generateMonthlyData(year, baseTemp, baseHumidity, baseWind, baseUv) {
 }
 
 function generateQuarterlyData(monthlyData) {
-  const quarters = { Q1: ["01","02","03"], Q2: ["04","05","06"], Q3: ["07","08","09"], Q4: ["10","11","12"] };
+  const quarters = { Q1: ["01", "02", "03"], Q2: ["04", "05", "06"], Q3: ["07", "08", "09"], Q4: ["10", "11", "12"] };
   const data = {};
   for (const [q, months] of Object.entries(quarters)) {
-    const entries = months.map(m => monthlyData[`2025-${m}`]).filter(Boolean);
+    const entries = months.map((m) => monthlyData[`2025-${m}`]).filter(Boolean);
     if (!entries.length) continue;
     const avg = (arr, key) => +(arr.reduce((s, e) => s + e[key], 0) / arr.length).toFixed(1);
     const score = Math.round(avg(entries, "score"));
@@ -91,23 +91,23 @@ export const locations = [
 ];
 
 export const suitabilityConfig = {
-  suitable:          { label: "Suitable",          color: "bg-emerald-500", textColor: "text-emerald-700", chipBg: "bg-emerald-100", chipBorder: "border-emerald-200", hex: "#10b981" },
-  slightly_suitable: { label: "Slightly Suitable", color: "bg-amber-400",   textColor: "text-amber-700",   chipBg: "bg-amber-100",   chipBorder: "border-amber-200",   hex: "#f59e0b" },
-  not_suitable:      { label: "Not Suitable",      color: "bg-rose-500",    textColor: "text-rose-700",     chipBg: "bg-rose-100",    chipBorder: "border-rose-200",     hex: "#ef4444" },
+  suitable:          { label: "Suitable",          color: "bg-[#2d6a4f]", textColor: "text-[#22523c]", chipBg: "bg-[#dbeadf]", chipBorder: "border-[#8eb59d]", hex: "#2d6a4f" },
+  slightly_suitable: { label: "Slightly Suitable", color: "bg-[#e9c46a]", textColor: "text-[#8a6617]", chipBg: "bg-[#fbefcc]", chipBorder: "border-[#e3c46f]", hex: "#e9c46a" },
+  not_suitable:      { label: "Not Suitable",      color: "bg-[#e76f51]", textColor: "text-[#9b422d]", chipBg: "bg-[#f8ddd5]", chipBorder: "border-[#e7a18d]", hex: "#e76f51" },
 };
 
 export const weatherAttributes = [
-  { key: "temp",     label: "Temperature",  unit: "\u00b0C", color: "#ef4444", icon: "Thermometer" },
-  { key: "humidity", label: "Humidity",      unit: "%",       color: "#3b82f6", icon: "Droplets" },
-  { key: "wind",     label: "Wind Speed",   unit: "km/h",    color: "#8b5cf6", icon: "Wind" },
-  { key: "uv",       label: "UV Index",     unit: "",        color: "#f59e0b", icon: "Sun" },
+  { key: "temp", label: "Temperature", unit: "\u00b0C", color: "#ef4444", icon: "Thermometer" },
+  { key: "humidity", label: "Humidity", unit: "%", color: "#3b82f6", icon: "Droplets" },
+  { key: "wind", label: "Wind Speed", unit: "km/h", color: "#8b5cf6", icon: "Wind" },
+  { key: "uv", label: "UV Index", unit: "", color: "#f59e0b", icon: "Sun" },
 ];
 
 export const timeGranularities = [
-  { key: "daily",     label: "Daily" },
-  { key: "monthly",   label: "Monthly" },
+  { key: "daily", label: "Daily" },
+  { key: "monthly", label: "Monthly" },
   { key: "quarterly", label: "Quarterly" },
-  { key: "annually",  label: "Annually" },
+  { key: "annually", label: "Annually" },
 ];
 
 export const eventTypes = ["Marathon", "Half Marathon", "10K"];

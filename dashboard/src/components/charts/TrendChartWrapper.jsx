@@ -1,9 +1,12 @@
-﻿import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from "recharts";
+import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
 
 export default function TrendChartWrapper({ data, dataKey, xKey, label, unit, color, height = 200 }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-4">
-      <h4 className="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-500">{label}</h4>
+    <div className="rounded-2xl border border-[var(--marathon-line)] bg-[#fff9f3] p-4 shadow-[0_16px_28px_rgba(61,46,33,0.05)]">
+      <div className="mb-3 flex items-center gap-3">
+        <h4 className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#7a6454]">{label}</h4>
+        <span className="h-px flex-1 bg-gradient-to-r from-[rgba(231,111,81,0.4)] to-transparent" aria-hidden="true" />
+      </div>
       <ResponsiveContainer width="100%" height={height}>
         <AreaChart data={data} margin={{ top: 5, right: 10, left: -10, bottom: 0 }}>
           <defs>
@@ -12,22 +15,29 @@ export default function TrendChartWrapper({ data, dataKey, xKey, label, unit, co
               <stop offset="95%" stopColor={color} stopOpacity={0.02} />
             </linearGradient>
           </defs>
-          <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+          <CartesianGrid strokeDasharray="3 3" stroke="#e6d8cb" />
           <XAxis
             dataKey={xKey}
-            tick={{ fontSize: 11, fill: "#94a3b8" }}
-            axisLine={{ stroke: "#e2e8f0" }}
+            tick={{ fontSize: 11, fill: "#8d7768" }}
+            axisLine={{ stroke: "#dccabb" }}
             tickLine={false}
           />
           <YAxis
-            tick={{ fontSize: 11, fill: "#94a3b8" }}
+            tick={{ fontSize: 11, fill: "#8d7768" }}
             axisLine={false}
             tickLine={false}
             width={40}
             tickFormatter={(v) => `${v}${unit}`}
           />
           <Tooltip
-            contentStyle={{ borderRadius: 8, border: "1px solid #e2e8f0", fontSize: 12 }}
+            contentStyle={{
+              borderRadius: 14,
+              border: "1px solid #e7b296",
+              backgroundColor: "#fff8f1",
+              fontSize: 12,
+              boxShadow: "0 14px 28px rgba(61, 46, 33, 0.12)",
+            }}
+            cursor={{ stroke: "#d6b9a5", strokeWidth: 1 }}
             formatter={(v) => [`${v}${unit}`, label]}
             labelFormatter={(l) => `${l}`}
           />

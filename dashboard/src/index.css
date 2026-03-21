@@ -1,4 +1,19 @@
-﻿@import "tailwindcss";
+@import "tailwindcss";
+
+:root {
+  --marathon-ink: #0d1b2a;
+  --marathon-ink-soft: #1a1a2e;
+  --marathon-accent: #e76f51;
+  --marathon-accent-soft: #f4845f;
+  --marathon-gold: #e9c46a;
+  --marathon-teal: #2a9d8f;
+  --marathon-cream: #f5f0eb;
+  --marathon-paper: #fff9f3;
+  --marathon-card: #fdf7f1;
+  --marathon-line: #d9ccbf;
+  --marathon-muted: #7d6a5b;
+  --marathon-text: #2f2722;
+}
 
 @layer base {
   *,
@@ -7,14 +22,36 @@
     box-sizing: border-box;
   }
 
-  body {
-    margin: 0;
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+  html {
+    background: var(--marathon-cream);
   }
 
-  /* Skip to content link */
+  body {
+    margin: 0;
+    min-height: 100vh;
+    color: var(--marathon-text);
+    font-family: "Segoe UI", Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background:
+      radial-gradient(circle at top left, rgba(231, 111, 81, 0.16), transparent 26%),
+      radial-gradient(circle at 85% 12%, rgba(42, 157, 143, 0.14), transparent 20%),
+      linear-gradient(180deg, #faf4ee 0%, #f5f0eb 46%, #efe4d8 100%);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  ::selection {
+    background: rgba(231, 111, 81, 0.22);
+    color: var(--marathon-ink);
+  }
+
   .skip-to-content {
     position: absolute;
     left: -9999px;
@@ -32,37 +69,35 @@
     width: auto;
     height: auto;
     padding: 12px 24px;
-    background: #0f172a;
-    color: white;
+    background: var(--marathon-ink);
+    color: #fff8f0;
     font-size: 14px;
-    font-weight: 600;
-    border-radius: 8px;
+    font-weight: 700;
+    border-radius: 999px;
     z-index: 100;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 12px 30px rgba(13, 27, 42, 0.28);
   }
 
-  /* Focus visible ring for all interactive elements */
   :focus-visible {
-    outline: 2px solid #0284c7;
+    outline: 2px solid var(--marathon-accent);
     outline-offset: 2px;
   }
 
-  /* Custom scrollbar */
   ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 8px;
+    height: 8px;
   }
 
   ::-webkit-scrollbar-track {
-    background: transparent;
+    background: rgba(216, 207, 196, 0.35);
   }
 
   ::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
-    border-radius: 3px;
+    background: linear-gradient(180deg, var(--marathon-accent-soft), var(--marathon-gold));
+    border-radius: 999px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: #94a3b8;
+    background: linear-gradient(180deg, var(--marathon-accent), #d8ab4d);
   }
 }

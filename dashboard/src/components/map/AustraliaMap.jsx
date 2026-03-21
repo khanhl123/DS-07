@@ -1,15 +1,15 @@
-﻿import { locations, suitabilityConfig } from "../../data/placeholderData";
-import { MapPin, ChevronRight } from "lucide-react";
+import { locations } from "../../data/placeholderData";
+import { ChevronRight } from "lucide-react";
 
 const australiaStates = [
-  { id: "WA",  name: "Western Australia",         path: "M8,25 L8,70 L38,70 L38,55 L32,42 L28,30 L20,22 Z",                                fill: "#e2e8f0" },
-  { id: "NT",  name: "Northern Territory",         path: "M38,10 L38,42 L55,42 L55,10 Z",                                                    fill: "#e2e8f0" },
-  { id: "SA",  name: "South Australia",            path: "M38,42 L38,70 L58,70 L58,55 L55,42 Z",                                             fill: "#e2e8f0" },
-  { id: "QLD", name: "Queensland",                 path: "M55,10 L55,42 L58,50 L72,50 L82,42 L90,28 L85,14 L70,10 Z",                        fill: "#e2e8f0" },
-  { id: "NSW", name: "New South Wales",            path: "M58,50 L58,65 L72,68 L82,62 L88,55 L90,48 L82,42 L72,50 Z",                        fill: "#e2e8f0" },
-  { id: "VIC", name: "Victoria",                   path: "M58,65 L58,70 L62,75 L72,78 L80,72 L82,68 L82,62 L72,68 Z",                        fill: "#e2e8f0" },
-  { id: "TAS", name: "Tasmania",                   path: "M74,82 L70,88 L72,93 L80,93 L82,88 L78,82 Z",                                      fill: "#e2e8f0" },
-  { id: "ACT", name: "Australian Capital Territory",path: "M78,63 L76,65 L78,67 L80,65 Z",                                                   fill: "#e2e8f0" },
+  { id: "WA", name: "Western Australia", path: "M8,25 L8,70 L38,70 L38,55 L32,42 L28,30 L20,22 Z" },
+  { id: "NT", name: "Northern Territory", path: "M38,10 L38,42 L55,42 L55,10 Z" },
+  { id: "SA", name: "South Australia", path: "M38,42 L38,70 L58,70 L58,55 L55,42 Z" },
+  { id: "QLD", name: "Queensland", path: "M55,10 L55,42 L58,50 L72,50 L82,42 L90,28 L85,14 L70,10 Z" },
+  { id: "NSW", name: "New South Wales", path: "M58,50 L58,65 L72,68 L82,62 L88,55 L90,48 L82,42 L72,50 Z" },
+  { id: "VIC", name: "Victoria", path: "M58,65 L58,70 L62,75 L72,78 L80,72 L82,68 L82,62 L72,68 Z" },
+  { id: "TAS", name: "Tasmania", path: "M74,82 L70,88 L72,93 L80,93 L82,88 L78,82 Z" },
+  { id: "ACT", name: "Australian Capital Territory", path: "M78,63 L76,65 L78,67 L80,65 Z" },
 ];
 
 export default function AustraliaMap({ locationId, onSelectLocation, selectedSuburb, onSelectSuburb }) {
@@ -17,7 +17,8 @@ export default function AustraliaMap({ locationId, onSelectLocation, selectedSub
 
   return (
     <div className="space-y-4">
-      <div className="relative overflow-hidden rounded-xl border border-slate-200 bg-gradient-to-br from-sky-50 via-cyan-50/50 to-slate-50">
+      <div className="relative overflow-hidden rounded-2xl border border-[var(--marathon-line)] bg-[linear-gradient(180deg,#fbf4ed_0%,#f1e4d6_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.55)]">
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[rgba(231,111,81,0.75)] to-transparent" />
         <svg
           viewBox="0 0 100 100"
           className="h-[280px] w-full"
@@ -37,8 +38,8 @@ export default function AustraliaMap({ locationId, onSelectLocation, selectedSub
               <path
                 key={state.id}
                 d={state.path}
-                fill={isActive ? "#bae6fd" : hasLocation ? "#f1f5f9" : "#f8fafc"}
-                stroke={isActive ? "#0284c7" : "#94a3b8"}
+                fill={isActive ? "#f4c5b4" : hasLocation ? "#efe4d7" : "#f7f0e8"}
+                stroke={isActive ? "#e76f51" : "#ad9888"}
                 strokeWidth={isActive ? "0.8" : "0.4"}
                 className="transition-colors duration-150"
               />
@@ -50,7 +51,7 @@ export default function AustraliaMap({ locationId, onSelectLocation, selectedSub
             return (
               <g key={loc.id} className="cursor-pointer">
                 {active && (
-                  <circle cx={loc.mapX} cy={loc.mapY} r="5" fill="#0284c7" opacity="0.15">
+                  <circle cx={loc.mapX} cy={loc.mapY} r="5" fill="#e76f51" opacity="0.18">
                     <animate attributeName="r" values="5;8;5" dur="2s" repeatCount="indefinite" />
                     <animate attributeName="opacity" values="0.15;0.05;0.15" dur="2s" repeatCount="indefinite" />
                   </circle>
@@ -59,7 +60,7 @@ export default function AustraliaMap({ locationId, onSelectLocation, selectedSub
                   cx={loc.mapX}
                   cy={loc.mapY}
                   r={active ? 3 : 2.2}
-                  fill={active ? "#0284c7" : "#64748b"}
+                  fill={active ? "#e76f51" : "#c86146"}
                   stroke="white"
                   strokeWidth="1"
                   filter="url(#shadow)"
@@ -74,7 +75,7 @@ export default function AustraliaMap({ locationId, onSelectLocation, selectedSub
                   y={loc.mapY - 4}
                   fontSize="2.8"
                   fontWeight="600"
-                  fill={active ? "#0284c7" : "#475569"}
+                  fill={active ? "#9b422d" : "#6b5c51"}
                   textAnchor={loc.mapX > 50 ? "end" : "start"}
                 >
                   {loc.state}
@@ -85,14 +86,13 @@ export default function AustraliaMap({ locationId, onSelectLocation, selectedSub
         </svg>
       </div>
 
-      {/* Suburb drill-down */}
-      <div className="rounded-xl border border-slate-200 bg-white p-4">
+      <div className="rounded-2xl border border-[var(--marathon-line)] bg-[rgba(255,249,243,0.96)] p-4 shadow-[0_14px_28px_rgba(61,46,33,0.06)]">
         <div className="mb-3 flex items-center justify-between">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Selected City</p>
-            <p className="text-sm font-semibold text-slate-900">{currentLocation.name}</p>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#8a6f5c]">Selected City</p>
+            <p className="text-sm font-semibold text-[#241d18]">{currentLocation.name}</p>
           </div>
-          <span className="rounded-md bg-slate-100 px-2 py-1 text-[10px] font-semibold text-slate-500">
+          <span className="rounded-full border border-[rgba(233,196,106,0.45)] bg-[rgba(233,196,106,0.18)] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#8f6b16]">
             {currentLocation.confidence} confidence
           </span>
         </div>
@@ -102,10 +102,10 @@ export default function AustraliaMap({ locationId, onSelectLocation, selectedSub
               key={suburb}
               type="button"
               onClick={() => onSelectSuburb(suburb)}
-              className={`rounded-lg px-2.5 py-2 text-left text-xs font-medium transition ${
+              className={`rounded-xl px-2.5 py-2 text-left text-xs font-semibold transition ${
                 selectedSuburb === suburb
-                  ? "bg-sky-100 text-sky-800 ring-1 ring-sky-200"
-                  : "bg-slate-50 text-slate-600 hover:bg-slate-100"
+                  ? "bg-[rgba(231,111,81,0.16)] text-[#9b422d] ring-1 ring-[rgba(231,111,81,0.38)]"
+                  : "bg-[#f6ede4] text-[#69594e] hover:bg-[#efe2d5]"
               }`}
               aria-pressed={selectedSuburb === suburb}
             >
@@ -115,25 +115,24 @@ export default function AustraliaMap({ locationId, onSelectLocation, selectedSub
         </div>
       </div>
 
-      {/* Location cards */}
       <div className="grid gap-2 sm:grid-cols-2">
         {locations.map((loc) => (
           <button
             key={loc.id}
             type="button"
             onClick={() => onSelectLocation(loc.id)}
-            className={`group flex items-center justify-between rounded-lg border px-3 py-2.5 text-left text-sm transition ${
+            className={`group flex items-center justify-between rounded-xl border px-3 py-2.5 text-left text-sm transition ${
               locationId === loc.id
-                ? "border-sky-400 bg-sky-50 shadow-sm"
-                : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50"
+                ? "border-[rgba(231,111,81,0.4)] bg-[rgba(231,111,81,0.1)] shadow-[0_12px_24px_rgba(231,111,81,0.1)]"
+                : "border-[var(--marathon-line)] bg-[rgba(255,249,243,0.92)] hover:border-[#d4b59c] hover:bg-[#fff3e9]"
             }`}
             aria-pressed={locationId === loc.id}
           >
             <div>
-              <span className="font-semibold text-slate-900">{loc.name}</span>
-              <span className="ml-2 text-xs text-slate-400">{loc.state}</span>
+              <span className="font-semibold text-[#241d18]">{loc.name}</span>
+              <span className="ml-2 text-xs uppercase tracking-[0.18em] text-[#a0774e]">{loc.state}</span>
             </div>
-            <ChevronRight className="h-3.5 w-3.5 text-slate-400" aria-hidden="true" />
+            <ChevronRight className="h-3.5 w-3.5 text-[var(--marathon-accent)]" aria-hidden="true" />
           </button>
         ))}
       </div>
