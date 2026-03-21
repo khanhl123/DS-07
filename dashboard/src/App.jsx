@@ -153,6 +153,45 @@ export default function App() {
           />
         </Card>
       </section>
+      {/* Row 5: Methodology */}
+      <section id="methodology" aria-label="Methodology">
+        <Card title="Methodology" subtitle="How the suitability score is calculated" icon={ShieldCheck}>
+          <div className="max-w-3xl space-y-4">
+            <p className="text-sm leading-relaxed text-[var(--text-secondary)]">
+              The marathon suitability score is a weighted composite index calculated from four key weather attributes that directly affect runner safety and event quality.
+            </p>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="rounded-lg border border-[var(--border)] bg-[var(--bg)] p-4">
+                <p className="text-sm font-semibold text-[var(--text)]">🌡️ Temperature</p>
+                <p className="mt-1 text-xs text-[var(--text-secondary)]">Optimal range: 10–20°C. Scores decrease sharply above 25°C due to heat stress risk.</p>
+              </div>
+              <div className="rounded-lg border border-[var(--border)] bg-[var(--bg)] p-4">
+                <p className="text-sm font-semibold text-[var(--text)]">💧 Humidity</p>
+                <p className="mt-1 text-xs text-[var(--text-secondary)]">Penalised above 60%. High humidity impairs thermoregulation and increases physiological strain.</p>
+              </div>
+              <div className="rounded-lg border border-[var(--border)] bg-[var(--bg)] p-4">
+                <p className="text-sm font-semibold text-[var(--text)]">💨 Wind Speed</p>
+                <p className="mt-1 text-xs text-[var(--text-secondary)]">Moderate wind is acceptable, but speeds above 15 km/h reduce scores. Above 30 km/h is flagged as high risk.</p>
+              </div>
+              <div className="rounded-lg border border-[var(--border)] bg-[var(--bg)] p-4">
+                <p className="text-sm font-semibold text-[var(--text)]">☀️ UV Index</p>
+                <p className="mt-1 text-xs text-[var(--text-secondary)]">Scores above 6 are penalised. Extreme UV (8+) significantly reduces suitability for outdoor endurance events.</p>
+              </div>
+            </div>
+            <div className="rounded-lg border border-l-4 border-[var(--border)] border-l-[var(--accent-blue)] bg-blue-50 p-4">
+              <p className="text-sm font-semibold text-[var(--primary)]">Suitability Categories</p>
+              <p className="mt-1 text-xs leading-relaxed text-[var(--text-secondary)]">
+                Scores of 70+ are rated <strong className="text-green-700">Suitable</strong> (green), 
+                45–69 are <strong className="text-amber-700">Slightly Suitable</strong> (yellow), 
+                and below 45 are <strong className="text-red-700">Not Suitable</strong> (red). 
+                The final score is clamped between 0 and 100.
+              </p>
+            </div>
+          </div>
+        </Card>
+      </section>
+
     </DashboardLayout>
   );
 }
+

@@ -28,7 +28,7 @@ export default function HeroSection({
   ];
 
   return (
-    <section className="border-b border-[var(--border)] bg-white" id="dashboard">
+    <section className="border-b border-[var(--border)] bg-white">
       <div className="mx-auto max-w-7xl px-4 py-10 lg:px-6">
         <div className="grid items-start gap-10 lg:grid-cols-[1fr_1fr]">
           {/* Left: headline */}
@@ -189,3 +189,4 @@ export default function HeroSection({
     </section>
   );
 }
+
