@@ -1,6 +1,7 @@
 ﻿import HeaderBar from "./HeaderBar";
 import HeroSection from "./HeroSection";
 import HowItWorks from "./HowItWorks";
+import SideNav from "./SideNav";
 import Footer from "./Footer";
 
 export default function DashboardLayout({ filterProps, children }) {
@@ -10,8 +11,9 @@ export default function DashboardLayout({ filterProps, children }) {
       <HeaderBar />
       <HeroSection {...filterProps} />
       <HowItWorks />
+      <SideNav />
       <main id="main-content" role="main" aria-label="Dashboard content">
-        <div className="mx-auto max-w-7xl space-y-8 px-4 py-8 lg:px-6">
+        <div className="mx-auto max-w-7xl space-y-8 px-4 py-8 lg:px-6 lg:pr-24">
           {children}
         </div>
       </main>

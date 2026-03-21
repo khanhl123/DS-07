@@ -20,7 +20,7 @@
 @layer base {
   *, *::before, *::after { box-sizing: border-box; }
 
-  html { background: var(--bg); }
+  html { background: var(--bg); scroll-behavior: smooth; scroll-padding-top: 70px; }
 
   body {
     margin: 0;
@@ -54,3 +54,4 @@
   ::-webkit-scrollbar-thumb { background: #cbd5e0; border-radius: 3px; }
   ::-webkit-scrollbar-thumb:hover { background: #a0aec0; }
 }
+

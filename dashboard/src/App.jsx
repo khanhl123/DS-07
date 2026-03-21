@@ -191,7 +191,25 @@ export default function App() {
         </Card>
       </section>
 
+      {/* Row 6: Start Planning CTA */}
+      <section id="start-planning" aria-label="Start planning" className="scroll-mt-20">
+        <div className="rounded-xl border border-[var(--border)] bg-white p-10 text-center shadow-sm">
+          <h2 className="text-2xl font-bold text-[var(--primary)]">Ready to Plan Your Marathon?</h2>
+          <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-[var(--text-secondary)]">
+            You have all the tools you need. Pick a location, choose your dates,
+            review the weather data, and export your event summary.
+          </p>
+          <a
+            href="#map-explorer"
+            className="mt-6 inline-flex items-center gap-2 rounded-lg bg-[var(--accent)] px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[var(--accent-light)]"
+          >
+            Begin Planning
+          </a>
+        </div>
+      </section>
+
     </DashboardLayout>
   );
 }
+
 
