@@ -1,4 +1,4 @@
-﻿import { useState, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import DashboardLayout from "./components/layout/DashboardLayout";
 import AustraliaMap from "./components/map/AustraliaMap";
 import SuitabilityCalendar from "./components/calendar/SuitabilityCalendar";
@@ -21,6 +21,7 @@ export default function App() {
   const [selectedDay, setSelectedDay] = useState(5);
   const [selectedSuburb, setSelectedSuburb] = useState("Melbourne CBD");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [activeChartLabel, setActiveChartLabel] = useState(null);
 
   const location = locations.find((l) => l.id === locationId) || locations[0];
 
@@ -38,6 +39,10 @@ export default function App() {
     ? chartData.find((d) => d.day === selectedDay) || chartData[0]
     : chartData[0];
 
+  useEffect(() => {
+    setActiveChartLabel(null);
+  }, [locationId, granularity, selectedMonth, selectedYear]);
+
   const handleLocationChange = (id) => {
     setLocationId(id);
     const loc = locations.find((l) => l.id === id);
@@ -52,6 +57,13 @@ export default function App() {
     setEventType("Marathon");
     setSelectedDay(5);
     setSelectedSuburb("Melbourne CBD");
+    setActiveChartLabel(null);
+  };
+
+  const handleChartPointSelect = (point) => {
+    if (granularity === "daily" && typeof point?.day === "number") {
+      setSelectedDay(point.day);
+    }
   };
 
   const filterProps = {
@@ -67,9 +79,16 @@ export default function App() {
     onEventTypeChange: setEventType,
   };
 
+  const chartSharedProps = {
+    xKey,
+    granularity,
+    activeLabel: activeChartLabel,
+    onActiveLabelChange: setActiveChartLabel,
+    onPointSelect: handleChartPointSelect,
+  };
+
   return (
     <DashboardLayout filterProps={filterProps} sidebarOpen={sidebarOpen} onToggleSidebar={setSidebarOpen}>
-      {/* Row 1: Map + Calendar/Suitability */}
       <section className="grid gap-6 xl:grid-cols-2" aria-label="Location and suitability">
         <Card title="Location Explorer" subtitle="Select a city on the map or from the list below" icon={MapPin}>
           <AustraliaMap
@@ -77,6 +96,8 @@ export default function App() {
             onSelectLocation={handleLocationChange}
             selectedSuburb={selectedSuburb}
             onSelectSuburb={setSelectedSuburb}
+            selectedMonth={selectedMonth}
+            selectedYear={selectedYear}
           />
         </Card>
 
@@ -117,19 +138,17 @@ export default function App() {
         )}
       </section>
 
-      {/* Row 2: Weather Trend Charts */}
       <section aria-label="Weather trends">
         <Card title="Weather Trends" subtitle="Trend visualisations for key weather attributes" icon={BarChart3}>
           <div className="grid gap-4 md:grid-cols-2">
-            <TemperatureChart data={chartData} xKey={xKey} />
-            <HumidityChart data={chartData} xKey={xKey} />
-            <WindSpeedChart data={chartData} xKey={xKey} />
-            <UVIndexChart data={chartData} xKey={xKey} />
+            <TemperatureChart data={chartData} {...chartSharedProps} />
+            <HumidityChart data={chartData} {...chartSharedProps} />
+            <WindSpeedChart data={chartData} {...chartSharedProps} />
+            <UVIndexChart data={chartData} {...chartSharedProps} />
           </div>
         </Card>
       </section>
 
-      {/* Row 3: Recommendation + Comparison */}
       <section className="grid gap-6 xl:grid-cols-[1fr_1.5fr]" aria-label="Recommendations and comparison">
         <Card title="Recommendation" subtitle="Summary for the selected date and location" icon={ShieldCheck}>
           <RecommendationPanel

@@ -1,4 +1,5 @@
-import { locations } from "../../data/placeholderData";
+import { useMemo, useState } from "react";
+import { locations, suitabilityConfig } from "../../data/placeholderData";
 import { ChevronRight } from "lucide-react";
 
 const australiaStates = [
@@ -12,13 +13,50 @@ const australiaStates = [
   { id: "ACT", name: "Australian Capital Territory", path: "M78,63 L76,65 L78,67 L80,65 Z" },
 ];
 
-export default function AustraliaMap({ locationId, onSelectLocation, selectedSuburb, onSelectSuburb }) {
+function getLocationSuitability(location, selectedYear, selectedMonth) {
+  const prefix = `${selectedYear}-${String(selectedMonth).padStart(2, "0")}`;
+  const firstMatch = Object.entries(location.daily).find(([date]) => date.startsWith(prefix));
+  return firstMatch?.[1]?.suitability || "slightly_suitable";
+}
+
+export default function AustraliaMap({
+  locationId,
+  onSelectLocation,
+  selectedSuburb,
+  onSelectSuburb,
+  selectedMonth,
+  selectedYear,
+}) {
+  const [hoveredLocationId, setHoveredLocationId] = useState(null);
+  const [hoveredStateId, setHoveredStateId] = useState(null);
+
   const currentLocation = locations.find((l) => l.id === locationId) || locations[0];
+  const hoveredLocation = locations.find((l) => l.id === hoveredLocationId) || null;
+
+  const markerSuitability = useMemo(() => {
+    return Object.fromEntries(
+      locations.map((location) => [
+        location.id,
+        suitabilityConfig[getLocationSuitability(location, selectedYear, selectedMonth)] || suitabilityConfig.slightly_suitable,
+      ])
+    );
+  }, [selectedMonth, selectedYear]);
 
   return (
     <div className="space-y-4">
       <div className="relative overflow-hidden rounded-2xl border border-[var(--marathon-line)] bg-[linear-gradient(180deg,#fbf4ed_0%,#f1e4d6_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.55)]">
         <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[rgba(231,111,81,0.75)] to-transparent" />
+        {hoveredLocation && (
+          <div
+            className="pointer-events-none absolute z-10 min-w-[150px] -translate-x-1/2 -translate-y-full rounded-xl border border-[rgba(231,111,81,0.42)] bg-[rgba(255,249,243,0.98)] px-3 py-2 shadow-[0_16px_30px_rgba(56,43,31,0.12)]"
+            style={{ left: `${hoveredLocation.mapX}%`, top: `${hoveredLocation.mapY}%` }}
+            aria-hidden="true"
+          >
+            <div className="absolute inset-y-2 left-1 w-1 rounded-full bg-[var(--marathon-accent)]" />
+            <p className="pl-2 text-xs font-bold uppercase tracking-[0.14em] text-[#8f5438]">{hoveredLocation.name}</p>
+            <p className="pl-2 text-[11px] text-[#6f5b4d]">{hoveredLocation.state} | {hoveredLocation.confidence} confidence</p>
+          </div>
+        )}
         <svg
           viewBox="0 0 100 100"
           className="h-[280px] w-full"
@@ -31,54 +69,105 @@ export default function AustraliaMap({ locationId, onSelectLocation, selectedSub
             </filter>
           </defs>
 
+          {currentLocation && (
+            <line
+              x1={currentLocation.mapX}
+              y1={currentLocation.mapY}
+              x2="50"
+              y2="97"
+              stroke="#d88f73"
+              strokeWidth="0.6"
+              strokeDasharray="2 2"
+              opacity="0.7"
+            />
+          )}
+
           {australiaStates.map((state) => {
-            const hasLocation = locations.some((l) => l.state === state.id);
+            const hasLocation = locations.some((location) => location.state === state.id);
             const isActive = currentLocation.state === state.id;
+            const isHovered = hoveredStateId === state.id;
+            const stateTarget = locations.find((location) => location.state === state.id);
+
             return (
               <path
                 key={state.id}
                 d={state.path}
-                fill={isActive ? "#f4c5b4" : hasLocation ? "#efe4d7" : "#f7f0e8"}
-                stroke={isActive ? "#e76f51" : "#ad9888"}
-                strokeWidth={isActive ? "0.8" : "0.4"}
-                className="transition-colors duration-150"
+                fill={isActive ? "#f6c6ae" : isHovered ? "#f2d3be" : hasLocation ? "#efe4d7" : "#f7f0e8"}
+                stroke={isActive ? "#e76f51" : isHovered ? "#c98263" : "#ad9888"}
+                strokeWidth={isActive ? "0.9" : isHovered ? "0.65" : "0.4"}
+                className={hasLocation ? "cursor-pointer transition-colors duration-200" : "transition-colors duration-200"}
+                onMouseEnter={() => setHoveredStateId(state.id)}
+                onMouseLeave={() => setHoveredStateId((current) => (current === state.id ? null : current))}
+                onClick={() => stateTarget && onSelectLocation(stateTarget.id)}
+                tabIndex={hasLocation ? 0 : -1}
+                role={hasLocation ? "button" : undefined}
+                aria-label={hasLocation ? `Select ${state.name}` : state.name}
+                onKeyDown={(event) => {
+                  if (hasLocation && (event.key === "Enter" || event.key === " ")) {
+                    event.preventDefault();
+                    onSelectLocation(stateTarget.id);
+                  }
+                }}
               />
             );
           })}
 
-          {locations.map((loc) => {
-            const active = loc.id === locationId;
+          {locations.map((location) => {
+            const active = location.id === locationId;
+            const hovered = location.id === hoveredLocationId;
+            const suitability = markerSuitability[location.id] || suitabilityConfig.slightly_suitable;
+
             return (
-              <g key={loc.id} className="cursor-pointer">
+              <g
+                key={location.id}
+                className="cursor-pointer"
+                onMouseEnter={() => setHoveredLocationId(location.id)}
+                onMouseLeave={() => setHoveredLocationId((current) => (current === location.id ? null : current))}
+              >
                 {active && (
-                  <circle cx={loc.mapX} cy={loc.mapY} r="5" fill="#e76f51" opacity="0.18">
+                  <circle cx={location.mapX} cy={location.mapY} r="5" fill="#e76f51" opacity="0.18">
                     <animate attributeName="r" values="5;8;5" dur="2s" repeatCount="indefinite" />
                     <animate attributeName="opacity" values="0.15;0.05;0.15" dur="2s" repeatCount="indefinite" />
                   </circle>
                 )}
                 <circle
-                  cx={loc.mapX}
-                  cy={loc.mapY}
-                  r={active ? 3 : 2.2}
+                  cx={location.mapX}
+                  cy={location.mapY}
+                  r={hovered ? 3.1 : active ? 3 : 2.2}
                   fill={active ? "#e76f51" : "#c86146"}
                   stroke="white"
                   strokeWidth="1"
                   filter="url(#shadow)"
-                  onClick={() => onSelectLocation(loc.id)}
+                  className="transition-all duration-200"
+                  onClick={() => onSelectLocation(location.id)}
                   tabIndex={0}
                   role="button"
-                  aria-label={`Select ${loc.name}`}
-                  onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onSelectLocation(loc.id); }}}
+                  aria-label={`Select ${location.name}`}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      onSelectLocation(location.id);
+                    }
+                  }}
+                />
+                <circle
+                  cx={location.mapX + 2.4}
+                  cy={location.mapY - 2.8}
+                  r="1"
+                  fill={suitability.hex}
+                  stroke="#fff8ef"
+                  strokeWidth="0.45"
+                  aria-hidden="true"
                 />
                 <text
-                  x={loc.mapX + (loc.mapX > 50 ? -2 : 4)}
-                  y={loc.mapY - 4}
+                  x={location.mapX + (location.mapX > 50 ? -2 : 4)}
+                  y={location.mapY - 4}
                   fontSize="2.8"
                   fontWeight="600"
                   fill={active ? "#9b422d" : "#6b5c51"}
-                  textAnchor={loc.mapX > 50 ? "end" : "start"}
+                  textAnchor={location.mapX > 50 ? "end" : "start"}
                 >
-                  {loc.state}
+                  {location.state}
                 </text>
               </g>
             );
@@ -116,21 +205,21 @@ export default function AustraliaMap({ locationId, onSelectLocation, selectedSub
       </div>
 
       <div className="grid gap-2 sm:grid-cols-2">
-        {locations.map((loc) => (
+        {locations.map((location) => (
           <button
-            key={loc.id}
+            key={location.id}
             type="button"
-            onClick={() => onSelectLocation(loc.id)}
+            onClick={() => onSelectLocation(location.id)}
             className={`group flex items-center justify-between rounded-xl border px-3 py-2.5 text-left text-sm transition ${
-              locationId === loc.id
+              locationId === location.id
                 ? "border-[rgba(231,111,81,0.4)] bg-[rgba(231,111,81,0.1)] shadow-[0_12px_24px_rgba(231,111,81,0.1)]"
                 : "border-[var(--marathon-line)] bg-[rgba(255,249,243,0.92)] hover:border-[#d4b59c] hover:bg-[#fff3e9]"
             }`}
-            aria-pressed={locationId === loc.id}
+            aria-pressed={locationId === location.id}
           >
             <div>
-              <span className="font-semibold text-[#241d18]">{loc.name}</span>
-              <span className="ml-2 text-xs uppercase tracking-[0.18em] text-[#a0774e]">{loc.state}</span>
+              <span className="font-semibold text-[#241d18]">{location.name}</span>
+              <span className="ml-2 text-xs uppercase tracking-[0.18em] text-[#a0774e]">{location.state}</span>
             </div>
             <ChevronRight className="h-3.5 w-3.5 text-[var(--marathon-accent)]" aria-hidden="true" />
           </button>

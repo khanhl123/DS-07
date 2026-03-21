@@ -45,7 +45,13 @@ export default function FilterSidebar({
       </div>
 
       <div className="space-y-5 p-4">
-        <div className="border-t border-[rgba(255,248,239,0.08)] pt-4 first:border-t-0 first:pt-0">
+        <div className="rounded-2xl border border-[rgba(255,255,255,0.08)] bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))] px-4 py-3 shadow-[0_14px_28px_rgba(0,0,0,0.14)]">
+          <p className="text-[11px] font-bold uppercase tracking-[0.28em] text-[var(--marathon-accent-soft)]">Event Controls</p>
+          <div className="mt-2 h-px bg-gradient-to-r from-[rgba(231,111,81,0.9)] via-[rgba(233,196,106,0.75)] to-transparent" />
+          <p className="mt-2 text-xs leading-5 text-[rgba(247,237,227,0.68)]">Tune race-day location, timing, and event parameters.</p>
+        </div>
+
+        <div className="border-t border-transparent bg-[linear-gradient(90deg,rgba(231,111,81,0.34),rgba(233,196,106,0.04),transparent)] bg-[length:100%_1px] bg-no-repeat pt-4 first:border-t-0 first:pt-0">
           <label className="mb-2 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--marathon-gold)]">
             <MapPin className="h-3.5 w-3.5 text-[var(--marathon-accent)]" /> Location
           </label>
@@ -65,13 +71,21 @@ export default function FilterSidebar({
                 key={loc.id}
                 type="button"
                 onClick={() => onLocationChange(loc.id)}
-                className={`flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm transition ${
+                className={`group relative flex w-full items-center gap-2 overflow-hidden rounded-xl px-3 py-2.5 text-left text-sm transition ${
                   locationId === loc.id
                     ? "bg-[linear-gradient(135deg,rgba(231,111,81,0.28),rgba(233,196,106,0.2))] font-semibold text-[#fffaf5] ring-1 ring-[rgba(244,132,95,0.65)] shadow-[0_12px_24px_rgba(231,111,81,0.18)]"
                     : "bg-[rgba(255,255,255,0.04)] text-[#f4e7da] hover:bg-[rgba(255,255,255,0.08)]"
                 }`}
                 aria-pressed={locationId === loc.id}
               >
+                <span
+                  className={`absolute inset-y-2 left-1 w-1 rounded-full transition-all duration-200 ${
+                    locationId === loc.id
+                      ? "bg-[var(--marathon-accent)] opacity-100"
+                      : "bg-[var(--marathon-accent-soft)] opacity-0 group-hover:opacity-100"
+                  }`}
+                  aria-hidden="true"
+                />
                 <span className={`h-2.5 w-2.5 rounded-full ${locationId === loc.id ? "bg-[var(--marathon-accent)]" : "bg-[rgba(233,196,106,0.55)]"}`} />
                 <span className="truncate">{loc.name}</span>
                 <span className="ml-auto text-[10px] uppercase tracking-[0.18em] text-[rgba(233,196,106,0.86)]">{loc.state}</span>
@@ -80,7 +94,7 @@ export default function FilterSidebar({
           </div>
         </div>
 
-        <div className="border-t border-[rgba(255,248,239,0.08)] pt-4">
+        <div className="border-t border-transparent bg-[linear-gradient(90deg,rgba(231,111,81,0.34),rgba(233,196,106,0.04),transparent)] bg-[length:100%_1px] bg-no-repeat pt-4">
           <label className="mb-2 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--marathon-gold)]">
             <Timer className="h-3.5 w-3.5 text-[var(--marathon-accent)]" /> Time Scale
           </label>
@@ -92,7 +106,7 @@ export default function FilterSidebar({
                 onClick={() => onGranularityChange(g.key)}
                 className={`rounded-xl px-2 py-2 text-xs font-medium uppercase tracking-[0.14em] transition ${
                   granularity === g.key
-                    ? "bg-[#fff8ef] text-[var(--marathon-ink)] shadow-[0_10px_18px_rgba(13,27,42,0.18)]"
+                    ? "bg-[linear-gradient(135deg,var(--marathon-accent)_0%,var(--marathon-accent-soft)_100%)] text-[#fffaf4] shadow-[0_10px_18px_rgba(231,111,81,0.24)]"
                     : "text-[rgba(247,237,227,0.7)] hover:text-[#fffaf5]"
                 }`}
                 aria-pressed={granularity === g.key}
@@ -103,7 +117,7 @@ export default function FilterSidebar({
           </div>
         </div>
 
-        <div className="border-t border-[rgba(255,248,239,0.08)] pt-4">
+        <div className="border-t border-transparent bg-[linear-gradient(90deg,rgba(231,111,81,0.34),rgba(233,196,106,0.04),transparent)] bg-[length:100%_1px] bg-no-repeat pt-4">
           <label className="mb-2 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--marathon-gold)]">
             <Calendar className="h-3.5 w-3.5 text-[var(--marathon-accent)]" /> Year
           </label>
@@ -127,7 +141,7 @@ export default function FilterSidebar({
         </div>
 
         {(granularity === "daily" || granularity === "monthly") && (
-          <div className="border-t border-[rgba(255,248,239,0.08)] pt-4">
+          <div className="border-t border-transparent bg-[linear-gradient(90deg,rgba(231,111,81,0.34),rgba(233,196,106,0.04),transparent)] bg-[length:100%_1px] bg-no-repeat pt-4">
             <label className="mb-2 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--marathon-gold)]">
               <Calendar className="h-3.5 w-3.5 text-[var(--marathon-accent)]" /> Month
             </label>
@@ -151,7 +165,7 @@ export default function FilterSidebar({
           </div>
         )}
 
-        <div className="border-t border-[rgba(255,248,239,0.08)] pt-4">
+        <div className="border-t border-transparent bg-[linear-gradient(90deg,rgba(231,111,81,0.34),rgba(233,196,106,0.04),transparent)] bg-[length:100%_1px] bg-no-repeat pt-4">
           <label className="mb-2 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--marathon-gold)]">
             Event Type
           </label>

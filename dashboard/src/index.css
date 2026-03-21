@@ -44,7 +44,7 @@
   h3,
   h4 {
     font-weight: 800;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.03em;
   }
 
   ::selection {
@@ -99,5 +99,55 @@
 
   ::-webkit-scrollbar-thumb:hover {
     background: linear-gradient(180deg, var(--marathon-accent), #d8ab4d);
+  }
+}
+
+@layer components {
+  .marathon-surface-texture {
+    background-image:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0)),
+      radial-gradient(circle at top left, rgba(231, 111, 81, 0.08), transparent 24%),
+      radial-gradient(circle at 92% 4%, rgba(42, 157, 143, 0.08), transparent 18%),
+      repeating-linear-gradient(
+        125deg,
+        rgba(13, 27, 42, 0.04) 0,
+        rgba(13, 27, 42, 0.04) 2px,
+        transparent 2px,
+        transparent 18px
+      ),
+      linear-gradient(180deg, #fbf6f0 0%, #f3e8dc 100%);
+  }
+
+  .marathon-fade-up {
+    animation: marathon-fade-up 320ms ease-out;
+  }
+
+  .marathon-racing-stripe {
+    animation: marathon-stripe-pulse 3.6s ease-in-out infinite;
+  }
+}
+
+@keyframes marathon-stripe-pulse {
+  0%,
+  100% {
+    opacity: 0.78;
+    transform: scaleX(0.98);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
+
+@keyframes marathon-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
