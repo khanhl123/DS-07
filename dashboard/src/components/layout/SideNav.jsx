@@ -1,19 +1,20 @@
 ﻿import { useEffect, useState } from "react";
-import { LayoutDashboard, Map, CalendarDays, GitCompareArrows, Rocket } from "lucide-react";
+import { LayoutDashboard, Map, CalendarDays, Rocket, GitCompareArrows, Lock } from "lucide-react";
 
 const sections = [
-  { id: "dashboard",      label: "Dashboard",      icon: LayoutDashboard },
-  { id: "map-explorer",   label: "Map Explorer",   icon: Map },
-  { id: "date-analysis",  label: "Date Analysis",  icon: CalendarDays },
-  { id: "comparison",     label: "Comparison",      icon: GitCompareArrows },
-  { id: "start-planning", label: "Start Planning",  icon: Rocket },
+  { id: "dashboard",      label: "Dashboard",      icon: LayoutDashboard, locked: false },
+  { id: "map-explorer",   label: "Map Explorer",   icon: Map,             locked: false },
+  { id: "date-analysis",  label: "Date Analysis",  icon: CalendarDays,    locked: false },
+  { id: "start-planning", label: "Start Planning",  icon: Rocket,         locked: false },
+  { id: "comparison",     label: "Comparison",      icon: GitCompareArrows, locked: true },
 ];
 
-export default function SideNav() {
+export default function SideNav({ planGenerated = false }) {
   const [activeId, setActiveId] = useState("dashboard");
 
   useEffect(() => {
-    const els = sections.map((s) => document.getElementById(s.id)).filter(Boolean);
+    const ids = planGenerated ? sections.map((s) => s.id) : sections.filter((s) => !s.locked).map((s) => s.id);
+    const els = ids.map((id) => document.getElementById(id)).filter(Boolean);
     if (!els.length) return;
 
     const observer = new IntersectionObserver(
@@ -28,9 +29,10 @@ export default function SideNav() {
 
     els.forEach((el) => observer.observe(el));
     return () => observer.disconnect();
-  }, []);
+  }, [planGenerated]);
 
-  const handleClick = (id) => {
+  const handleClick = (id, isLocked) => {
+    if (isLocked && !planGenerated) return;
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: "smooth" });
   };
@@ -41,12 +43,24 @@ export default function SideNav() {
         {sections.map((s) => {
           const Icon = s.icon;
           const isActive = activeId === s.id;
+          const disabled = s.locked && !planGenerated;
           return (
-            <button key={s.id} type="button" onClick={() => handleClick(s.id)}
-              className={`relative flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-xs transition-colors ${isActive ? "font-bold text-[var(--primary)]" : "font-medium text-[var(--text-muted)] hover:text-[var(--text-secondary)]"}`}
+            <button key={s.id} type="button" onClick={() => handleClick(s.id, s.locked)}
+              disabled={disabled}
+              className={`relative flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-xs transition-colors ${
+                disabled
+                  ? "cursor-not-allowed text-[var(--text-muted)] opacity-50"
+                  : isActive
+                    ? "font-bold text-[var(--primary)]"
+                    : "font-medium text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
+              }`}
               aria-current={isActive ? "true" : undefined}>
-              {isActive && <span className="absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-r-full bg-[var(--accent-blue)]" aria-hidden="true" />}
-              <Icon className={`h-3.5 w-3.5 shrink-0 ${isActive ? "text-[var(--accent-blue)]" : ""}`} aria-hidden="true" />
+              {isActive && !disabled && <span className="absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-r-full bg-[var(--accent-blue)]" aria-hidden="true" />}
+              {disabled ? (
+                <Lock className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+              ) : (
+                <Icon className={`h-3.5 w-3.5 shrink-0 ${isActive ? "text-[var(--accent-blue)]" : ""}`} aria-hidden="true" />
+              )}
               <span>{s.label}</span>
             </button>
           );
