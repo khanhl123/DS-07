@@ -2,6 +2,7 @@
 
 ## Purpose
 
+* Split this one into 1 file for Raw-Data Branch and 1 for main 
 This file is an internal Codex working note.
 
 Use `PROJECT_SCOPE.md` as the team-facing source of truth for scope, deliverables, and change control.
