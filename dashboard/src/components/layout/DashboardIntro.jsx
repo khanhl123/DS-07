@@ -50,7 +50,6 @@ export default function DashboardIntro() {
           <p className="mt-1 text-center text-sm text-[var(--text-secondary)]">5 simple steps to plan your event</p>
 
           <div className="relative mt-8">
-            <div className="pointer-events-none absolute left-0 right-0 top-10 hidden h-px border-t-2 border-dashed border-[var(--border)] lg:block" aria-hidden="true" />
             <div className="grid auto-rows-fr gap-5 sm:grid-cols-2 lg:grid-cols-5">
               {steps.map((step, i) => {
                 const Icon = step.icon;
