@@ -1,4 +1,4 @@
-﻿import { MapPin, CalendarDays, BarChart3, GitCompareArrows, ShieldCheck, ArrowRight, Thermometer, Droplets, Wind, Sun } from "lucide-react";
+import { MapPin, CalendarDays, BarChart3, GitCompareArrows, ShieldCheck, ArrowRight, Thermometer, Droplets, Wind, Sun } from "lucide-react";
 
 const steps = [
   { emoji: "\ud83d\udccd", icon: MapPin,          label: "Pick a Location",    desc: "Explore the interactive map and choose your marathon city." },
@@ -51,16 +51,16 @@ export default function DashboardIntro() {
 
           <div className="relative mt-8">
             <div className="pointer-events-none absolute left-0 right-0 top-10 hidden h-px border-t-2 border-dashed border-[var(--border)] lg:block" aria-hidden="true" />
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
+            <div className="grid auto-rows-fr gap-5 sm:grid-cols-2 lg:grid-cols-5">
               {steps.map((step, i) => {
                 const Icon = step.icon;
                 return (
-                  <div key={i} className="relative flex flex-col items-center text-center">
-                    <div className="relative z-10 flex h-7 w-7 items-center justify-center rounded-full bg-[var(--primary)] text-[10px] font-bold text-white shadow">{i + 1}</div>
-                    <div className="mt-3 w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] p-4 shadow-sm transition hover:shadow-md">
-                      <div className="text-2xl">{step.emoji}</div>
-                      <div className="mt-1.5 flex items-center justify-center gap-1.5">
-                        <Icon className="h-3.5 w-3.5 text-[var(--accent-blue)]" aria-hidden="true" />
+                  <div key={i} className="relative flex h-full min-h-0 flex-col items-center text-center">
+                    <div className="relative z-10 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[var(--primary)] text-[10px] font-bold text-white shadow">{i + 1}</div>
+                    <div className="mt-3 flex h-full min-h-[7.5rem] w-full flex-1 flex-col rounded-xl border border-[var(--border)] bg-[var(--bg)] p-3 shadow-sm transition hover:shadow-md">
+                      <div className="text-xl">{step.emoji}</div>
+                      <div className="mt-1 flex items-center justify-center gap-1.5">
+                        <Icon className="h-3.5 w-3.5 shrink-0 text-[var(--accent-blue)]" aria-hidden="true" />
                         <h3 className="text-xs font-bold text-[var(--text)]">{step.label}</h3>
                       </div>
                       <p className="mt-1.5 text-[11px] leading-relaxed text-[var(--text-secondary)]">{step.desc}</p>
