@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:dist-xi-drab-61.vercel.app)",
+      "Bash(awk -F, 'NR>1 {print $3}' \"C:/Data Science Project/finalyearproject/DS-07/cleaned/metadata/stations_master.csv\")",
+      "Bash(awk -F, 'NR>1 {print $2}' \"C:/Data Science Project/finalyearproject/DS-07/cleaned/metadata/station_aliases.csv\")",
+      "Bash(awk -F, 'NR>1 && $7 ~ /^[0-9]+$/ {print $7}' \"C:/Data Science Project/finalyearproject/DS-07/cleaned/metadata/stations_master.csv\")",
+      "Bash(awk 'NR==1{min=$1} {max=$1} END{print \"min=\"min, \"max=\"max}')",
+      "Bash(npm install:*)",
+      "Bash(python -c ':*)",
+      "Bash(curl -sL \"https://raw.githubusercontent.com/rowanhogan/australian-states/master/states.min.geojson\" -o \"C:/Data Science Project/finalyearproject/DS-07/dashboard/src/data/au-states.json\")",
+      "Bash(npm run:*)",
+      "Bash(npx eslint:*)"
+    ]
+  }
+}
