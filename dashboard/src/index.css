@@ -1,40 +1,70 @@
-﻿@import "tailwindcss";
+@import "tailwindcss";
 
 :root {
-  --primary: #1e3a5f;
-  --primary-light: #2c5282;
-  --accent: #2b8a3e;
-  --accent-light: #38a169;
-  --accent-blue: #3182ce;
-  --accent-orange: #e8590c;
-  --warning: #d69e2e;
-  --bg: #f7fafc;
-  --surface: #ffffff;
-  --surface-alt: #edf2f7;
-  --border: #e2e8f0;
-  --text: #1a202c;
-  --text-secondary: #718096;
-  --text-muted: #a0aec0;
+  /* Eucalyptus palette (light mode only) */
+  --primary: #0F6E56;
+  --primary-light: #1D9E75;
+  --primary-lightest: #E1F5EE;
+  --primary-border: #9FE1CB;
+
+  /* Text */
+  --text-primary: #2C3E2E;
+  --text-secondary: #7A8A7C;
+  --text-muted: #A0AC9F;
+
+  /* Surfaces */
+  --surface: #F0F0E8;
+  --page-bg: #FAFAF6;
+  --card-bg: #FFFFFF;
+
+  /* Borders */
+  --border: #D8D5CB;
+  --border-light: #E8E6DC;
+
+  /* Fixed data colours — do not change */
+  --color-max-temp: #E24B4A;
+  --color-min-temp: #3B8BD4;
+  --color-rainfall: #1D9E75;
+  --color-uv: #EF9F27;
+  --color-suitable: #59C459;
+  --color-moderate: #EFA827;
+  --color-unsuitable: #E24B4A;
+
+  /* Radius tokens — square-ish */
+  --radius: 4px;
+  --radius-sm: 3px;
+
+  /* Legacy aliases so older components keep compiling during the redesign */
+  --text: var(--text-primary);
+  --bg: var(--page-bg);
+  --surface-alt: var(--surface);
+  --accent: var(--primary);
+  --accent-light: var(--primary-light);
+  --accent-blue: var(--primary);
 }
 
 @layer base {
   *, *::before, *::after { box-sizing: border-box; }
 
-  html { background: var(--bg); scroll-behavior: smooth; scroll-padding-top: 70px; }
+  html {
+    background: var(--page-bg);
+    scroll-behavior: smooth;
+    scroll-padding-top: 90px;
+  }
 
   body {
     margin: 0;
     min-height: 100vh;
-    color: var(--text);
+    color: var(--text-primary);
     font-family: Inter, "Segoe UI", system-ui, -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background: var(--bg);
+    background: var(--page-bg);
   }
 
   h1, h2, h3, h4 { font-weight: 700; letter-spacing: -0.01em; }
 
-  ::selection { background: rgba(49,130,206,0.18); color: var(--text); }
+  ::selection { background: rgba(15, 110, 86, 0.18); color: var(--text-primary); }
 
   .skip-to-content {
     position: absolute; left: -9999px; top: auto;
@@ -43,15 +73,123 @@
   .skip-to-content:focus {
     position: fixed; top: 12px; left: 12px; width: auto; height: auto;
     padding: 12px 24px; background: var(--primary); color: #fff;
-    font-size: 14px; font-weight: 600; border-radius: 8px; z-index: 100;
+    font-size: 14px; font-weight: 600; border-radius: var(--radius); z-index: 100;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   }
 
-  :focus-visible { outline: 2px solid var(--accent-blue); outline-offset: 2px; }
+  :focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
 
   ::-webkit-scrollbar { width: 6px; height: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: #cbd5e0; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb { background: #cbd5c3; border-radius: 3px; }
   ::-webkit-scrollbar-thumb:hover { background: #a0aec0; }
 }
 
+/* Connector between the three main sections */
+.connector {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
+}
+.connector-line {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.connector-text {
+  font-size: 10px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* Section card — used by the three major step sections */
+.section-card {
+  background: var(--card-bg);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+}
+
+/* KPI / chart card — sits inside a section-card */
+.subcard {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+
+/* Step badge variants */
+.step-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.step-badge--where     { background: var(--primary-lightest); color: #085041; }
+.step-badge--when      { background: #FAEEDA; color: #633806; }
+.step-badge--suit      { background: #EAF3DE; color: #27500A; }
+
+/* Leaflet override — keep the attribution readable on our page bg */
+.leaflet-container {
+  font-family: inherit;
+  background: var(--surface);
+}
+.leaflet-control-attribution { font-size: 10px; }
+
+/* Smooth colour transitions for map markers during the month animation */
+.leaflet-interactive { transition: fill 0.4s ease, stroke 0.4s ease; }
+@media (prefers-reduced-motion: reduce) {
+  .leaflet-interactive { transition: none; }
+}
+
+/* Nav pills in the header */
+.nav-pill {
+  padding: 6px 14px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.nav-pill:hover { background: rgba(255, 255, 255, 0.10); color: #fff; }
+.nav-pill[aria-current="location"] {
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+}
+
+/* Range slider baseline appearance */
+input[type="range"].themed {
+  -webkit-appearance: none; appearance: none;
+  width: 100%; height: 4px;
+  background: var(--border); border-radius: var(--radius-sm);
+  outline: none;
+}
+input[type="range"].themed::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--primary); cursor: pointer;
+  border: 2px solid #fff; box-shadow: 0 0 0 1px var(--primary-border);
+}
+input[type="range"].themed::-moz-range-thumb {
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--primary); cursor: pointer;
+  border: 2px solid #fff; box-shadow: 0 0 0 1px var(--primary-border);
+}
+
+/* Sticky tray base */
+.sticky-tray {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: #fff;
+  border-top: 1px solid var(--border);
+  border-top-left-radius: var(--radius);
+  border-top-right-radius: var(--radius);
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.06);
+  z-index: 40;
+}

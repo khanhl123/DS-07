@@ -1,17 +1,20 @@
-﻿export default function Footer() {
+export default function Footer() {
   return (
-    <footer className="border-t border-[var(--border)] bg-[var(--surface-alt)]">
-      <div className="mx-auto flex max-w-7xl flex-col items-center gap-4 px-4 py-8 text-center sm:flex-row sm:justify-between sm:text-left lg:px-6">
-        <div>
-          <p className="text-sm font-semibold text-[var(--primary)]">Marathon Weather Planning Dashboard</p>
-          <p className="mt-1 text-xs text-[var(--text-muted)]">Built for marathon organisers. Evidence-based event planning.</p>
-        </div>
-        <nav className="flex gap-4 text-xs text-[var(--text-secondary)]" aria-label="Footer links">
-          <a href="#methodology" className="hover:text-[var(--text)]">Methodology</a>
-          <a href="#" className="hover:text-[var(--text)]">About</a>
-          <a href="#" className="hover:text-[var(--text)]">Contact</a>
-          <a href="https://github.com/KJLaw2801/DS-07" className="hover:text-[var(--text)]" target="_blank" rel="noopener noreferrer">GitHub</a>
-        </nav>
+    <footer
+      className="border-t"
+      style={{
+        borderColor: "var(--border)",
+        background: "var(--surface)",
+      }}
+    >
+      <div className="mx-auto flex max-w-7xl flex-col gap-1 px-4 py-6 text-center sm:text-left lg:px-6">
+        <p className="text-xs font-semibold" style={{ color: "var(--text-primary)" }}>
+          Marathon Weather Planner — FIT3163/FIT3161 — Monash University
+        </p>
+        <p className="text-[11px]" style={{ color: "var(--text-secondary)" }}>
+          Data: Bureau of Meteorology historical observations (VIC, NSW, TAS, NT) —
+          This is not a weather forecast service.
+        </p>
       </div>
     </footer>
   );
