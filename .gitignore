@@ -1,5 +1,5 @@
-cleaned/full/
-cleaned/observed/
-cleaned/strict/
-scripts/__pycache__/
+data/full/
+data/observed/
+data/strict/
+pipeline/__pycache__/
 .vercel/
