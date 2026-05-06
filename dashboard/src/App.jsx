@@ -61,7 +61,6 @@ export default function App() {
   ]);
   const [isAnimating, setIsAnimating] = useState(false);
   const [reverseSearchMonth, setReverseSearchMonth] = useState(null);
-  const [thresholdsOpen, setThresholdsOpen] = useState(false);
   const [granularity, setGranularity] = useState("daily");
   const [selectedYear, setSelectedYear] = useState(2024);
   const [exportStatus, setExportStatus] = useState("idle");
@@ -286,17 +285,13 @@ export default function App() {
             selectedMonthIndex={selectedMonthIndex}
             reverseSearchMonth={reverseSearchMonth}
             onReverseSearchChange={handleReverseSearch}
-            thresholdsOpen={thresholdsOpen}
-            onToggleThresholds={() => setThresholdsOpen((v) => !v)}
           />
-          {thresholdsOpen && (
-            <ThresholdPanel
-              thresholds={thresholds}
-              onChange={setThresholds}
-              selectedStation={selectedStation}
-              selectedMonthIndex={selectedMonthIndex}
-            />
-          )}
+          <ThresholdPanel
+            thresholds={thresholds}
+            onChange={setThresholds}
+            selectedStation={selectedStation}
+            selectedMonthIndex={selectedMonthIndex}
+          />
           <ReverseSearchResults
             monthIndex={reverseSearchMonth}
             thresholds={thresholds}

@@ -10,10 +10,10 @@
 import { STATIONS } from "./stations.js";
 
 export const DEFAULT_THRESHOLDS = {
-  maxTemp: 28, // °C — day is unsuitable above this
+  maxTemp: 26, // °C — day is unsuitable above this
   minTemp: 8,  // °C — day is unsuitable below this
-  rainfall: 5, // mm
-  uv: 8,       // UV index
+  rainfall: 4, // mm
+  uv: 6,       // UV index
 };
 
 export const MONTHS = [

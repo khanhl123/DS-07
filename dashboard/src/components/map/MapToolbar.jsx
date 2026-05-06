@@ -1,4 +1,4 @@
-import { Play, Pause, Sliders, Target } from "lucide-react";
+import { Play, Pause, Target } from "lucide-react";
 import { MONTHS, MONTH_NAMES_LONG } from "../../data/placeholderData";
 
 export default function MapToolbar({
@@ -7,8 +7,6 @@ export default function MapToolbar({
   selectedMonthIndex,
   reverseSearchMonth,
   onReverseSearchChange,
-  thresholdsOpen,
-  onToggleThresholds,
 }) {
   return (
     <div
@@ -73,23 +71,6 @@ export default function MapToolbar({
             ))}
           </select>
         </label>
-
-        <button
-          type="button"
-          onClick={onToggleThresholds}
-          className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-semibold"
-          style={{
-            background: thresholdsOpen ? "var(--primary-lightest)" : "#fff",
-            color: "var(--primary)",
-            border: "1px solid var(--primary-border)",
-            borderRadius: "var(--radius)",
-            cursor: "pointer",
-          }}
-          aria-expanded={thresholdsOpen}
-        >
-          <Sliders className="h-3.5 w-3.5" aria-hidden="true" />
-          Adjust thresholds
-        </button>
       </div>
     </div>
   );
