@@ -8,6 +8,7 @@ import {
   MapPin,
 } from "lucide-react";
 import DashboardLayout from "./components/layout/DashboardLayout";
+import HeroSection from "./components/layout/HeroSection";
 import LeafletMap from "./components/map/LeafletMap";
 import MapToolbar from "./components/map/MapToolbar";
 import ThresholdPanel from "./components/map/ThresholdPanel";
@@ -63,6 +64,8 @@ export default function App() {
   const [thresholdsOpen, setThresholdsOpen] = useState(false);
   const [granularity, setGranularity] = useState("daily");
   const [selectedYear, setSelectedYear] = useState(2024);
+  const [exportStatus, setExportStatus] = useState("idle");
+  const [hasUserSelected, setHasUserSelected] = useState(false);
 
   const selectedStation = useMemo(
     () => stationsByNumber[selectedStationNumber] ?? stations[0],
@@ -145,6 +148,7 @@ export default function App() {
 
   const handleSelectStation = (n) => {
     setSelectedStationNumber(n);
+    setHasUserSelected(true);
     setComparedStations((prev) => {
       if (prev.includes(n)) return prev;
       const next = [n, ...prev].slice(0, 5);
@@ -171,44 +175,83 @@ export default function App() {
     }
   };
 
-  const exportSummary = () => {
-    const lines = [
-      "Marathon Weather Planner — Historical Summary",
-      "=============================================",
-      `Station: ${selectedStation.name} (#${selectedStation.n}, ${selectedStation.state})`,
-      `Month: ${MONTH_NAMES_LONG[selectedMonthIndex]}`,
-      `Adjusted suitability score: ${adjustedScore}/100 — ${scoreLabel}`,
-      "",
-      "Thresholds applied:",
-      `  Max temp ≤ ${thresholds.maxTemp}°C`,
-      `  Min temp ≥ ${thresholds.minTemp}°C`,
-      `  Rainfall ≤ ${thresholds.rainfall}mm`,
-      `  UV index ≤ ${thresholds.uv}`,
-      "",
-      `Avg max temp: ${summary.maxTemp}°C (range ${summary.maxTempMin}–${summary.maxTempMax})`,
-      `Avg min temp: ${summary.minTemp}°C (range ${summary.minTempMin}–${summary.minTempMax})`,
-      `Avg rainfall: ${summary.rainfall}mm — ${summary.dryDaysPct}% dry days`,
-      `Avg UV index: ${summary.uvIndex} — ${summary.uvHighPct}% high+ days`,
-      "",
-      "Historical analysis only — not a weather forecast.",
-    ];
-    const blob = new Blob([lines.join("\n")], {
-      type: "text/plain;charset=utf-8",
-    });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `marathon-historical-${selectedStation.n}-${MONTHS[selectedMonthIndex]}-${selectedYear}.txt`;
-    a.click();
-    URL.revokeObjectURL(url);
+  const exportSummary = async () => {
+    setExportStatus("exporting");
+    await new Promise((resolve) => window.setTimeout(resolve, 250));
+
+    try {
+      const lines = [
+        "Marathon Weather Planner — Historical Summary",
+        "=============================================",
+        `Station: ${selectedStation.name} (#${selectedStation.n}, ${selectedStation.state})`,
+        `Month: ${MONTH_NAMES_LONG[selectedMonthIndex]}`,
+        `Year: ${selectedYear}`,
+        `Adjusted suitability score: ${adjustedScore}/100 — ${scoreLabel}`,
+        "",
+        "Thresholds applied:",
+        `  Max temp <= ${thresholds.maxTemp}°C`,
+        `  Min temp >= ${thresholds.minTemp}°C`,
+        `  Rainfall <= ${thresholds.rainfall}mm`,
+        `  UV index <= ${thresholds.uv}`,
+        "",
+        `Avg max temp: ${summary.maxTemp}°C (range ${summary.maxTempMin}–${summary.maxTempMax})`,
+        `Avg min temp: ${summary.minTemp}°C (range ${summary.minTempMin}–${summary.minTempMax})`,
+        `Avg rainfall: ${summary.rainfall}mm — ${summary.dryDaysPct}% dry days`,
+        `Avg UV index: ${summary.uvIndex} — ${summary.uvHighPct}% high+ days`,
+        "",
+        "Historical analysis only — not a weather forecast.",
+      ];
+      const blob = new Blob([lines.join("\n")], {
+        type: "text/plain;charset=utf-8",
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `marathon-historical-${selectedStation.n}-${MONTHS[selectedMonthIndex]}-${selectedYear}.txt`;
+      a.style.display = "none";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      setExportStatus("success");
+    } catch {
+      setExportStatus("error");
+    } finally {
+      window.setTimeout(() => setExportStatus("idle"), 2800);
+    }
   };
 
   const connectorText = isMonthly
     ? `Historical monthly averages for ${selectedStation.name} — ${selectedYear}`
     : `Historical data for ${selectedStation.name} in ${MONTH_NAMES_LONG[selectedMonthIndex]}`;
+  const timeframeLabel = isMonthly
+    ? `${selectedYear} monthly view`
+    : `${MONTH_NAMES_LONG[selectedMonthIndex]} ${selectedYear}`;
+
+  const scrollToSection = (id) => {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   return (
-    <DashboardLayout>
+    <DashboardLayout
+      summary={{
+        hasSelection: hasUserSelected,
+        stationName: selectedStation.name,
+        stationNumber: selectedStation.n,
+        stationState: selectedStation.state,
+        timeframe: timeframeLabel,
+        score: adjustedScore,
+        scoreLabel,
+        scoreColor,
+      }}
+      hero={
+        <HeroSection
+          onStart={() => scrollToSection("where")}
+          onJumpTo={scrollToSection}
+        />
+      }
+    >
       {/* ====== SECTION 1 — WHERE ====== */}
       <section id="where" className="section-card" aria-labelledby="where-title">
         <header className="mb-4">
@@ -329,37 +372,53 @@ export default function App() {
             { k: "quarterly", label: "Quarterly", enabled: false },
             { k: "annually", label: "Annually", enabled: false },
           ].map((g) => (
-            <button
-              key={g.k}
-              type="button"
-              onClick={() => g.enabled && setGranularity(g.k)}
-              disabled={!g.enabled}
-              title={
-                g.enabled
-                  ? undefined
-                  : "Coming soon — needs cleaned multi-year data"
-              }
-              className="px-2.5 py-1 text-xs font-semibold"
-              style={{
-                background: granularity === g.k ? "var(--primary-lightest)" : "#fff",
-                color: !g.enabled
-                  ? "var(--text-muted)"
-                  : granularity === g.k
-                  ? "var(--primary)"
-                  : "var(--text-secondary)",
-                border:
-                  granularity === g.k
-                    ? "1px solid var(--primary-border)"
-                    : "1px solid var(--border)",
-                borderRadius: "var(--radius)",
-                cursor: g.enabled ? "pointer" : "not-allowed",
-                opacity: g.enabled ? 1 : 0.6,
-              }}
-              aria-pressed={granularity === g.k}
-              aria-disabled={!g.enabled}
-            >
-              {g.label}
-            </button>
+            <span key={g.k} className="relative inline-flex group">
+              <button
+                type="button"
+                onClick={() => g.enabled && setGranularity(g.k)}
+                disabled={!g.enabled}
+                className="px-2.5 py-1 text-xs font-semibold transition"
+                style={{
+                  background: !g.enabled
+                    ? "#F6F5EF"
+                    : granularity === g.k
+                    ? "var(--primary-lightest)"
+                    : "#fff",
+                  color: !g.enabled
+                    ? "var(--text-muted)"
+                    : granularity === g.k
+                    ? "var(--primary)"
+                    : "var(--text-secondary)",
+                  border:
+                    granularity === g.k
+                      ? "1px solid var(--primary-border)"
+                      : "1px solid var(--border)",
+                  borderRadius: "var(--radius)",
+                  cursor: g.enabled ? "pointer" : "not-allowed",
+                  opacity: g.enabled ? 1 : 0.72,
+                }}
+                aria-pressed={granularity === g.k}
+                aria-disabled={!g.enabled}
+                aria-describedby={!g.enabled ? `${g.k}-coming-soon` : undefined}
+              >
+                {g.label}
+              </button>
+              {!g.enabled && (
+                <span
+                  id={`${g.k}-coming-soon`}
+                  role="tooltip"
+                  className="pointer-events-none absolute left-1/2 top-8 z-20 hidden w-52 -translate-x-1/2 p-2 text-[11px] shadow-lg group-hover:block group-focus-within:block"
+                  style={{
+                    background: "#fff",
+                    border: "1px solid var(--border)",
+                    borderRadius: "var(--radius)",
+                    color: "var(--text-secondary)",
+                  }}
+                >
+                  Coming soon — needs cleaned multi-year aggregation data.
+                </span>
+              )}
+            </span>
           ))}
           <div
             className="mx-2 h-5 w-px"
@@ -559,6 +618,12 @@ export default function App() {
               {scoreLabel}
             </span>
             <TrafficLight active={suitabilityKey} />
+            <p
+              className="mt-3 max-w-[210px] text-center text-[11px]"
+              style={{ color: "var(--text-secondary)" }}
+            >
+              Based on historical observations only, not a forecast.
+            </p>
           </div>
 
           {/* Risk items */}
@@ -664,18 +729,36 @@ export default function App() {
           <button
             type="button"
             onClick={exportSummary}
+            disabled={exportStatus === "exporting"}
             className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold"
             style={{
               background: "var(--primary)",
               color: "#fff",
               border: 0,
               borderRadius: "var(--radius)",
-              cursor: "pointer",
+              cursor: exportStatus === "exporting" ? "progress" : "pointer",
+              opacity: exportStatus === "exporting" ? 0.75 : 1,
             }}
           >
             <Download className="h-3.5 w-3.5" />
-            Export analysis
+            {exportStatus === "exporting" ? "Exporting..." : "Export analysis"}
           </button>
+          {exportStatus !== "idle" && exportStatus !== "exporting" && (
+            <span
+              role="status"
+              className="text-xs font-semibold"
+              style={{
+                color:
+                  exportStatus === "success"
+                    ? "var(--primary)"
+                    : "var(--color-unsuitable)",
+              }}
+            >
+              {exportStatus === "success"
+                ? "Download started."
+                : "Export failed. Please try again."}
+            </span>
+          )}
         </div>
       </section>
 

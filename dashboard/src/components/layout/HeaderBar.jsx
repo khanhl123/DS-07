@@ -1,14 +1,28 @@
 import { useEffect, useState } from "react";
-import { Activity } from "lucide-react";
+import { Footprints, ArrowRight } from "lucide-react";
 
 const SECTIONS = [
+  { id: "hero", label: "Home" },
   { id: "where", label: "Explore" },
   { id: "when", label: "Analyse" },
   { id: "suitability", label: "Plan" },
 ];
 
-export default function HeaderBar() {
-  const [active, setActive] = useState("where");
+const OBSERVED_IDS = SECTIONS.filter((s) => s.id !== "hero").map((s) => s.id);
+
+export default function HeaderBar({ summary }) {
+  const [active, setActive] = useState("hero");
+
+  useEffect(() => {
+    const onScroll = () => {
+      if (window.scrollY < 120) {
+        setActive("hero");
+      }
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -20,47 +34,59 @@ export default function HeaderBar() {
       },
       { rootMargin: "-40% 0px -50% 0px", threshold: [0, 0.25, 0.5, 0.75, 1] },
     );
-    SECTIONS.forEach(({ id }) => {
+    OBSERVED_IDS.forEach((id) => {
       const el = document.getElementById(id);
       if (el) observer.observe(el);
     });
     return () => observer.disconnect();
   }, []);
 
-  const handleJump = (id) => (e) => {
-    e.preventDefault();
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const scrollToId = (id) => {
+    if (id === "hero") {
+      scrollToTop();
+      return;
+    }
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
+  const handleJump = (id) => (e) => {
+    e.preventDefault();
+    scrollToId(id);
+  };
+
+  const handleBrandClick = (e) => {
+    e.preventDefault();
+    scrollToTop();
+  };
+
+  const hasSelection = !!summary?.hasSelection;
+
   return (
-    <header
-      className="sticky top-0 z-50"
-      style={{ background: "var(--primary)", color: "#fff" }}
-    >
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-4 py-3 lg:px-6">
-        <div className="flex items-center gap-3">
-          <div
-            className="flex h-9 w-9 items-center justify-center"
-            style={{ background: "rgba(255,255,255,0.12)", borderRadius: "var(--radius)" }}
+    <header className="site-header">
+      <div className="site-header__row">
+        <div className="site-header__brand">
+          <button
+            type="button"
+            onClick={handleBrandClick}
+            className="brand-button"
+            aria-label="Marathon Weather Planner — back to top"
           >
-            <Activity className="h-5 w-5" aria-hidden="true" />
-          </div>
-          <div className="leading-tight">
-            <div className="text-sm font-bold">Marathon weather planner</div>
-            <div className="text-[11px]" style={{ color: "rgba(255,255,255,0.85)" }}>
-              Historical weather analysis for marathon planning in Australia
-            </div>
-            <div className="text-[10px]" style={{ color: "rgba(255,255,255,0.6)" }}>
-              Based on Bureau of Meteorology station data — not a weather forecast
-            </div>
-          </div>
+            <span className="brand-logo" aria-hidden="true">
+              <Footprints className="h-5 w-5" />
+            </span>
+            <span className="brand-text">
+              <span className="brand-name">Marathon Weather Planner</span>
+              <span className="brand-tagline">Australia · BoM historical data</span>
+            </span>
+          </button>
         </div>
 
-        <nav
-          className="flex items-center gap-1"
-          aria-label="Jump to section"
-        >
+        <nav className="site-header__nav header-nav" aria-label="Jump to section">
           {SECTIONS.map((s) => (
             <button
               key={s.id}
@@ -73,6 +99,46 @@ export default function HeaderBar() {
             </button>
           ))}
         </nav>
+
+        <div className="site-header__cta">
+          <button
+            type="button"
+            onClick={handleJump("where")}
+            className="header-cta"
+            aria-label="Get started — jump to the map"
+          >
+            <span className="hidden sm:inline">Get started</span>
+            <span className="sm:hidden">Start</span>
+            <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+          </button>
+        </div>
+      </div>
+
+      <div className="site-header__strip" role="status" aria-live="polite">
+        <div className="site-header__strip-inner">
+          <span className="strip-label">Current selection</span>
+          {hasSelection ? (
+            <>
+              <strong className="strip-station">{summary.stationName}</strong>
+              <span className="strip-meta">
+                #{summary.stationNumber} · {summary.stationState}
+              </span>
+              <span className="strip-divider" aria-hidden="true">|</span>
+              <span className="strip-meta">{summary.timeframe}</span>
+              <span className="strip-divider" aria-hidden="true">|</span>
+              <span
+                className="strip-score"
+                style={{ color: summary.scoreColor }}
+              >
+                {summary.score}/100 · {summary.scoreLabel}
+              </span>
+            </>
+          ) : (
+            <span className="strip-empty">
+              No current selection — pick a station on the map in Step 1.
+            </span>
+          )}
+        </div>
       </div>
     </header>
   );

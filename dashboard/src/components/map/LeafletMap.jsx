@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import {
   MapContainer,
   TileLayer,
@@ -51,6 +51,7 @@ export default function LeafletMap({
   thresholds,
   onSelectStation,
 }) {
+  const [tileStatus, setTileStatus] = useState("loading");
   const scored = useMemo(
     () =>
       stations.map((s) => ({
@@ -65,12 +66,25 @@ export default function LeafletMap({
 
   return (
     <div
-      className="overflow-hidden"
+      className="relative overflow-hidden"
       style={{
         borderRadius: "var(--radius)",
         border: "0.5px solid var(--border)",
       }}
     >
+      {tileStatus !== "ready" && (
+        <div
+          className="absolute inset-0 z-10 flex items-center justify-center p-4 text-center text-xs"
+          style={{
+            background: "rgba(240, 240, 232, 0.86)",
+            color: "var(--text-secondary)",
+          }}
+        >
+          {tileStatus === "error"
+            ? "Map tiles are taking longer than expected. Station markers will appear when the map service responds."
+            : "Loading map tiles..."}
+        </div>
+      )}
       <MapContainer
         center={AU_CENTER}
         zoom={AU_ZOOM}
@@ -83,7 +97,15 @@ export default function LeafletMap({
         style={{ height: "50vh", width: "100%", background: "#F0F0E8" }}
         scrollWheelZoom={true}
       >
-        <TileLayer url={TILE_URL} attribution={ATTRIBUTION} />
+        <TileLayer
+          url={TILE_URL}
+          attribution={ATTRIBUTION}
+          eventHandlers={{
+            loading: () => setTileStatus("loading"),
+            load: () => setTileStatus("ready"),
+            tileerror: () => setTileStatus("error"),
+          }}
+        />
         <GeoJSON data={auStates} style={stateStyle} />
         {scored.map((station) => {
           const isSelected = station.n === selectedStationNumber;

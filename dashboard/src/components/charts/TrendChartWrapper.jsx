@@ -49,6 +49,8 @@ export default function TrendChartWrapper({
             axisLine={false}
             tickLine={false}
             width={36}
+            domain={["auto", "auto"]}
+            allowDecimals={false}
             tickFormatter={(v) => `${v}${unit}`}
           />
           <Tooltip

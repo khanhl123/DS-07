@@ -48,6 +48,9 @@ export default function RainfallChart({ data, xKey, height = 200 }) {
             axisLine={false}
             tickLine={false}
             width={36}
+            domain={[0, "auto"]}
+            allowDecimals={false}
+            tickCount={5}
             tickFormatter={(v) => `${v}mm`}
           />
           <Tooltip
