@@ -6,9 +6,9 @@ export default function UVIndexChart({ data, xKey }) {
       data={data}
       dataKey="uvIndex"
       xKey={xKey}
-      label="UV index"
+      label="UV index*"
       unit=""
-      sublabel="index — historical daily peak"
+      sublabel="estimated from BoM solar exposure (MJ/m²)"
       color="#EF9F27"
     />
   );

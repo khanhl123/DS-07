@@ -96,6 +96,7 @@ export default function LeafletMap({
         ]}
         style={{ height: "50vh", width: "100%", background: "#F0F0E8" }}
         scrollWheelZoom={true}
+        preferCanvas={true}
       >
         <TileLayer
           url={TILE_URL}

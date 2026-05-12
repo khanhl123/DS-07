@@ -26,50 +26,9 @@ export const MONTH_NAMES_LONG = [
   "July", "August", "September", "October", "November", "December",
 ];
 
-// Deterministic pseudo-random in [0,1) from a string key.
-function seeded(key, salt = 0) {
-  let h = 2166136261 ^ salt;
-  for (let i = 0; i < key.length; i++) {
-    h ^= key.charCodeAt(i);
-    h = Math.imul(h, 16777619);
-  }
-  h = (h ^ (h >>> 13)) >>> 0;
-  return (h % 100000) / 100000;
-}
-
-// Synthesise 12 monthly base suitability scores per station, tuned by latitude:
-//   - Northern (|lat| < 20): hot-season penalty Dec–Mar, good Jun–Aug
-//   - Mid (20..35):          balanced, peaks in shoulder seasons
-//   - Southern (> 35):       cold-season penalty Jun–Aug, good Oct–Apr
-export function buildMonthlyScores(station) {
-  const absLat = Math.abs(station.lat);
-  const out = [];
-  for (let m = 0; m < 12; m++) {
-    let base = 70;
-    if (absLat < 20) {
-      // Tropical — summer wet/hot, winter dry
-      const summerPenalty = [25, 22, 15, 6, -2, -6, -7, -4, 2, 10, 18, 24][m];
-      base = 70 - summerPenalty;
-    } else if (absLat < 35) {
-      // Temperate mid
-      const curve = [12, 10, -4, -10, -6, -2, 0, -3, -8, -10, -2, 8][m];
-      base = 75 - curve;
-    } else {
-      // Cool south — cold winter penalty
-      const winterPenalty = [-8, -6, -4, 2, 10, 18, 22, 18, 8, -4, -10, -10][m];
-      base = 72 - winterPenalty;
-    }
-    const jitter = Math.round((seeded(station.n, m * 7919) - 0.5) * 14);
-    out.push(Math.max(5, Math.min(98, Math.round(base + jitter))));
-  }
-  return out;
-}
-
-// Each station gets its base monthly scores precomputed once.
-export const stations = STATIONS.map((s) => ({
-  ...s,
-  monthlyScores: buildMonthlyScores(s),
-}));
+// Stations now ship with real monthlyScores precomputed from historical
+// climatology by pipeline/generate_stations_js.py — no client-side heuristic.
+export const stations = STATIONS;
 
 export const stationsByNumber = Object.fromEntries(stations.map((s) => [s.n, s]));
 

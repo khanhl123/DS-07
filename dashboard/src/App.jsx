@@ -41,8 +41,9 @@ import {
 } from "./data/placeholderData";
 import {
   useStationDaily,
+  useStationYearly,
+  useStationYears,
   summariseMonthly,
-  summariseYear,
   averageYearSeries,
 } from "./data/useStationDaily";
 
@@ -71,24 +72,42 @@ export default function App() {
     [selectedStationNumber],
   );
 
-  const dailyData = useStationDaily(
-    selectedStation,
-    selectedMonthIndex,
-    selectedYear,
-  );
+  const {
+    data: dailyData,
+    loading: dailyLoading,
+    error: dailyError,
+  } = useStationDaily(selectedStation, selectedMonthIndex, selectedYear);
   const monthlySummary = useMemo(() => summariseMonthly(dailyData), [dailyData]);
 
-  const yearSeries = useMemo(
-    () =>
-      granularity === "monthly"
-        ? summariseYear(selectedStation, selectedYear)
-        : [],
-    [granularity, selectedStation, selectedYear],
+  const {
+    data: yearSeries,
+    loading: yearlyLoading,
+    error: yearlyError,
+  } = useStationYearly(
+    selectedStation,
+    selectedYear,
+    granularity === "monthly",
   );
   const yearAverages = useMemo(
     () => (granularity === "monthly" ? averageYearSeries(yearSeries) : null),
     [granularity, yearSeries],
   );
+
+  const { data: availableYears } = useStationYears(selectedStation);
+  // Make sure the current selectedYear remains valid for this station.
+  useEffect(() => {
+    if (!availableYears?.length) return;
+    if (!availableYears.includes(selectedYear)) {
+      setSelectedYear(availableYears[0]);
+    }
+  }, [availableYears, selectedYear]);
+
+  const isLoading = granularity === "monthly" ? yearlyLoading : dailyLoading;
+  const loadError = granularity === "monthly" ? yearlyError : dailyError;
+  const hasNoData =
+    !isLoading &&
+    !loadError &&
+    (granularity === "monthly" ? yearSeries.length === 0 : dailyData.length === 0);
 
   const isMonthly = granularity === "monthly";
   // What drives the KPI row + 2×2 charts + transition copy.
@@ -456,9 +475,11 @@ export default function App() {
                 fontSize: 12,
               }}
             >
-              {[2020, 2021, 2022, 2023, 2024].map((y) => (
-                <option key={y} value={y}>{y}</option>
-              ))}
+              {(availableYears?.length ? availableYears : [selectedYear]).map(
+                (y) => (
+                  <option key={y} value={y}>{y}</option>
+                ),
+              )}
             </select>
           </label>
         </div>
@@ -483,6 +504,14 @@ export default function App() {
             monthIndex={selectedMonthIndex}
           />
         )}
+
+        <DataStatusBanner
+          loading={isLoading}
+          error={loadError}
+          empty={hasNoData}
+          timeframe={timeframeLabel}
+          stationName={selectedStation.name}
+        />
 
         {/* KPI row */}
         <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -509,7 +538,7 @@ export default function App() {
           />
           <KpiCard
             icon={Sun}
-            label="UV index"
+            label="UV index*"
             value={`${summary.uvIndex}`}
             sub={`${summary.uvHighPct}% high+ days`}
             color="#EF9F27"
@@ -714,7 +743,9 @@ export default function App() {
         >
           This tool analyses historical BoM observations — it does not predict future weather.
           Suitability scores reflect past patterns using max temp, min temp, rainfall, and UV.
-          Humidity and wind are not available. Use alongside official forecasts and local knowledge.
+          Humidity and wind are not available. UV index is estimated from BoM daily solar
+          exposure (MJ/m²) using a linear conversion; treat it as an indicative peak, not an
+          official UV measurement. Use alongside official forecasts and local knowledge.
         </div>
 
         <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
@@ -887,6 +918,41 @@ function RiskRow({ color, label, detail, assessment }) {
           {assessment}
         </p>
       </div>
+    </div>
+  );
+}
+
+function DataStatusBanner({ loading, error, empty, timeframe, stationName }) {
+  if (!loading && !error && !empty) return null;
+  let bg = "var(--surface)";
+  let border = "1px solid var(--border)";
+  let color = "var(--text-secondary)";
+  let text = "";
+  if (error) {
+    bg = "#FADBDB";
+    border = "1px solid #E9A7A6";
+    color = "#8a2a29";
+    text = `Couldn't load data for ${stationName} (${timeframe}). The weather service is unreachable — please try again shortly.`;
+  } else if (loading) {
+    text = `Loading ${stationName} — ${timeframe}…`;
+  } else if (empty) {
+    bg = "#FBEFCC";
+    border = "1px solid #E9CD84";
+    color = "#7a5a0a";
+    text = `No observations recorded for ${stationName} in ${timeframe}.`;
+  }
+  return (
+    <div
+      role={error ? "alert" : "status"}
+      className="mt-3 p-3 text-xs"
+      style={{
+        background: bg,
+        border,
+        borderRadius: "var(--radius)",
+        color,
+      }}
+    >
+      {text}
     </div>
   );
 }

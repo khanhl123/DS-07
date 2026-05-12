@@ -4,5 +4,11 @@
   "installCommand": "cd dashboard && npm install",
   "buildCommand": "cd dashboard && npm run build",
   "devCommand": "cd dashboard && npm run dev",
-  "outputDirectory": "dashboard/dist"
+  "outputDirectory": "dashboard/dist",
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://ds07-weather-api.onrender.com/api/:path*"
+    }
+  ]
 }

@@ -1,123 +1,81 @@
-// Lazy synthesiser for a station's daily metrics for a given month.
-// Produces a deterministic 28–31 day array shaped like:
-//   [{ day, date, maxTemp, minTemp, rainfall, uvIndex }]
-//
-// Real BoM cleaned daily data is not committed to the repo; this placeholder
-// lets the charts, probability banner, and calendar exercise the UI end-to-end.
-// Signatures are stable so a future swap to real data is mechanical.
+// Hooks that fetch daily / yearly weather from the FastAPI backend.
+// Returned data shapes match the previous synthetic version so chart,
+// calendar, and KPI components don't need to change. Each hook also
+// exposes { loading, error } for UI banners.
 
-import { useMemo } from "react";
+import { useEffect, useState } from "react";
 
-const DEFAULT_YEAR = 2024;
-
-function seeded(a, b, c) {
-  let h = 2166136261 ^ (a * 2654435761);
-  h ^= (b * 40503) | 0;
-  h ^= (c * 16777619) | 0;
-  h = (h ^ (h >>> 13)) >>> 0;
-  return (h % 100000) / 100000;
+async function fetchJSON(url) {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`${url} → ${res.status}`);
+  return res.json();
 }
 
-function daysInMonth(year, monthIndex) {
-  return new Date(year, monthIndex + 1, 0).getDate();
+function useFetched(url, fallback) {
+  const [data, setData] = useState(fallback);
+  const [loading, setLoading] = useState(Boolean(url));
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (!url) {
+      setData(fallback);
+      setLoading(false);
+      setError(null);
+      return;
+    }
+    let cancelled = false;
+    setLoading(true);
+    setError(null);
+    fetchJSON(url)
+      .then((rows) => {
+        if (cancelled) return;
+        setData(rows);
+        setLoading(false);
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        console.error(url, err);
+        setData(fallback);
+        setError(err);
+        setLoading(false);
+      });
+    return () => { cancelled = true; };
+    // fallback intentionally excluded — pass a stable reference from callers.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [url]);
+
+  return { data, loading, error };
 }
 
-// Rough baseline curves by latitude band — mirror the monthly-score logic
-// loosely so charts feel consistent with the map dot colouring.
-function baselineFor(absLat, monthIndex) {
-  if (absLat < 20) {
-    const maxT = [33, 33, 33, 32, 31, 30, 30, 31, 33, 34, 34, 33][monthIndex];
-    const minT = [25, 25, 24, 23, 20, 19, 18, 19, 22, 25, 25, 25][monthIndex];
-    const rain = [8, 9, 6, 3, 1, 0.5, 0.3, 0.5, 1, 3, 5, 7][monthIndex];
-    const uv = [12, 12, 11, 9, 7, 6, 6, 8, 10, 12, 13, 13][monthIndex];
-    return { maxT, minT, rain, uv };
-  }
-  if (absLat < 35) {
-    const maxT = [29, 29, 27, 24, 20, 17, 16, 18, 21, 24, 26, 28][monthIndex];
-    const minT = [17, 17, 15, 12, 8, 6, 5, 6, 8, 11, 13, 15][monthIndex];
-    const rain = [3, 3, 3, 3, 4, 5, 5, 4, 3, 3, 3, 3][monthIndex];
-    const uv = [11, 10, 8, 6, 4, 3, 3, 4, 6, 8, 10, 11][monthIndex];
-    return { maxT, minT, rain, uv };
-  }
-  const maxT = [24, 24, 22, 18, 14, 11, 10, 12, 15, 18, 21, 23][monthIndex];
-  const minT = [12, 12, 10, 7, 5, 3, 2, 3, 5, 7, 9, 11][monthIndex];
-  const rain = [3, 3, 3, 4, 5, 6, 6, 5, 4, 4, 3, 3][monthIndex];
-  const uv = [10, 9, 7, 5, 3, 2, 2, 3, 5, 7, 9, 10][monthIndex];
-  return { maxT, minT, rain, uv };
+const EMPTY_ARRAY = [];
+
+// Daily array for one station + month.
+// Shape: [{ day, date, maxTemp, minTemp, rainfall, uvIndex }, ...]
+export function useStationDaily(station, monthIndex, year) {
+  const url = station
+    ? `/api/stations/${Number.parseInt(station.n, 10)}/daily` +
+      `?year=${year}&month=${monthIndex + 1}`
+    : null;
+  return useFetched(url, EMPTY_ARRAY);
 }
 
-export function synthesiseStationDaily(
-  station,
-  monthIndex,
-  year = DEFAULT_YEAR,
-) {
-  if (!station) return [];
-  const total = daysInMonth(year, monthIndex);
-  const absLat = Math.abs(station.lat);
-  const b = baselineFor(absLat, monthIndex);
-  const out = [];
-  const stationSeed = Number.parseInt(station.n, 10) || 0;
-  // Mix year into the seed so changing year shifts the synthesised curves.
-  const ySeed = stationSeed + year * 1009;
-  for (let i = 1; i <= total; i++) {
-    const r1 = seeded(ySeed, monthIndex, i);
-    const r2 = seeded(ySeed, monthIndex + 31, i);
-    const r3 = seeded(ySeed, monthIndex + 97, i);
-    const r4 = seeded(ySeed, monthIndex + 211, i);
-    const maxTemp = +(b.maxT + (r1 - 0.5) * 5).toFixed(1);
-    const minTemp = +(b.minT + (r2 - 0.5) * 4).toFixed(1);
-    // Rainfall is sparse & positively skewed.
-    const isRainy = r3 > 0.75;
-    const rainfall = isRainy
-      ? +(b.rain + r3 * b.rain * 3).toFixed(1)
-      : +((r3 < 0.5 ? 0 : r3 * 0.6) * b.rain).toFixed(1);
-    const uvIndex = Math.max(
-      0,
-      Math.min(14, Math.round(b.uv + (r4 - 0.5) * 2)),
-    );
-    const date = `${year}-${String(monthIndex + 1).padStart(2, "0")}-${String(i).padStart(2, "0")}`;
-    out.push({ day: i, date, maxTemp, minTemp, rainfall, uvIndex });
-  }
-  return out;
+// 12 monthly aggregates for one station + year.
+export function useStationYearly(station, year, enabled = true) {
+  const url = station && enabled
+    ? `/api/stations/${Number.parseInt(station.n, 10)}/yearly?year=${year}`
+    : null;
+  return useFetched(url, EMPTY_ARRAY);
 }
 
-export function useStationDaily(station, monthIndex, year = DEFAULT_YEAR) {
-  return useMemo(
-    () => synthesiseStationDaily(station, monthIndex, year),
-    [station, monthIndex, year],
-  );
+// Distinct years available for one station (descending).
+export function useStationYears(station) {
+  const url = station
+    ? `/api/stations/${Number.parseInt(station.n, 10)}/years`
+    : null;
+  return useFetched(url, EMPTY_ARRAY);
 }
 
-const MONTH_LABELS = [
-  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
-];
-
-// Build a 12-row monthly series for a station+year by synthesising each month
-// and averaging it. Shape is chart-friendly and matches the daily chart keys
-// (maxTemp / minTemp / rainfall / uvIndex) so the existing chart components
-// can render it without changes.
-export function summariseYear(station, year = DEFAULT_YEAR) {
-  if (!station) return [];
-  const out = [];
-  for (let m = 0; m < 12; m++) {
-    const daily = synthesiseStationDaily(station, m, year);
-    const s = summariseMonthly(daily);
-    out.push({
-      month: m,
-      monthLabel: MONTH_LABELS[m],
-      maxTemp: s.maxTemp,
-      minTemp: s.minTemp,
-      rainfall: s.rainfall,
-      uvIndex: s.uvIndex,
-      dryDaysPct: s.dryDaysPct,
-      uvHighPct: s.uvHighPct,
-    });
-  }
-  return out;
-}
-
-// Year-wide averages across the 12 monthly summaries.
+// Year-wide averages — used by KPI row when granularity = monthly.
 export function averageYearSeries(yearSeries) {
   if (!yearSeries?.length) {
     return {
@@ -130,8 +88,10 @@ export function averageYearSeries(yearSeries) {
   const n = yearSeries.length;
   const avg = (k) =>
     +(yearSeries.reduce((acc, r) => acc + r[k], 0) / n).toFixed(1);
-  const mn = (k) => +yearSeries.reduce((a, r) => Math.min(a, r[k]), Infinity).toFixed(1);
-  const mx = (k) => +yearSeries.reduce((a, r) => Math.max(a, r[k]), -Infinity).toFixed(1);
+  const mn = (k) =>
+    +yearSeries.reduce((a, r) => Math.min(a, r[k]), Infinity).toFixed(1);
+  const mx = (k) =>
+    +yearSeries.reduce((a, r) => Math.max(a, r[k]), -Infinity).toFixed(1);
   return {
     maxTemp: avg("maxTemp"),
     maxTempMin: mn("maxTemp"),
@@ -150,7 +110,7 @@ export function averageYearSeries(yearSeries) {
   };
 }
 
-// Month-average helper — used by KPI row and popups.
+// Month aggregate — used by KPI row in daily mode and station popups.
 export function summariseMonthly(daily) {
   if (!daily?.length) {
     return {
@@ -161,11 +121,13 @@ export function summariseMonthly(daily) {
     };
   }
   const n = daily.length;
-  const sum = (k) => daily.reduce((acc, d) => acc + d[k], 0);
-  const min = (k) => daily.reduce((acc, d) => Math.min(acc, d[k]), Infinity);
-  const max = (k) => daily.reduce((acc, d) => Math.max(acc, d[k]), -Infinity);
-  const dryDays = daily.filter((d) => d.rainfall < 1).length;
-  const uvHigh = daily.filter((d) => d.uvIndex >= 8).length;
+  const sum = (k) => daily.reduce((acc, d) => acc + (d[k] ?? 0), 0);
+  const min = (k) =>
+    daily.reduce((acc, d) => Math.min(acc, d[k] ?? Infinity), Infinity);
+  const max = (k) =>
+    daily.reduce((acc, d) => Math.max(acc, d[k] ?? -Infinity), -Infinity);
+  const dryDays = daily.filter((d) => (d.rainfall ?? 0) < 1).length;
+  const uvHigh = daily.filter((d) => (d.uvIndex ?? 0) >= 8).length;
   return {
     maxTemp: +(sum("maxTemp") / n).toFixed(1),
     maxTempMin: +min("maxTemp").toFixed(1),

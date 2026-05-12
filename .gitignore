@@ -1,5 +1,7 @@
 data/full/
 data/observed/
 data/strict/
-pipeline/__pycache__/
+**/__pycache__/
 .vercel/
+.env
+.env.local
