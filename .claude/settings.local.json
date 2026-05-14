@@ -54,7 +54,12 @@
       "PowerShell(iwr https://fly.io/install.ps1 -useb | iex)",
       "PowerShell(& \"$HOME\\\\.fly\\\\bin\\\\flyctl.exe\" version)",
       "Bash(git check-ignore *)",
-      "Bash(git add *2)"
+      "Bash(git add *2)",
+      "Bash(gh pr *)",
+      "Bash(npm --version)",
+      "Bash(npm --prefix dashboard install)",
+      "Bash(npm --prefix dashboard run build)",
+      "Bash(npm --prefix dashboard run lint)"
     ]
   }
 }
