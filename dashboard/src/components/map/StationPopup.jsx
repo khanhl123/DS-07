@@ -17,22 +17,25 @@ export default function StationPopup({ station, monthIndex, thresholds, onSelect
   const color = getSuitabilityColor(score);
   const label = getSuitabilityLabel(score);
 
-  const [summary, setSummary] = useState(null);
+  const [cached, setCached] = useState({ key: null, value: null });
+  const cacheKey = `${station.n}|${monthIndex}`;
 
   useEffect(() => {
     let cancelled = false;
     const n = Number.parseInt(station.n, 10);
-    setSummary(null);
     fetch(`/api/stations/${n}/daily?year=${POPUP_YEAR}&month=${monthIndex + 1}`)
       .then((r) => (r.ok ? r.json() : []))
       .then((rows) => {
-        if (!cancelled) setSummary(summariseMonthly(rows));
+        if (!cancelled) setCached({ key: cacheKey, value: summariseMonthly(rows) });
       })
       .catch(() => {
-        if (!cancelled) setSummary(null);
+        if (!cancelled) setCached({ key: cacheKey, value: null });
       });
     return () => { cancelled = true; };
-  }, [station, monthIndex]);
+  }, [station, monthIndex, cacheKey]);
+
+  // Show Loading until the cached result matches the current station/month.
+  const summary = cached.key === cacheKey ? cached.value : null;
 
   return (
     <div style={{ minWidth: 200, fontFamily: "inherit" }}>
