@@ -5,6 +5,7 @@ export default function MapToolbar({
   isAnimating,
   onToggleAnimate,
   selectedMonthIndex,
+  selectedYear,
   reverseSearchMonth,
   onReverseSearchChange,
 }) {
@@ -38,7 +39,7 @@ export default function MapToolbar({
         style={{ color: "var(--text-primary)" }}
         aria-live="polite"
       >
-        {MONTHS[selectedMonthIndex]}
+        {MONTHS[selectedMonthIndex]} {selectedYear}
       </div>
 
       <div className="ml-auto flex flex-wrap items-center gap-3">

@@ -91,10 +91,10 @@ export default function LeafletMap({
         minZoom={4}
         maxZoom={12}
         maxBounds={[
-          [-10, 105],
-          [-48, 160],
+          [5, 100],
+          [-55, 165],
         ]}
-        style={{ height: "50vh", width: "100%", background: "#F0F0E8" }}
+        style={{ height: "500px", width: "100%", background: "#F0F0E8" }}
         scrollWheelZoom={true}
         preferCanvas={true}
       >
@@ -129,7 +129,7 @@ export default function LeafletMap({
                 },
               }}
             >
-              <Popup>
+              <Popup autoPan autoPanPadding={[20, 80]}>
                 <StationPopup
                   station={station}
                   monthIndex={monthIndex}

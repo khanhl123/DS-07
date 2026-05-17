@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Thermometer,
   ThermometerSun,
@@ -61,6 +61,7 @@ export default function App() {
     DEFAULT_STATION_NUMBER,
   ]);
   const [isAnimating, setIsAnimating] = useState(false);
+  const animStepsRef = useRef(0);
   const [reverseSearchMonth, setReverseSearchMonth] = useState(null);
   const [granularity, setGranularity] = useState("daily");
   const [selectedYear, setSelectedYear] = useState(2024);
@@ -155,11 +156,15 @@ export default function App() {
     [dailyData, thresholds],
   );
 
-  // Month-animation loop.
+  // Month-animation loop — plays exactly 12 months then stops.
   useEffect(() => {
     if (!isAnimating) return;
     const id = setInterval(() => {
       setSelectedMonthIndex((m) => (m + 1) % 12);
+      animStepsRef.current += 1;
+      if (animStepsRef.current >= 12) {
+        setIsAnimating(false);
+      }
     }, ANIMATION_INTERVAL_MS);
     return () => clearInterval(id);
   }, [isAnimating]);
@@ -178,7 +183,12 @@ export default function App() {
     setComparedStations((prev) => prev.filter((x) => x !== n));
   };
 
-  const handleToggleAnimate = () => setIsAnimating((v) => !v);
+  const handleToggleAnimate = () => {
+    setIsAnimating((v) => {
+      if (!v) animStepsRef.current = 0;
+      return !v;
+    });
+  };
 
   const handleSelectMonth = (i) => {
     if (isAnimating) setIsAnimating(false);
@@ -302,6 +312,7 @@ export default function App() {
             isAnimating={isAnimating}
             onToggleAnimate={handleToggleAnimate}
             selectedMonthIndex={selectedMonthIndex}
+            selectedYear={selectedYear}
             reverseSearchMonth={reverseSearchMonth}
             onReverseSearchChange={handleReverseSearch}
           />
