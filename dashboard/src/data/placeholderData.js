@@ -120,7 +120,7 @@ export function getSuitabilityLabel(score) {
 
 export function getSuitabilityKey(score) {
   if (score >= 65) return "suitable";
-  if (score >= 40) return "slightly_suitable";
+  if (score >= 40) return "mixed";
   return "not_suitable";
 }
 
@@ -133,7 +133,7 @@ export const suitabilityConfig = {
     chipBorder: "border-[#A6E6AD]",
     hex: SCORE_COLORS.suitable,
   },
-  slightly_suitable: {
+  mixed: {
     label: "Mixed",
     color: "bg-[#EFA827]",
     textColor: "text-[#7a5a0a]",

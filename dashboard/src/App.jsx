@@ -861,7 +861,7 @@ function KpiCard({ icon, label, value, sub, color }) {
 function TrafficLight({ active }) {
   const items = [
     { key: "suitable", color: "#59C459", label: "Suitable" },
-    { key: "slightly_suitable", color: "#EFA827", label: "Mixed" },
+    { key: "mixed", color: "#EFA827", label: "Mixed" },
     { key: "not_suitable", color: "#E24B4A", label: "Unsuitable" },
   ];
   return (

@@ -1,7 +1,7 @@
 ﻿import { suitabilityConfig } from "../../data/placeholderData";
 import { CheckCircle2, AlertTriangle, XCircle } from "lucide-react";
 
-const suitIcons = { suitable: CheckCircle2, slightly_suitable: AlertTriangle, not_suitable: XCircle };
+const suitIcons = { suitable: CheckCircle2, mixed: AlertTriangle, not_suitable: XCircle };
 
 export default function SuitabilityCalendar({ dailyData, selectedDay, onSelectDay, selectedMonth, selectedYear }) {
   const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
@@ -38,7 +38,7 @@ export default function SuitabilityCalendar({ dailyData, selectedDay, onSelectDa
           {Array.from({ length: daysInMonth }).map((_, i) => {
             const dayNum = i + 1;
             const dayData = dailyMap[dayNum];
-            const suit = dayData?.suitability || "slightly_suitable";
+            const suit = dayData?.suitability || "mixed";
             const cfg = suitabilityConfig[suit];
             const Icon = suitIcons[suit];
             const isSelected = selectedDay === dayNum;
