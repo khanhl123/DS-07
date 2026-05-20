@@ -117,6 +117,8 @@ def station_daily(station_number: int, year: int, month: int):
 def station_yearly(station_number: int, year: int):
     """12 monthly aggregates for one station / year — matches summariseYear shape."""
     with engine.connect() as conn:
+        # observation_date is DATE (no time/tz) — EXTRACT is deterministic
+        # regardless of session timezone.
         rows = conn.execute(
             text("""
                 SELECT
