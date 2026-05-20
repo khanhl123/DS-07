@@ -4,6 +4,7 @@ Run from repo root:
     uvicorn pipeline.api.main:app --reload --port 8000
 """
 import os
+import sys
 from datetime import date
 from calendar import monthrange
 
@@ -23,18 +24,32 @@ engine = create_engine(
 
 app = FastAPI(title="Marathon Weather API")
 
-# Comma-separated allowlist; defaults cover local Vite dev (both 5173 and 5174).
-_default_origins = (
-    "http://localhost:5173,http://127.0.0.1:5173,"
-    "http://localhost:5174,http://127.0.0.1:5174"
-)
-CORS_ORIGINS = [
-    o.strip() for o in os.environ.get("CORS_ORIGINS", _default_origins).split(",")
-    if o.strip()
-]
+
+def _resolve_cors_origins():
+    """Resolve the CORS allowlist.
+
+    On Render the env var is mandatory — silent localhost fallback would
+    mask a misconfigured deploy. Locally we fall back to common Vite dev
+    ports but log a warning so the default isn't invisible.
+    """
+    raw = os.environ.get("CORS_ORIGINS")
+    if raw:
+        return [o.strip() for o in raw.split(",") if o.strip()]
+    if os.environ.get("RENDER"):
+        raise RuntimeError("CORS_ORIGINS must be set in production")
+    print(
+        "WARN: CORS_ORIGINS unset; falling back to localhost dev origins",
+        file=sys.stderr,
+    )
+    return [
+        "http://localhost:5173", "http://127.0.0.1:5173",
+        "http://localhost:5174", "http://127.0.0.1:5174",
+    ]
+
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=CORS_ORIGINS,
+    allow_origins=_resolve_cors_origins(),
     allow_methods=["GET"],
     allow_headers=["*"],
 )
