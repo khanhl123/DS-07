@@ -29,6 +29,14 @@ export default function TrendChartWrapper({
           </div>
         )}
       </div>
+      <div
+        role="img"
+        aria-label={
+          `${label} trend chart, ${data?.length ?? 0} ` +
+          `${data?.length === 1 ? "observation" : "observations"}` +
+          (unit ? ` in ${unit}` : "")
+        }
+      >
       <ResponsiveContainer width="100%" height={height}>
         <AreaChart data={data} margin={{ top: 5, right: 10, left: -10, bottom: 0 }}>
           <defs>
@@ -73,6 +81,7 @@ export default function TrendChartWrapper({
           />
         </AreaChart>
       </ResponsiveContainer>
+      </div>
     </div>
   );
 }
