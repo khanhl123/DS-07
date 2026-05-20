@@ -13,6 +13,17 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import create_engine, text
 
+# Repo root contains models/ — ensure it's importable regardless of how
+# uvicorn / pytest / Render loads this module.
+_REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+if _REPO_ROOT not in sys.path:
+    sys.path.insert(0, _REPO_ROOT)
+
+from models.suitability_score_model import (
+    get_suitability_colour,
+    get_suitability_score,
+)
+
 load_dotenv()
 
 engine = create_engine(
@@ -72,14 +83,35 @@ def _round1(v):
     return round(float(v), 1) if v is not None else None
 
 
+def _marathon_verdict(max_temp, min_temp, uv_index, rainfall_mm):
+    """Marathon suitability verdict for a single day or monthly aggregate.
+
+    Returns {"score": float, "colour": str} or None if any input is missing
+    or fails the model's range validation.
+    """
+    if any(v is None for v in (max_temp, min_temp, uv_index, rainfall_mm)):
+        return None
+    try:
+        score = get_suitability_score(max_temp, min_temp, uv_index, rainfall_mm)
+        colour = get_suitability_colour(max_temp, min_temp, uv_index, rainfall_mm)
+    except ValueError:
+        return None
+    return {"score": round(score, 1), "colour": colour}
+
+
 def _row_to_daily(r):
+    max_temp = _round1(r.max_temp)
+    min_temp = _round1(r.min_temp)
+    rainfall = _round1(r.rainfall_mm) if r.rainfall_mm is not None else 0.0
+    uv = solar_to_uv(r.solar_exposure_mj)
     return {
         "day": r.observation_date.day,
         "date": r.observation_date.isoformat(),
-        "maxTemp": _round1(r.max_temp),
-        "minTemp": _round1(r.min_temp),
-        "rainfall": _round1(r.rainfall_mm) if r.rainfall_mm is not None else 0.0,
-        "uvIndex": solar_to_uv(r.solar_exposure_mj),
+        "maxTemp": max_temp,
+        "minTemp": min_temp,
+        "rainfall": rainfall,
+        "uvIndex": uv,
+        "marathonVerdict": _marathon_verdict(max_temp, min_temp, uv, rainfall),
     }
 
 
@@ -149,19 +181,24 @@ def station_yearly(station_number: int, year: int):
     out = []
     for r in rows:
         m0 = r.month - 1
+        max_temp = _round1(r.max_temp)
+        min_temp = _round1(r.min_temp)
+        rainfall = _round1(r.rainfall)
+        uv = solar_to_uv(r.solar)
         out.append({
             "month": m0,
             "monthLabel": labels[m0],
-            "maxTemp": _round1(r.max_temp),
+            "maxTemp": max_temp,
             "maxTempMin": _round1(r.max_temp_min),
             "maxTempMax": _round1(r.max_temp_max),
-            "minTemp": _round1(r.min_temp),
+            "minTemp": min_temp,
             "minTempMin": _round1(r.min_temp_min),
             "minTempMax": _round1(r.min_temp_max),
-            "rainfall": _round1(r.rainfall),
-            "uvIndex": solar_to_uv(r.solar),
+            "rainfall": rainfall,
+            "uvIndex": uv,
             "dryDaysPct": round(r.dry_frac * 100) if r.dry_frac is not None else None,
             "uvHighPct": round(r.uv_high_frac * 100) if r.uv_high_frac is not None else None,
+            "marathonVerdict": _marathon_verdict(max_temp, min_temp, uv, rainfall),
         })
     return out
 
