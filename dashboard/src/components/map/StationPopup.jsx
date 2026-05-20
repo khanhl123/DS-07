@@ -7,7 +7,6 @@ import {
   getSuitabilityLabel,
   MONTHS,
 } from "../../data/placeholderData";
-import { summariseMonthly } from "../../data/useStationDaily";
 
 export default function StationPopup({ station, monthIndex, year, thresholds, onSelect }) {
   const score = computeAdjustedScore(
@@ -17,19 +16,26 @@ export default function StationPopup({ station, monthIndex, year, thresholds, on
   const color = getSuitabilityColor(score);
   const label = getSuitabilityLabel(score);
 
+  // Hits the yearly endpoint (not daily) so the monthly summary and the
+  // "Expert" verdict are both the server-side values — the same numbers
+  // the yearly chart shows. Picking out data[monthIndex] gives us one
+  // pre-aggregated row computed by the same code path everywhere.
   const [cached, setCached] = useState({ key: null, value: null });
   const cacheKey = `${station.n}|${monthIndex}|${year}`;
 
   useEffect(() => {
     let cancelled = false;
     const n = Number.parseInt(station.n, 10);
-    fetch(`/api/stations/${n}/daily?year=${year}&month=${monthIndex + 1}`)
+    fetch(`/api/stations/${n}/yearly?year=${year}`)
       .then((r) => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         return r.json();
       })
       .then((rows) => {
-        if (!cancelled) setCached({ key: cacheKey, value: summariseMonthly(rows) });
+        if (!cancelled) {
+          const month = rows?.find((m) => m.month === monthIndex) ?? null;
+          setCached({ key: cacheKey, value: month });
+        }
       })
       .catch(() => {
         if (!cancelled) setCached({ key: cacheKey, value: null });

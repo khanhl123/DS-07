@@ -112,7 +112,13 @@ export function averageYearSeries(yearSeries) {
   };
 }
 
-// Month aggregate — used by KPI row in daily mode and station popups.
+// Month aggregate — used by the KPI row and the RiskProfile card in
+// daily mode. The "Expert" verdict shown in station popups is sourced
+// from the /yearly endpoint instead so the popup, the yearly chart, and
+// the API all agree on a single monthly value (the model computed once
+// on monthly-averaged inputs). Averaging per-day scores client-side here
+// produced a different number from the same model called on monthly
+// averages because the sub-score functions are step functions.
 // Missing values are excluded from each metric independently so a sparse
 // field doesn't drag the average toward zero or mark gaps as "dry".
 export function summariseMonthly(daily) {
@@ -121,7 +127,6 @@ export function summariseMonthly(daily) {
     minTemp: 0, minTempMin: 0, minTempMax: 0,
     rainfall: 0, dryDaysPct: 0,
     uvIndex: 0, uvHighPct: 0,
-    marathonVerdict: null,
   };
   if (!daily?.length) return empty;
 
@@ -152,20 +157,5 @@ export function summariseMonthly(daily) {
     dryDaysPct: pct(rainfallVals, (v) => v < 1),
     uvIndex: avg1(uvVals),
     uvHighPct: pct(uvVals, (v) => v >= 8),
-    marathonVerdict: aggregateMarathonVerdict(daily),
   };
-}
-
-// Aggregate per-day expert verdicts into a single {score, colour} for the
-// month. Days without a verdict (missing inputs) are excluded. The 40/70
-// bucket boundaries mirror models/suitability_score_model.py — keep these
-// in sync if you ever retune the Python thresholds.
-export function aggregateMarathonVerdict(daily) {
-  const scores = daily
-    .map((d) => d?.marathonVerdict?.score)
-    .filter((s) => s != null);
-  if (!scores.length) return null;
-  const avg = scores.reduce((a, v) => a + v, 0) / scores.length;
-  const colour = avg <= 40 ? "RED" : avg <= 70 ? "ORANGE" : "GREEN";
-  return { score: +avg.toFixed(1), colour };
 }
