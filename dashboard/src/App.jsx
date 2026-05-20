@@ -50,6 +50,10 @@ import {
 
 const ANIMATION_INTERVAL_MS = 1200;
 
+const fmt = (v, unit = "") => (v == null ? "—" : `${v}${unit}`);
+const fmtRange = (lo, hi, unit = "") =>
+  lo == null || hi == null ? "—" : `${lo}–${hi}${unit}`;
+
 export default function App() {
   const [selectedStationNumber, setSelectedStationNumber] = useState(
     DEFAULT_STATION_NUMBER,
@@ -531,29 +535,29 @@ export default function App() {
           <KpiCard
             icon={ThermometerSun}
             label="Max temp"
-            value={`${summary.maxTemp}°C`}
-            sub={`range ${summary.maxTempMin}–${summary.maxTempMax}°C`}
+            value={fmt(summary.maxTemp, "°C")}
+            sub={`range ${fmtRange(summary.maxTempMin, summary.maxTempMax, "°C")}`}
             color="#E24B4A"
           />
           <KpiCard
             icon={Thermometer}
             label="Min temp"
-            value={`${summary.minTemp}°C`}
-            sub={`range ${summary.minTempMin}–${summary.minTempMax}°C`}
+            value={fmt(summary.minTemp, "°C")}
+            sub={`range ${fmtRange(summary.minTempMin, summary.minTempMax, "°C")}`}
             color="#3B8BD4"
           />
           <KpiCard
             icon={CloudRain}
             label="Rainfall"
-            value={`${summary.rainfall} mm`}
-            sub={`${summary.dryDaysPct}% dry days`}
+            value={fmt(summary.rainfall, " mm")}
+            sub={`${fmt(summary.dryDaysPct, "%")} dry days`}
             color="#1D9E75"
           />
           <KpiCard
             icon={Sun}
             label="UV index*"
-            value={`${summary.uvIndex}`}
-            sub={`${summary.uvHighPct}% high+ days`}
+            value={fmt(summary.uvIndex)}
+            sub={`${fmt(summary.uvHighPct, "%")} high+ days`}
             color="#EF9F27"
           />
         </div>

@@ -44,20 +44,26 @@ def solar_to_uv(solar_mj):
     """Rough conversion from daily solar exposure (MJ/m²) to peak UV index.
 
     Empirical fit: AU summer ~28 MJ → UVI ~12-13; winter ~8 MJ → UVI ~3.
+    Returns None when the input is missing so the dashboard can render
+    a gap instead of falsely reporting UV 0.
     """
     if solar_mj is None:
-        return 0
+        return None
     uv = round(float(solar_mj) * 0.45)
     return max(0, min(14, uv))
+
+
+def _round1(v):
+    return round(float(v), 1) if v is not None else None
 
 
 def _row_to_daily(r):
     return {
         "day": r.observation_date.day,
         "date": r.observation_date.isoformat(),
-        "maxTemp": round(float(r.max_temp), 1) if r.max_temp is not None else None,
-        "minTemp": round(float(r.min_temp), 1) if r.min_temp is not None else None,
-        "rainfall": round(float(r.rainfall_mm), 1) if r.rainfall_mm is not None else 0.0,
+        "maxTemp": _round1(r.max_temp),
+        "minTemp": _round1(r.min_temp),
+        "rainfall": _round1(r.rainfall_mm) if r.rainfall_mm is not None else 0.0,
         "uvIndex": solar_to_uv(r.solar_exposure_mj),
     }
 
@@ -129,16 +135,16 @@ def station_yearly(station_number: int, year: int):
         out.append({
             "month": m0,
             "monthLabel": labels[m0],
-            "maxTemp": round(r.max_temp or 0, 1),
-            "maxTempMin": round(r.max_temp_min or 0, 1),
-            "maxTempMax": round(r.max_temp_max or 0, 1),
-            "minTemp": round(r.min_temp or 0, 1),
-            "minTempMin": round(r.min_temp_min or 0, 1),
-            "minTempMax": round(r.min_temp_max or 0, 1),
-            "rainfall": round(r.rainfall or 0, 1),
+            "maxTemp": _round1(r.max_temp),
+            "maxTempMin": _round1(r.max_temp_min),
+            "maxTempMax": _round1(r.max_temp_max),
+            "minTemp": _round1(r.min_temp),
+            "minTempMin": _round1(r.min_temp_min),
+            "minTempMax": _round1(r.min_temp_max),
+            "rainfall": _round1(r.rainfall),
             "uvIndex": solar_to_uv(r.solar),
-            "dryDaysPct": round((r.dry_frac or 0) * 100),
-            "uvHighPct": round((r.uv_high_frac or 0) * 100),
+            "dryDaysPct": round(r.dry_frac * 100) if r.dry_frac is not None else None,
+            "uvHighPct": round(r.uv_high_frac * 100) if r.uv_high_frac is not None else None,
         })
     return out
 

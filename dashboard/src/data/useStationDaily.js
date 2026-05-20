@@ -76,37 +76,39 @@ export function useStationYears(station) {
 }
 
 // Year-wide averages — used by KPI row when granularity = monthly.
+// Missing monthly values are excluded per-field so a sparse field
+// doesn't drag the year average toward zero.
 export function averageYearSeries(yearSeries) {
-  if (!yearSeries?.length) {
-    return {
-      maxTemp: 0, maxTempMin: 0, maxTempMax: 0,
-      minTemp: 0, minTempMin: 0, minTempMax: 0,
-      rainfall: 0, dryDaysPct: 0,
-      uvIndex: 0, uvHighPct: 0,
-    };
-  }
-  const n = yearSeries.length;
-  const avg = (k) =>
-    +(yearSeries.reduce((acc, r) => acc + r[k], 0) / n).toFixed(1);
-  const mn = (k) =>
-    +yearSeries.reduce((a, r) => Math.min(a, r[k]), Infinity).toFixed(1);
-  const mx = (k) =>
-    +yearSeries.reduce((a, r) => Math.max(a, r[k]), -Infinity).toFixed(1);
+  const empty = {
+    maxTemp: null, maxTempMin: null, maxTempMax: null,
+    minTemp: null, minTempMin: null, minTempMax: null,
+    rainfall: null, dryDaysPct: null,
+    uvIndex: null, uvHighPct: null,
+  };
+  if (!yearSeries?.length) return empty;
+
+  const present = (k) =>
+    yearSeries.map((r) => r[k]).filter((v) => v != null);
+  const avg1 = (vals) =>
+    vals.length ? +(vals.reduce((a, v) => a + v, 0) / vals.length).toFixed(1) : null;
+  const min1 = (vals) =>
+    vals.length ? +Math.min(...vals).toFixed(1) : null;
+  const max1 = (vals) =>
+    vals.length ? +Math.max(...vals).toFixed(1) : null;
+  const pctRound = (vals) =>
+    vals.length ? Math.round(vals.reduce((a, v) => a + v, 0) / vals.length) : null;
+
   return {
-    maxTemp: avg("maxTemp"),
-    maxTempMin: mn("maxTemp"),
-    maxTempMax: mx("maxTemp"),
-    minTemp: avg("minTemp"),
-    minTempMin: mn("minTemp"),
-    minTempMax: mx("minTemp"),
-    rainfall: avg("rainfall"),
-    dryDaysPct: Math.round(
-      yearSeries.reduce((a, r) => a + r.dryDaysPct, 0) / n,
-    ),
-    uvIndex: avg("uvIndex"),
-    uvHighPct: Math.round(
-      yearSeries.reduce((a, r) => a + r.uvHighPct, 0) / n,
-    ),
+    maxTemp: avg1(present("maxTemp")),
+    maxTempMin: min1(present("maxTempMin")),
+    maxTempMax: max1(present("maxTempMax")),
+    minTemp: avg1(present("minTemp")),
+    minTempMin: min1(present("minTempMin")),
+    minTempMax: max1(present("minTempMax")),
+    rainfall: avg1(present("rainfall")),
+    dryDaysPct: pctRound(present("dryDaysPct")),
+    uvIndex: avg1(present("uvIndex")),
+    uvHighPct: pctRound(present("uvHighPct")),
   };
 }
 
