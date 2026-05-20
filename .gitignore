@@ -1,6 +1,7 @@
 data/full/
 data/observed/
 data/strict/
+consolidated_data_base/
 **/__pycache__/
 .vercel/
 .env
