@@ -1,3 +1,5 @@
+import { coveredStateCodes } from "../../data/placeholderData";
+
 export default function Footer() {
   return (
     <footer
@@ -12,7 +14,7 @@ export default function Footer() {
           Marathon Weather Planner — FIT3163/FIT3161 — Monash University
         </p>
         <p className="text-[11px]" style={{ color: "var(--text-secondary)" }}>
-          Data: Bureau of Meteorology historical observations (VIC, NSW, TAS, NT) —
+          Data: Bureau of Meteorology historical observations ({coveredStateCodes.join(", ")}) —
           This is not a weather forecast service.
         </p>
       </div>

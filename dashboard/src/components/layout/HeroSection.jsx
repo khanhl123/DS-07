@@ -1,36 +1,36 @@
 import { ArrowRight, MapPin, LineChart, Target } from "lucide-react";
-
-const STEPS = [
-  {
-    id: "where",
-    number: "01",
-    label: "Step 1",
-    title: "Where",
-    icon: MapPin,
-    description:
-      "Browse 180 Bureau of Meteorology stations across VIC, NSW, TAS and NT on an interactive map. Filter to find candidate locations that match your race conditions.",
-  },
-  {
-    id: "when",
-    number: "02",
-    label: "Step 2",
-    title: "Analyse",
-    icon: LineChart,
-    description:
-      "Inspect historical patterns month-by-month — maximum and minimum temperature, rainfall and UV index — using charts and KPIs you can adjust.",
-  },
-  {
-    id: "suitability",
-    number: "03",
-    label: "Step 3",
-    title: "Plan",
-    icon: Target,
-    description:
-      "Get an explainable suitability score against your own thresholds, view daily traffic-light calendars, and export the analysis for stakeholders.",
-  },
-];
+import { stations, coveredStateCodes } from "../../data/placeholderData";
 
 export default function HeroSection({ onStart, onJumpTo }) {
+  const steps = [
+    {
+      id: "where",
+      number: "01",
+      label: "Step 1",
+      title: "Where",
+      icon: MapPin,
+      description: `Browse ${stations.length} Bureau of Meteorology stations across ${coveredStateCodes.join(", ")} on an interactive map. Filter to find candidate locations that match your race conditions.`,
+    },
+    {
+      id: "when",
+      number: "02",
+      label: "Step 2",
+      title: "Analyse",
+      icon: LineChart,
+      description:
+        "Inspect historical patterns month-by-month — maximum and minimum temperature, rainfall and UV index — using charts and KPIs you can adjust.",
+    },
+    {
+      id: "suitability",
+      number: "03",
+      label: "Step 3",
+      title: "Plan",
+      icon: Target,
+      description:
+        "Get an explainable suitability score against your own thresholds, view daily traffic-light calendars, and export the analysis for stakeholders.",
+    },
+  ];
+
   const handleStart = (event) => {
     event.preventDefault();
     onStart?.();
@@ -82,7 +82,7 @@ export default function HeroSection({ onStart, onJumpTo }) {
         </div>
 
         <ol className="hero-steps" aria-label="How it works">
-          {STEPS.map((step) => {
+          {steps.map((step) => {
             const Icon = step.icon;
             return (
               <li key={step.id} className="hero-step-card">

@@ -32,6 +32,28 @@ export const stations = STATIONS;
 
 export const stationsByNumber = Object.fromEntries(stations.map((s) => [s.n, s]));
 
+// Map BoM state codes to the full names used in au-states.json (STATE_NAME).
+export const STATE_FULL_NAMES = {
+  ACT: "Australian Capital Territory",
+  NSW: "New South Wales",
+  NT: "Northern Territory",
+  QLD: "Queensland",
+  SA: "South Australia",
+  TAS: "Tasmania",
+  VIC: "Victoria",
+  WA: "Western Australia",
+};
+
+// Per-state station counts derived from the generated STATIONS list, so UI
+// copy (CoverageHints, Footer, Hero) and the map's supported-state shading
+// stay accurate when pipeline/generate_stations_js.py regenerates the file.
+export const stationCountsByState = stations.reduce((acc, s) => {
+  acc[s.state] = (acc[s.state] ?? 0) + 1;
+  return acc;
+}, {});
+
+export const coveredStateCodes = Object.keys(stationCountsByState).sort();
+
 // Default selection: a well-known Melbourne station (Olympic Park area).
 export const DEFAULT_STATION_NUMBER =
   stations.find((s) => s.state === "VIC" && /melbourne|olympic/i.test(s.name))?.n ||

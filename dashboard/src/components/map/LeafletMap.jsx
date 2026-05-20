@@ -10,6 +10,7 @@ import auStates from "../../data/au-states.json";
 import {
   computeAdjustedScore,
   getSuitabilityColor,
+  STATE_FULL_NAMES,
 } from "../../data/placeholderData";
 import StationPopup from "./StationPopup";
 
@@ -19,29 +20,23 @@ const ATTRIBUTION = "© OpenStreetMap © CARTO";
 const AU_CENTER = [-25.5, 134.5];
 const AU_ZOOM = 4;
 
-const SUPPORTED_STATES = new Set([
-  "Victoria",
-  "New South Wales",
-  "Tasmania",
-  "Northern Territory",
-]);
-
-function stateStyle(feature) {
-  const name = feature?.properties?.STATE_NAME;
-  const supported = SUPPORTED_STATES.has(name);
-  return supported
-    ? {
-        fillColor: "#E1F5EE",
-        fillOpacity: 0.28,
-        color: "#9FE1CB",
-        weight: 1,
-      }
-    : {
-        fillColor: "#888888",
-        fillOpacity: 0.12,
-        color: "#C4C1B5",
-        weight: 0.5,
-      };
+function makeStateStyle(supportedNames) {
+  return (feature) => {
+    const name = feature?.properties?.STATE_NAME;
+    return supportedNames.has(name)
+      ? {
+          fillColor: "#E1F5EE",
+          fillOpacity: 0.28,
+          color: "#9FE1CB",
+          weight: 1,
+        }
+      : {
+          fillColor: "#888888",
+          fillOpacity: 0.12,
+          color: "#C4C1B5",
+          weight: 0.5,
+        };
+  };
 }
 
 export default function LeafletMap({
@@ -63,6 +58,12 @@ export default function LeafletMap({
       })),
     [stations, monthIndex, thresholds],
   );
+  const stateStyle = useMemo(() => {
+    const supported = new Set(
+      stations.map((s) => STATE_FULL_NAMES[s.state]).filter(Boolean),
+    );
+    return makeStateStyle(supported);
+  }, [stations]);
 
   return (
     <div

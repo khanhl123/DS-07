@@ -29,6 +29,7 @@ import StepBadge from "./components/common/StepBadge";
 import {
   stations,
   stationsByNumber,
+  coveredStateCodes,
   DEFAULT_STATION_NUMBER,
   DEFAULT_THRESHOLDS,
   MONTHS,
@@ -295,7 +296,7 @@ export default function App() {
             className="mt-1 text-sm"
             style={{ color: "var(--text-secondary)" }}
           >
-            Compare historical weather patterns across 180 BoM stations (VIC, NSW, TAS, NT).
+            Compare historical weather patterns across {stations.length} BoM stations ({coveredStateCodes.join(", ")}).
           </p>
         </header>
 
