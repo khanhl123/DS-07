@@ -75,6 +75,18 @@ export const SCORE_COLORS = {
 };
 
 // Threshold-aware score adjustment applied on top of a station's monthly base score.
+//
+// NOTE: this is a LINEAR APPROXIMATION around DEFAULT_THRESHOLDS, not a real
+// recompute. baseScore comes from monthlyScores precomputed against the
+// defaults by pipeline/generate_stations_js.py; the modifier here is a single
+// constant per slider state and gets added uniformly to every station. That
+// means *rank order on the map is preserved* under any slider configuration
+// (ties may appear when scores clamp at 0 or 100), but the absolute gap
+// between stations under unusual thresholds will be too small. For exact
+// per-day scoring against the user's thresholds, use scoreDayAgainstThresholds
+// below on daily rows. The approximation is intentional — recomputing
+// monthlyScores from daily data on every slider drag would require either
+// shipping all daily data to the client or hammering the API.
 export function computeAdjustedScore(baseScore, thresholds) {
   const d = DEFAULT_THRESHOLDS;
   let modifier = 0;

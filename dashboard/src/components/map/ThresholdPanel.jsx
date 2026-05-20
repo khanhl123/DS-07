@@ -67,6 +67,13 @@ export default function ThresholdPanel({
             >
               Set your weather limits — the map and score update instantly.
             </p>
+            <p
+              className="text-[10px] leading-tight mt-0.5"
+              style={{ color: "var(--text-muted)", fontStyle: "italic" }}
+            >
+              Map colours use a fast linear approximation around the defaults;
+              the per-station detail view uses exact daily data.
+            </p>
           </div>
         </div>
         <button
