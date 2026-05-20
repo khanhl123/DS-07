@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import {
   computeAdjustedScore,
+  EXPERT_VERDICT_COLORS,
+  EXPERT_VERDICT_LABELS,
   getSuitabilityColor,
   getSuitabilityLabel,
   MONTHS,
@@ -85,7 +87,7 @@ export default function StationPopup({ station, monthIndex, year, thresholds, on
           display: "flex",
           alignItems: "center",
           gap: 6,
-          marginBottom: 8,
+          marginBottom: 4,
         }}
       >
         <span
@@ -101,6 +103,31 @@ export default function StationPopup({ station, monthIndex, year, thresholds, on
           Score <strong>{score}</strong> — {label}
         </span>
       </div>
+      {summary?.marathonVerdict && (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+            marginBottom: 8,
+          }}
+          title="Independent expert verdict based on marathon-running research"
+        >
+          <span
+            aria-hidden="true"
+            style={{
+              width: 10,
+              height: 10,
+              borderRadius: 999,
+              background: EXPERT_VERDICT_COLORS[summary.marathonVerdict.colour],
+            }}
+          />
+          <span style={{ fontSize: 11, color: "var(--text-secondary)" }}>
+            Expert <strong>{summary.marathonVerdict.score}</strong> —{" "}
+            {EXPERT_VERDICT_LABELS[summary.marathonVerdict.colour]}
+          </span>
+        </div>
+      )}
       <button
         type="button"
         onClick={() => {

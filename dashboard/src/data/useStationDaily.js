@@ -121,6 +121,7 @@ export function summariseMonthly(daily) {
     minTemp: 0, minTempMin: 0, minTempMax: 0,
     rainfall: 0, dryDaysPct: 0,
     uvIndex: 0, uvHighPct: 0,
+    marathonVerdict: null,
   };
   if (!daily?.length) return empty;
 
@@ -151,5 +152,20 @@ export function summariseMonthly(daily) {
     dryDaysPct: pct(rainfallVals, (v) => v < 1),
     uvIndex: avg1(uvVals),
     uvHighPct: pct(uvVals, (v) => v >= 8),
+    marathonVerdict: aggregateMarathonVerdict(daily),
   };
+}
+
+// Aggregate per-day expert verdicts into a single {score, colour} for the
+// month. Days without a verdict (missing inputs) are excluded. The 40/70
+// bucket boundaries mirror models/suitability_score_model.py — keep these
+// in sync if you ever retune the Python thresholds.
+export function aggregateMarathonVerdict(daily) {
+  const scores = daily
+    .map((d) => d?.marathonVerdict?.score)
+    .filter((s) => s != null);
+  if (!scores.length) return null;
+  const avg = scores.reduce((a, v) => a + v, 0) / scores.length;
+  const colour = avg <= 40 ? "RED" : avg <= 70 ? "ORANGE" : "GREEN";
+  return { score: +avg.toFixed(1), colour };
 }

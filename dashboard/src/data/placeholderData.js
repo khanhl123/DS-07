@@ -16,6 +16,21 @@ export const DEFAULT_THRESHOLDS = {
   uv: 6,       // UV index
 };
 
+// Expert verdict bucket colours — mirror the model's RED/ORANGE/GREEN output
+// from models/suitability_score_model.py. Shared by the calendar dot and the
+// "Expert" row in station popups.
+export const EXPERT_VERDICT_COLORS = {
+  GREEN: "#59C459",
+  ORANGE: "#EFA827",
+  RED: "#E24B4A",
+};
+
+export const EXPERT_VERDICT_LABELS = {
+  GREEN: "Suitable",
+  ORANGE: "Mixed",
+  RED: "Unsuitable",
+};
+
 export const MONTHS = [
   "Jan", "Feb", "Mar", "Apr", "May", "Jun",
   "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",

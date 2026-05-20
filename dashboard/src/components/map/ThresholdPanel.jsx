@@ -72,7 +72,9 @@ export default function ThresholdPanel({
               style={{ color: "var(--text-muted)", fontStyle: "italic" }}
             >
               Map colours use a fast linear approximation around the defaults;
-              the per-station detail view uses exact daily data.
+              the per-station detail view uses exact daily data. Calendar dots
+              and popup badges show an independent expert verdict based on
+              marathon-running research.
             </p>
           </div>
         </div>

@@ -1,5 +1,9 @@
 import { describe, it, expect } from "vitest";
-import { summariseMonthly, averageYearSeries } from "../useStationDaily";
+import {
+  aggregateMarathonVerdict,
+  averageYearSeries,
+  summariseMonthly,
+} from "../useStationDaily";
 
 describe("summariseMonthly", () => {
   it("returns the zero-shape when no daily rows", () => {
@@ -31,6 +35,65 @@ describe("summariseMonthly", () => {
       { day: 5, rainfall: null },
     ];
     expect(summariseMonthly(daily).dryDaysPct).toBe(50);
+  });
+});
+
+describe("aggregateMarathonVerdict", () => {
+  it("returns null when no days carry a verdict", () => {
+    expect(aggregateMarathonVerdict([])).toBeNull();
+    expect(aggregateMarathonVerdict([{ day: 1 }, { day: 2 }])).toBeNull();
+    expect(
+      aggregateMarathonVerdict([{ day: 1, marathonVerdict: null }]),
+    ).toBeNull();
+  });
+
+  it("averages scores from days that have a verdict, ignoring the rest", () => {
+    const daily = [
+      { day: 1, marathonVerdict: { score: 80, colour: "GREEN" } },
+      { day: 2, marathonVerdict: { score: 60, colour: "ORANGE" } },
+      { day: 3, marathonVerdict: null },
+      { day: 4 },
+    ];
+    const v = aggregateMarathonVerdict(daily);
+    expect(v.score).toBe(70);
+    // 70 sits on the ORANGE side of the boundary (avg <= 70 -> ORANGE)
+    expect(v.colour).toBe("ORANGE");
+  });
+
+  it("maps average above 70 to GREEN and at-or-below 40 to RED", () => {
+    const green = aggregateMarathonVerdict([
+      { day: 1, marathonVerdict: { score: 85, colour: "GREEN" } },
+      { day: 2, marathonVerdict: { score: 75, colour: "GREEN" } },
+    ]);
+    expect(green.colour).toBe("GREEN");
+
+    const red = aggregateMarathonVerdict([
+      { day: 1, marathonVerdict: { score: 20, colour: "RED" } },
+      { day: 2, marathonVerdict: { score: 40, colour: "ORANGE" } },
+    ]);
+    expect(red.colour).toBe("RED");
+  });
+});
+
+describe("summariseMonthly with marathonVerdict", () => {
+  it("includes a null verdict when daily rows carry none", () => {
+    const s = summariseMonthly([
+      { day: 1, maxTemp: 25, minTemp: 12, rainfall: 0, uvIndex: 7 },
+    ]);
+    expect(s.marathonVerdict).toBeNull();
+  });
+
+  it("returns marathonVerdict null for the empty-month shape", () => {
+    expect(summariseMonthly([]).marathonVerdict).toBeNull();
+  });
+
+  it("aggregates per-day verdicts into a single bucket and score", () => {
+    const daily = [
+      { day: 1, marathonVerdict: { score: 90, colour: "GREEN" } },
+      { day: 2, marathonVerdict: { score: 80, colour: "GREEN" } },
+    ];
+    const s = summariseMonthly(daily);
+    expect(s.marathonVerdict).toEqual({ score: 85, colour: "GREEN" });
   });
 });
 

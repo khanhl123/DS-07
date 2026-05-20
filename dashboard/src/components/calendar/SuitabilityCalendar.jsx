@@ -1,4 +1,8 @@
-﻿import { suitabilityConfig } from "../../data/placeholderData";
+﻿import {
+  EXPERT_VERDICT_COLORS,
+  EXPERT_VERDICT_LABELS,
+  suitabilityConfig,
+} from "../../data/placeholderData";
 import { CheckCircle2, AlertTriangle, XCircle } from "lucide-react";
 
 const suitIcons = { suitable: CheckCircle2, mixed: AlertTriangle, not_suitable: XCircle };
@@ -52,7 +56,22 @@ export default function SuitabilityCalendar({ dailyData, selectedDay, onSelectDa
               >
                 <div className="flex items-start justify-between">
                   <span className={`text-xs font-semibold ${isSelected ? "text-[var(--accent-blue)]" : "text-[var(--text)]"}`}>{dayNum}</span>
-                  <Icon className={`h-3 w-3 ${cfg.textColor}`} aria-hidden="true" />
+                  <div className="flex items-center gap-1">
+                    {dayData?.marathonVerdict && (
+                      <span
+                        title={`Expert verdict: ${EXPERT_VERDICT_LABELS[dayData.marathonVerdict.colour]} (${dayData.marathonVerdict.score})`}
+                        aria-label={`Expert verdict ${EXPERT_VERDICT_LABELS[dayData.marathonVerdict.colour]}`}
+                        style={{
+                          width: 6,
+                          height: 6,
+                          borderRadius: 999,
+                          background: EXPERT_VERDICT_COLORS[dayData.marathonVerdict.colour],
+                          display: "inline-block",
+                        }}
+                      />
+                    )}
+                    <Icon className={`h-3 w-3 ${cfg.textColor}`} aria-hidden="true" />
+                  </div>
                 </div>
                 {dayData && (
                   <>

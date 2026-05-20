@@ -156,6 +156,7 @@ export default function App() {
           day: d.day,
           score,
           suitability: getSuitabilityKey(score),
+          marathonVerdict: d.marathonVerdict ?? null,
         };
       }),
     [dailyData, thresholds],
