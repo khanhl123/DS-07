@@ -22,7 +22,10 @@ export default function StationPopup({ station, monthIndex, year, thresholds, on
     let cancelled = false;
     const n = Number.parseInt(station.n, 10);
     fetch(`/api/stations/${n}/daily?year=${year}&month=${monthIndex + 1}`)
-      .then((r) => (r.ok ? r.json() : []))
+      .then((r) => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json();
+      })
       .then((rows) => {
         if (!cancelled) setCached({ key: cacheKey, value: summariseMonthly(rows) });
       })
@@ -32,8 +35,11 @@ export default function StationPopup({ station, monthIndex, year, thresholds, on
     return () => { cancelled = true; };
   }, [station, monthIndex, year, cacheKey]);
 
-  // Show Loading until the cached result matches the current station/month.
-  const summary = cached.key === cacheKey ? cached.value : null;
+  // Three states: in-flight (key mismatch), error (key match, value null),
+  // ok (key match, value present). Loading vs error must be distinguishable.
+  const cacheHit = cached.key === cacheKey;
+  const summary = cacheHit ? cached.value : null;
+  const isError = cacheHit && cached.value === null;
 
   return (
     <div style={{ minWidth: 200, fontFamily: "inherit" }}>
@@ -64,6 +70,10 @@ export default function StationPopup({ station, monthIndex, year, thresholds, on
               <strong>{summary.uvIndex}</strong>
             </div>
           </>
+        ) : isError ? (
+          <div style={{ gridColumn: "1 / -1", color: "var(--text-muted)" }}>
+            Data unavailable
+          </div>
         ) : (
           <div style={{ gridColumn: "1 / -1", color: "var(--text-muted)" }}>
             Loading…
