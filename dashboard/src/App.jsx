@@ -304,6 +304,7 @@ export default function App() {
           stations={stations}
           selectedStationNumber={selectedStationNumber}
           monthIndex={selectedMonthIndex}
+          year={selectedYear}
           thresholds={thresholds}
           onSelectStation={handleSelectStation}
         />

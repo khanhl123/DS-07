@@ -7,9 +7,7 @@ import {
 } from "../../data/placeholderData";
 import { summariseMonthly } from "../../data/useStationDaily";
 
-const POPUP_YEAR = 2024;
-
-export default function StationPopup({ station, monthIndex, thresholds, onSelect }) {
+export default function StationPopup({ station, monthIndex, year, thresholds, onSelect }) {
   const score = computeAdjustedScore(
     station.monthlyScores[monthIndex],
     thresholds,
@@ -18,12 +16,12 @@ export default function StationPopup({ station, monthIndex, thresholds, onSelect
   const label = getSuitabilityLabel(score);
 
   const [cached, setCached] = useState({ key: null, value: null });
-  const cacheKey = `${station.n}|${monthIndex}`;
+  const cacheKey = `${station.n}|${monthIndex}|${year}`;
 
   useEffect(() => {
     let cancelled = false;
     const n = Number.parseInt(station.n, 10);
-    fetch(`/api/stations/${n}/daily?year=${POPUP_YEAR}&month=${monthIndex + 1}`)
+    fetch(`/api/stations/${n}/daily?year=${year}&month=${monthIndex + 1}`)
       .then((r) => (r.ok ? r.json() : []))
       .then((rows) => {
         if (!cancelled) setCached({ key: cacheKey, value: summariseMonthly(rows) });
@@ -32,7 +30,7 @@ export default function StationPopup({ station, monthIndex, thresholds, onSelect
         if (!cancelled) setCached({ key: cacheKey, value: null });
       });
     return () => { cancelled = true; };
-  }, [station, monthIndex, cacheKey]);
+  }, [station, monthIndex, year, cacheKey]);
 
   // Show Loading until the cached result matches the current station/month.
   const summary = cached.key === cacheKey ? cached.value : null;
@@ -43,7 +41,7 @@ export default function StationPopup({ station, monthIndex, thresholds, onSelect
         {station.name}
       </div>
       <div style={{ fontSize: 10, color: "var(--text-secondary)", marginBottom: 8 }}>
-        {station.state} · Station #{station.n} · {MONTHS[monthIndex]} {POPUP_YEAR}
+        {station.state} · Station #{station.n} · {MONTHS[monthIndex]} {year}
       </div>
       <div
         style={{

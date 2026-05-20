@@ -43,6 +43,7 @@ export default function LeafletMap({
   stations,
   selectedStationNumber,
   monthIndex,
+  year,
   thresholds,
   onSelectStation,
 }) {
@@ -134,6 +135,7 @@ export default function LeafletMap({
                 <StationPopup
                   station={station}
                   monthIndex={monthIndex}
+                  year={year}
                   thresholds={thresholds}
                   onSelect={() => onSelectStation(station.n)}
                 />
