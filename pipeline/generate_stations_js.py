@@ -40,6 +40,10 @@ def score_day(max_t, min_t, rain, uv):
         return 0
     if max_t > DEFAULTS["maxTemp"]:
         score -= (max_t - DEFAULTS["maxTemp"]) * 5
+    # Intentional cold-weather floor independent of minTemp slider: days where
+    # the *daytime high* stays below 10 °C are unsuitable for most runners
+    # regardless of how low the user's minTemp tolerance is. Keep in sync with
+    # scoreDayAgainstThresholds in dashboard/src/data/placeholderData.js.
     if max_t < 10:
         score -= (10 - max_t) * 3
     if min_t < DEFAULTS["minTemp"]:

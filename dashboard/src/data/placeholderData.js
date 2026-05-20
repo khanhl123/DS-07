@@ -91,6 +91,10 @@ export function scoreDayAgainstThresholds(day, thresholds) {
   if (day.maxTemp > thresholds.maxTemp) {
     score -= (day.maxTemp - thresholds.maxTemp) * 5;
   }
+  // Intentional cold-weather floor independent of the minTemp slider: days
+  // where the *daytime high* stays below 10°C are unsuitable for most runners
+  // regardless of the user's minTemp tolerance. Keep in sync with score_day
+  // in pipeline/generate_stations_js.py.
   if (day.maxTemp < 10) {
     score -= (10 - day.maxTemp) * 3;
   }
