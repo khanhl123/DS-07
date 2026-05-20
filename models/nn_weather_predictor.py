@@ -1,8 +1,27 @@
 import argparse
 import csv
+import datetime
 import json
+import math
 import os
 import sys
+
+
+FEATURE_NAMES = ['latitude', 'longitude', 'day', 'month', 'year', 'sin_doy', 'cos_doy']
+
+
+def _doy(year, month, day):
+    """Day of year (1..366). Accepts floats (CSV-typed) or ints (CLI-typed)."""
+    return datetime.date(int(year), int(month), int(day)).timetuple().tm_yday
+
+
+def _cyclical(year, month, day):
+    """Sin/cos of normalized day-of-year angle so the model can learn the
+    annual cycle. December 31 and January 1 land next to each other in this
+    space, which raw (day, month) integers cannot express."""
+    angle = (_doy(year, month, day) / 365.0) * 2.0 * math.pi
+    return math.sin(angle), math.cos(angle)
+
 
 ATTRIBUTE_CONFIG = {
     'max_temp': {
@@ -98,7 +117,12 @@ def load_data(root_dirs, target_column):
                         target_value = parse_float(row[target_idx])
                         if None in (year, month, day, latitude, longitude, target_value):
                             continue
-                        X.append([latitude, longitude, day, month, year])
+                        try:
+                            sin_d, cos_d = _cyclical(year, month, day)
+                        except ValueError:
+                            # Invalid date components (e.g. day 31 in Feb) — skip
+                            continue
+                        X.append([latitude, longitude, day, month, year, sin_d, cos_d])
                         y.append(target_value)
                         valid_rows += 1
                 if valid_rows > 0:
@@ -175,11 +199,17 @@ def train_single(attribute, data_dir, data_dirs, model_file, norm_file, metadata
 
     X = np.array(X, dtype=np.float32)
     y = np.array(y, dtype=np.float32)
-    mean = X.mean(axis=0)
-    std = X.std(axis=0)
+    # Split first, then fit the scaler on the training set only. Fitting on
+    # the full X before splitting leaks validation-set statistics into the
+    # normalization and biases the validation RMSE downward.
+    X_train_raw, X_val_raw, y_train, y_val = train_test_split(
+        X, y, test_size=0.2, random_state=42,
+    )
+    mean = X_train_raw.mean(axis=0)
+    std = X_train_raw.std(axis=0)
     std[std == 0] = 1.0
-    X_norm = (X - mean) / std
-    X_train, X_val, y_train, y_val = train_test_split(X_norm, y, test_size=0.2, random_state=42)
+    X_train = (X_train_raw - mean) / std
+    X_val = (X_val_raw - mean) / std
 
     if args.epochs <= 1:
         print('Warning: training with --epochs 1 may not converge. Use a larger value like 100 or 300.')
@@ -201,6 +231,7 @@ def train_single(attribute, data_dir, data_dirs, model_file, norm_file, metadata
         'data_dir': data_dir,
         'trained_files': files_used,
         'total_training_examples': int(X.shape[0]),
+        'feature_names': FEATURE_NAMES,
         'hidden_layers': args.hidden_layers,
         'epochs': args.epochs,
         'batch_size': args.batch_size,
@@ -250,13 +281,48 @@ def predict(args):
 
     with open(args.norm_file, 'r', encoding='utf-8') as f:
         norm = json.load(f)
-    X_input = np.array([[args.latitude, args.longitude, args.day, args.month, args.year]], dtype=np.float32)
+    sin_d, cos_d = _cyclical(args.year, args.month, args.day)
+    X_input = np.array(
+        [[args.latitude, args.longitude, args.day, args.month, args.year, sin_d, cos_d]],
+        dtype=np.float32,
+    )
     mean = np.array(norm['mean'], dtype=np.float32)
     std = np.array(norm['std'], dtype=np.float32)
     X_norm = (X_input - mean) / std
     model = joblib.load(args.model_file)
     prediction = model.predict(X_norm)
     print(f"Predicted {config['label']}: {prediction[0]:.2f} {config['unit']}")
+
+
+def predict_one(attribute, latitude, longitude, year, month, day, output_dir='models'):
+    """Programmatic single-day prediction — the entry point used by the API.
+
+    Loads the model + norm from the conventional paths under output_dir and
+    builds the same 7-feature vector the training pipeline uses. Returns the
+    raw model output as a float; callers are responsible for any
+    unit-conversion (e.g. solar_to_uv) or clamping (e.g. rainfall >= 0).
+
+    Raises FileNotFoundError if the .joblib or norm.json is missing, so the
+    API can surface that as a 503 rather than a 500.
+    """
+    import numpy as np
+    import joblib
+
+    if attribute not in ATTRIBUTE_CONFIG:
+        raise ValueError(f"unknown attribute {attribute!r}")
+    model_file, norm_file, _ = get_default_paths(attribute, output_dir)
+    with open(norm_file, 'r', encoding='utf-8') as f:
+        norm = json.load(f)
+    sin_d, cos_d = _cyclical(year, month, day)
+    X = np.array(
+        [[latitude, longitude, day, month, year, sin_d, cos_d]],
+        dtype=np.float32,
+    )
+    mean = np.array(norm['mean'], dtype=np.float32)
+    std = np.array(norm['std'], dtype=np.float32)
+    X_norm = (X - mean) / std
+    model = joblib.load(model_file)
+    return float(model.predict(X_norm)[0])
 
 
 def main():
