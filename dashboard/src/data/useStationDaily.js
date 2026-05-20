@@ -111,33 +111,43 @@ export function averageYearSeries(yearSeries) {
 }
 
 // Month aggregate — used by KPI row in daily mode and station popups.
+// Missing values are excluded from each metric independently so a sparse
+// field doesn't drag the average toward zero or mark gaps as "dry".
 export function summariseMonthly(daily) {
-  if (!daily?.length) {
-    return {
-      maxTemp: 0, maxTempMin: 0, maxTempMax: 0,
-      minTemp: 0, minTempMin: 0, minTempMax: 0,
-      rainfall: 0, dryDaysPct: 0,
-      uvIndex: 0, uvHighPct: 0,
-    };
-  }
-  const n = daily.length;
-  const sum = (k) => daily.reduce((acc, d) => acc + (d[k] ?? 0), 0);
-  const min = (k) =>
-    daily.reduce((acc, d) => Math.min(acc, d[k] ?? Infinity), Infinity);
-  const max = (k) =>
-    daily.reduce((acc, d) => Math.max(acc, d[k] ?? -Infinity), -Infinity);
-  const dryDays = daily.filter((d) => (d.rainfall ?? 0) < 1).length;
-  const uvHigh = daily.filter((d) => (d.uvIndex ?? 0) >= 8).length;
+  const empty = {
+    maxTemp: 0, maxTempMin: 0, maxTempMax: 0,
+    minTemp: 0, minTempMin: 0, minTempMax: 0,
+    rainfall: 0, dryDaysPct: 0,
+    uvIndex: 0, uvHighPct: 0,
+  };
+  if (!daily?.length) return empty;
+
+  const present = (k) =>
+    daily.map((d) => d[k]).filter((v) => v != null);
+  const avg1 = (vals) =>
+    vals.length ? +(vals.reduce((a, v) => a + v, 0) / vals.length).toFixed(1) : 0;
+  const min1 = (vals) =>
+    vals.length ? +Math.min(...vals).toFixed(1) : 0;
+  const max1 = (vals) =>
+    vals.length ? +Math.max(...vals).toFixed(1) : 0;
+  const pct = (vals, pred) =>
+    vals.length ? Math.round((vals.filter(pred).length / vals.length) * 100) : 0;
+
+  const maxTempVals = present("maxTemp");
+  const minTempVals = present("minTemp");
+  const rainfallVals = present("rainfall");
+  const uvVals = present("uvIndex");
+
   return {
-    maxTemp: +(sum("maxTemp") / n).toFixed(1),
-    maxTempMin: +min("maxTemp").toFixed(1),
-    maxTempMax: +max("maxTemp").toFixed(1),
-    minTemp: +(sum("minTemp") / n).toFixed(1),
-    minTempMin: +min("minTemp").toFixed(1),
-    minTempMax: +max("minTemp").toFixed(1),
-    rainfall: +(sum("rainfall") / n).toFixed(1),
-    dryDaysPct: Math.round((dryDays / n) * 100),
-    uvIndex: +(sum("uvIndex") / n).toFixed(1),
-    uvHighPct: Math.round((uvHigh / n) * 100),
+    maxTemp: avg1(maxTempVals),
+    maxTempMin: min1(maxTempVals),
+    maxTempMax: max1(maxTempVals),
+    minTemp: avg1(minTempVals),
+    minTempMin: min1(minTempVals),
+    minTempMax: max1(minTempVals),
+    rainfall: avg1(rainfallVals),
+    dryDaysPct: pct(rainfallVals, (v) => v < 1),
+    uvIndex: avg1(uvVals),
+    uvHighPct: pct(uvVals, (v) => v >= 8),
   };
 }
