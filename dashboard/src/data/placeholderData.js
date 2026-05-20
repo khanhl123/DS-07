@@ -124,7 +124,6 @@ export function getSuitabilityKey(score) {
   return "not_suitable";
 }
 
-// Chip styling kept for backwards compatibility with existing RiskIndicator etc.
 export const suitabilityConfig = {
   suitable: {
     label: "Suitable",
