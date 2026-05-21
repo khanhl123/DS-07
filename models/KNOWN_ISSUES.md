@@ -35,7 +35,9 @@ reused — a full retrain is required.
 
 ## Status
 
-Both fixes were prototyped on `main` in commit `72c88c3` ("Phase A2"). The
-commit was reverted to ship Feature A faster with the existing artifacts.
-Re-apply that commit (or an equivalent) and retrain when revisiting model
-quality.
+Both fixes were prototyped on `main` in commit `72c88c3` ("Phase A2") and
+reverted in commit `2d70698` to ship Feature A faster with the existing
+artifacts. To revisit model quality: `git show 72c88c3` for the fixed
+training code, re-apply (or cherry-pick), then retrain — the feature
+vector grows from 5 to 7 dimensions, so the on-disk `.joblib` artifacts
+must be regenerated.

@@ -273,14 +273,16 @@ def predict_one(attribute, latitude, longitude, year, month, day, output_dir='mo
     """
     import numpy as np
     import joblib
+    if attribute not in ATTRIBUTE_CONFIG:
+        raise ValueError(f"unknown attribute {attribute!r}")
     model_file, norm_file, _ = get_default_paths(attribute, output_dir)
+    model = joblib.load(model_file)
     with open(norm_file, 'r', encoding='utf-8') as f:
         norm = json.load(f)
     X = np.array([[latitude, longitude, day, month, year]], dtype=np.float32)
     mean = np.array(norm['mean'], dtype=np.float32)
     std = np.array(norm['std'], dtype=np.float32)
     X_norm = (X - mean) / std
-    model = joblib.load(model_file)
     return float(model.predict(X_norm)[0])
 
 
