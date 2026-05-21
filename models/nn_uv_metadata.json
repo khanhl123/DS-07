@@ -1,0 +1,636 @@
+{
+  "attribute": "uv",
+  "target_column": "Daily global solar exposure (MJ/m*m)",
+  "data_dir": null,
+  "trained_files": [
+    {
+      "file": ".\\consolidated_data_base/UV\\Canberra Airport.csv",
+      "rows": 7014
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Canberra Aranda.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Canberra Botanic Garden.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Canberra Bruce.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Canberra Goolabri Dve.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Canberra Mt Stromlo.csv",
+      "rows": 7014
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Canberra Nicholls.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Canberra Parliament House.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Canberra Stromlo Forest.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Canberra Sutton The Anchorage.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Canberra Sutton.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Canberra Torrens.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Canberra Tuggeranong.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Darwin Acacia Hills.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Darwin Airport.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Darwin Awillaway Fly Creek.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Darwin Batchelor Airport.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Darwin Berrimah Radar.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Darwin Berry Springs Ranger.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Darwin Botanic Garden.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Darwin Bowls Club.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Darwin Buley Rockhole.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Darwin Camp Creek.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Darwin Channel Island.csv",
+      "rows": 7014
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Darwin Charles Darwin University.csv",
+      "rows": 7014
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Darwin CSIRO Berrimah.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Darwin East Arm.csv",
+      "rows": 7014
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Darwin East Point.csv",
+      "rows": 1170
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Darwin Elizabeth Valley.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Darwin Fort Hill Wharf.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Darwin Girraween.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Darwin Humpty Doo Collard Road.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Darwin Kangaroo Flats.csv",
+      "rows": 3361
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Darwin Marrara.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Darwin McMinns Lagoon.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Darwin Nightcliff Pool.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Darwin Nightcliff Sports Club.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Darwin Noonamah Airstrip.csv",
+      "rows": 5918
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Darwin Northlakes.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Darwin Pioneer Creek.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Darwin River Dam.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Darwin River Ridge.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Darwin Southport.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Darwin Territory Wildlife Park.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Darwin Turf Club.csv",
+      "rows": 4457
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Darwin Wagait Beach.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Hobart Bettery Point Jetty.csv",
+      "rows": 7014
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Hobart Bonnet Hill.csv",
+      "rows": 7014
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Hobart Botanical Garden.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Hobart Ellerslie Road.csv",
+      "rows": 7014
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Hobart Fern Tree.csv",
+      "rows": 2631
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Hobart Glenorchy.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Hobart Hillborough Road.csv",
+      "rows": 7014
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Hobart Kingston.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Hobart Knocklofty.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Hobart Kunanyi.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Hobart Mount Nelson.csv",
+      "rows": 7014
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Hobart Mount Wellington.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Hobart Reserve Bank.csv",
+      "rows": 7014
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Hobart Risdon Vale.csv",
+      "rows": 3361
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Hobart South Lea.csv",
+      "rows": 7014
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Hobart Strickland Reserve.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Hobart Taroona.csv",
+      "rows": 7014
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Hobart Turnip Fields.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Hobart Waterworks Reserve.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Melbourne Airport.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Melbourne Altona.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Melbourne Botanical Garden.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Melbourne Broadmeadows Radar.csv",
+      "rows": 3361
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Melbourne Caulfield Racecourse.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Melbourne Essendon Airport.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Melbourne Fawkner Beacon.csv",
+      "rows": 7014
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Melbourne Flemington Racecourse.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Melbourne Greenvale Reservoir.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Melbourne Harthorn.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Melbourne Laverton.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Melbourne Olympic Park.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Melbourne Preston Reservoir.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Melbourne Rockbank (Melton).csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Melbourne St Kilda Harbour.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV\\Melbourne Sunbury.csv",
+      "rows": 13223
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Adelaide Airport Alert.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Adelaide Airport.csv",
+      "rows": 447
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Adelaide Beaumont.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Adelaide Belair.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Adelaide Brownhill Creek.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Adelaide Burnside.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Adelaide Clarence Gardens Bowling Club.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Adelaide Felixstow.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Adelaide Glen Osmond.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Adelaide Greenacres.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Adelaide Keswick.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Adelaide Magill.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Adelaide Morphettville Racecourse.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Adelaide Morphettville.csv",
+      "rows": 7022
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Adelaide North.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Adelaide Regency Park.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Adelaide Roberts Street.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Adelaide Rosslyn Park.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Adelaide Someton Park.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Adelaide Stonyfell.csv",
+      "rows": 5926
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Adelaide West Terrace.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Brisbane Aero.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Brisbane Alderley.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Brisbane Botanic Gardens.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Brisbane Eagle Farm Racecourse.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Brisbane Eleanor Schonell Bridge.csv",
+      "rows": 5926
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Brisbane Fort Lytton.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Brisbane Hope Banks Beacons.csv",
+      "rows": 1908
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Brisbane Inner Reciprocal Marker.csv",
+      "rows": 7022
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Brisbane Manly Railway Station.csv",
+      "rows": 7022
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Brisbane Mt Gravatt Alert.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Brisbane Ormiston College.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Brisbane Toombul Bowls Club.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Brisbane.csv",
+      "rows": 12756
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Perth Airport.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Perth Fremantle.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Perth Herne Hill.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Perth Jandakot Aero.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Perth Maida Vale.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Perth Metro.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Perth Millendon.csv",
+      "rows": 3369
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Perth Subiaco Treatment Plant.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Perth Swanbourne.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Perth Whiteman Park.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Sydney Abbotsford.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Sydney Airport North.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Sydney Botanic Gardens.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Sydney Broadmeadows.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Sydney Canterbury Racecourse.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Sydney Centennial Park.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Sydney Concord Golf Club.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Sydney Concord.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Sydney Dundee Karinga.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Sydney Ebor.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Sydney Fort Denison.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Sydney Glen Elgin.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Sydney Glen Innes.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Sydney Guyra.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Sydney Harbour.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Sydney Kookabookra.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Sydney Macquarie Park.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Sydney Marrickville Golf Club.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Sydney Newton Boyd.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Sydney North Ryde Golf.csv",
+      "rows": 7022
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Sydney Observatory Hill.csv",
+      "rows": 3369
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Sydney Olympic Park AWS.csv",
+      "rows": 7022
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Sydney Olympic Park.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Sydney Parramatta North.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Sydney Pinkett.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Sydney Randwick Racecourse.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Sydney Randwick st.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Sydney Rose Bay.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Sydney Upper Parramatta River.csv",
+      "rows": 13231
+    },
+    {
+      "file": ".\\consolidated_data_base/UV 2\\Sydney Wattle Dale.csv",
+      "rows": 13231
+    }
+  ],
+  "total_training_examples": 1804968,
+  "hidden_layers": [
+    128,
+    64,
+    32
+  ],
+  "epochs": 10,
+  "batch_size": 32,
+  "learning_rate": 0.001
+}

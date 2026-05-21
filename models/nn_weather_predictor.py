@@ -259,6 +259,31 @@ def predict(args):
     print(f"Predicted {config['label']}: {prediction[0]:.2f} {config['unit']}")
 
 
+def predict_one(attribute, latitude, longitude, year, month, day, output_dir='models'):
+    """Programmatic single-day prediction for API use.
+
+    Loads model + norm from default paths in ``output_dir`` and returns a
+    float prediction. Raises FileNotFoundError if the model artifact is
+    missing.
+
+    NOTE: uses the 5-feature input [lat, lon, day, month, year] to match the
+    models shipped on disk. Known limitations of these models (data leakage
+    in training, no cyclical encoding) are documented in
+    ``models/KNOWN_ISSUES.md``.
+    """
+    import numpy as np
+    import joblib
+    model_file, norm_file, _ = get_default_paths(attribute, output_dir)
+    with open(norm_file, 'r', encoding='utf-8') as f:
+        norm = json.load(f)
+    X = np.array([[latitude, longitude, day, month, year]], dtype=np.float32)
+    mean = np.array(norm['mean'], dtype=np.float32)
+    std = np.array(norm['std'], dtype=np.float32)
+    X_norm = (X - mean) / std
+    model = joblib.load(model_file)
+    return float(model.predict(X_norm)[0])
+
+
 def main():
     parser = argparse.ArgumentParser(description='Train or predict weather attributes using latitude, longitude, day, month, year.')
     subparsers = parser.add_subparsers(dest='command', required=True)

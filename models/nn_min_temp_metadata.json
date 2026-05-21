@@ -1,0 +1,816 @@
+{
+  "attribute": "min_temp",
+  "target_column": "Minimum temperature (Degree C)",
+  "data_dir": null,
+  "trained_files": [
+    {
+      "file": ".\\consolidated_data_base/min temp\\Canberra Airport.csv",
+      "rows": 6650
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Canberra Batemans Bay.csv",
+      "rows": 12859
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Canberra Braidwood Racecourse.csv",
+      "rows": 15050
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Canberra Braidwood.csv",
+      "rows": 3683
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Canberra Burrinjuck Dam.csv",
+      "rows": 22355
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Canberra Cabramurra.csv",
+      "rows": 11033
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Canberra Cooma Visitors Centre.csv",
+      "rows": 19433
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Canberra Crookwell Post Office.csv",
+      "rows": 4017
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Canberra Goulburn Airport.csv",
+      "rows": 13224
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Canberra Goulburn TAFE.csv",
+      "rows": 20164
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Canberra Mount Ginini.csv",
+      "rows": 8111
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Canberra Nerriga AWS.csv",
+      "rows": 4823
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Canberra Nerriga.csv",
+      "rows": 14915
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Canberra Tuggeranong.csv",
+      "rows": 11033
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Darwin Airport.csv",
+      "rows": 31121
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Darwin Batchelor Airport.csv",
+      "rows": 12494
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Darwin Berrimah Research.csv",
+      "rows": 424
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Darwin Black Point.csv",
+      "rows": 11792
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Darwin Channel Point.csv",
+      "rows": 11763
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Darwin Charles Point.csv",
+      "rows": 4458
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Darwin Croket Island Airport.csv",
+      "rows": 5189
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Darwin Douglas River Research Farm.csv",
+      "rows": 21260
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Darwin Dum In Mirrie Airstrip.csv",
+      "rows": 10302
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Darwin East Point.csv",
+      "rows": 1171
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Darwin Jabiru Airport.csv",
+      "rows": 20164
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Darwin Kangaroo Flat.csv",
+      "rows": 3362
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Darwin Knuckey Lagoon.csv",
+      "rows": 1901
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Darwin Mango Farm.csv",
+      "rows": 13144
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Darwin Middle Point Rangers.csv",
+      "rows": 12084
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Darwin Middle Point.csv",
+      "rows": 9206
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Darwin Mount Bundey North.csv",
+      "rows": 3362
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Darwin Mount Bundey South.csv",
+      "rows": 3362
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Darwin Murganella Airstrip.csv",
+      "rows": 5189
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Darwin Noonamah Airstrip.csv",
+      "rows": 4823
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Darwin Oenpelli Airport.csv",
+      "rows": 5189
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Darwin Oenpelli.csv",
+      "rows": 18375
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Darwin Pine Creek Council.csv",
+      "rows": 4199
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Darwin Pine Creek.csv",
+      "rows": 517
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Darwin Pirlangimpi Airport.csv",
+      "rows": 17242
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Darwin Point Fawcett.csv",
+      "rows": 10643
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Darwin Point Stuart.csv",
+      "rows": 8476
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Darwin Port Keats Airport.csv",
+      "rows": 10667
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Darwin Tipperary.csv",
+      "rows": 942
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Hobart Airport West.csv",
+      "rows": 23591
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Hobart Airport.csv",
+      "rows": 3362
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Hobart Bothwell.csv",
+      "rows": 8870
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Hobart Bushy Park.csv",
+      "rows": 25277
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Hobart Campania.csv",
+      "rows": 9572
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Hobart Cape Bruny Lighthouse.csv",
+      "rows": 35916
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Hobart Cape Bruny.csv",
+      "rows": 10667
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Hobart Dennes Point.csv",
+      "rows": 5189
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Hobart Dover.csv",
+      "rows": 13589
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Hobart Dunalley.csv",
+      "rows": 5189
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Hobart Ellerslie Road.csv",
+      "rows": 52670
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Hobart Grove.csv",
+      "rows": 8111
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Hobart Hartz Mountain.csv",
+      "rows": 11024
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Hobart Hastings Chalet.csv",
+      "rows": 11261
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Hobart Kunanyi.csv",
+      "rows": 23816
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Hobart Maria Island.csv",
+      "rows": 8111
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Hobart Melton Mowbray.csv",
+      "rows": 639
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Hobart Mount Wellington.csv",
+      "rows": 761
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Hobart Oatlands Post Office.csv",
+      "rows": 13400
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Hobart Orford.csv",
+      "rows": 20257
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Hobart Ouse Fire Station.csv",
+      "rows": 10302
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Hobart Ross.csv",
+      "rows": 12128
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Hobart Scotts Peak Dam.csv",
+      "rows": 10302
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Hobart Spring Bay.csv",
+      "rows": 4823
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Hobart Swansea.csv",
+      "rows": 5554
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Hobart Tasman Island.csv",
+      "rows": 9206
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Hobart Tunnack Fire Station.csv",
+      "rows": 10667
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Hobart Warra.csv",
+      "rows": 8111
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Melbourne Airport.csv",
+      "rows": 20529
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Melbourne Breakwater.csv",
+      "rows": 5554
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Melbourne Cerberus.csv",
+      "rows": 13224
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Melbourne Coldstream.csv",
+      "rows": 11763
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Melbourne Dandenong.csv",
+      "rows": 3977
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Melbourne Durdidwarrah.csv",
+      "rows": 12992
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Melbourne Essendon Airport.csv",
+      "rows": 31852
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Melbourne Ferny Creek.csv",
+      "rows": 5554
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Melbourne Frankston Ballam Park.csv",
+      "rows": 2267
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Melbourne Frankston Beach.csv",
+      "rows": 9723
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Melbourne Kyneton.csv",
+      "rows": 2610
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Melbourne Laverton.csv",
+      "rows": 30391
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Melbourne Macedon Forestry.csv",
+      "rows": 11230
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Melbourne Moorabbin Airport.csv",
+      "rows": 20164
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Melbourne Mornington.csv",
+      "rows": 4991
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Melbourne Olympic Park.csv",
+      "rows": 4823
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Melbourne Point Cook.csv",
+      "rows": 1900
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Melbourne Point Wilson.csv",
+      "rows": 5380
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Melbourne Powelltown.csv",
+      "rows": 4950
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Melbourne Scoreby Research Insitute.csv",
+      "rows": 22352
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Melbourne She Oaks.csv",
+      "rows": 13224
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Melbourne South Channel Island.csv",
+      "rows": 1666
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Melbourne Tarrawarra Monastery.csv",
+      "rows": 4138
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Melbourne Toolangi.csv",
+      "rows": 15301
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Melbourne Viewbank.csv",
+      "rows": 9937
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Melbourne Wallan.csv",
+      "rows": 12128
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp\\Melbournre Avalon Airport.csv",
+      "rows": 11398
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Adelaide Airport M.o.csv",
+      "rows": 26016
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Adelaide Airport.csv",
+      "rows": 448
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Adelaide Edinburgh.csv",
+      "rows": 19807
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Adelaide Edithburgh.csv",
+      "rows": 15424
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Adelaide Hindmarsh Island AWS.csv",
+      "rows": 8484
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Adelaide Kapunda.csv",
+      "rows": 2948
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Adelaide Kuitpo Forest Reserve.csv",
+      "rows": 10310
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Adelaide Lenswood.csv",
+      "rows": 11990
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Adelaide Mount Barker.csv",
+      "rows": 25285
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Adelaide Mount Crawford AWS.csv",
+      "rows": 11771
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Adelaide Mount Lofty.csv",
+      "rows": 13232
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Adelaide Murray Bridge Pallamana Aerodrome.csv",
+      "rows": 7388
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Adelaide Murray Bridge.csv",
+      "rows": 21998
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Adelaide Myponga.csv",
+      "rows": 3934
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Adelaide Noarlunga.csv",
+      "rows": 9580
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Adelaide Nuriootpa PIRSA.csv",
+      "rows": 11041
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Adelaide Parafield Airport.csv",
+      "rows": 31860
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Adelaide Parawa.csv",
+      "rows": 11771
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Adelaide Price.csv",
+      "rows": 22357
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Adelaide Roseworthy.csv",
+      "rows": 10675
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Adelaide Strathalbyn Racecourse.csv",
+      "rows": 11041
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Adelaide Strathalbyn.csv",
+      "rows": 16252
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Adelaide Tailem Bend.csv",
+      "rows": 6939
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Adelaide Victor Harbor.csv",
+      "rows": 9214
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Adelaide West Terrace.csv",
+      "rows": 50852
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Brisbane Aero.csv",
+      "rows": 11771
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Brisbane Amberley.csv",
+      "rows": 31129
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Brisbane Archerfield Airport.csv",
+      "rows": 31860
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Brisbane Baroon Pocket Dam.csv",
+      "rows": 3376
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Brisbane Beaudesert Drunley Street.csv",
+      "rows": 7023
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Brisbane Beerburrum Forest Station.csv",
+      "rows": 9945
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Brisbane Canungra.csv",
+      "rows": 3005
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Brisbane Cape Moreton Lighthouse.csv",
+      "rows": 42452
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Brisbane Coolangatta.csv",
+      "rows": 16154
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Brisbane Gold Coast Seaway.csv",
+      "rows": 12501
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Brisbane Greenbank.csv",
+      "rows": 3005
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Brisbane Hinze Dam.csv",
+      "rows": 6437
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Brisbane Ipswich.csv",
+      "rows": 10623
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Brisbane Logan City Water Treatment Plant.csv",
+      "rows": 12500
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Brisbane Mt Tamborine.csv",
+      "rows": 7929
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Brisbane Murwillumbah.csv",
+      "rows": 19807
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Brisbane Nambbour Daff.csv",
+      "rows": 7023
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Brisbane Point Lookout.csv",
+      "rows": 10675
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Brisbane Redland.csv",
+      "rows": 4101
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Brisbane Somerset Dam.csv",
+      "rows": 4929
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Brisbane Sunshine Coast Airport.csv",
+      "rows": 11771
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Brisbane University of Queensland.csv",
+      "rows": 22363
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Brisbane.csv",
+      "rows": 9571
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Perth Airport.csv",
+      "rows": 30034
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Perth Bakers Hill.csv",
+      "rows": 7486
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Perth Beverley.csv",
+      "rows": 21268
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Perth Bickley.csv",
+      "rows": 11771
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Perth Brookton.csv",
+      "rows": 21995
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Perth Dwellingup.csv",
+      "rows": 25285
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Perth Fremantle.csv",
+      "rows": 5995
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Perth Garden Island.csv",
+      "rows": 9214
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Perth Gingin Aero.csv",
+      "rows": 11041
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Perth Goomalling.csv",
+      "rows": 21629
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Perth Halls Head.csv",
+      "rows": 7670
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Perth Jandakot Aero.csv",
+      "rows": 13597
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Perth Karnet.csv",
+      "rows": 22363
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Perth Lancelin.csv",
+      "rows": 3005
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Perth Mandurah.csv",
+      "rows": 9214
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Perth Metro.csv",
+      "rows": 11771
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Perth Millendon.csv",
+      "rows": 3370
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Perth Muresk Institude.csv",
+      "rows": 9118
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Perth Northham.csv",
+      "rows": 43548
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Perth Pearce.csv",
+      "rows": 31495
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Perth Rottnest Island.csv",
+      "rows": 15789
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Perth Subiaco Treatment Plant.csv",
+      "rows": 4716
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Perth Swanbourne.csv",
+      "rows": 12136
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Perth Wandering.csv",
+      "rows": 10310
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Perth Wokalup.csv",
+      "rows": 13088
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Perth York.csv",
+      "rows": 11041
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Sydney Airport.csv",
+      "rows": 31860
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Sydney Badgerys Creek.csv",
+      "rows": 11406
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Sydney Bankstown.csv",
+      "rows": 21268
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Sydney Bellambi.csv",
+      "rows": 10675
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Sydney Camden Airport.csv",
+      "rows": 20172
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Sydney Campbelltown.csv",
+      "rows": 7388
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Sydney Canterbury Racecourse.csv",
+      "rows": 11406
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Sydney Centennial Park.csv",
+      "rows": 2737
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Sydney Gosford.csv",
+      "rows": 4831
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Sydney Harbour.csv",
+      "rows": 10675
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Sydney Holsworthy Defence.csv",
+      "rows": 3370
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Sydney Holsworthy.csv",
+      "rows": 5197
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Sydney Horsley Park.csv",
+      "rows": 10675
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Sydney Lucas Heights.csv",
+      "rows": 7670
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Sydney Macquarie Park.csv",
+      "rows": 9070
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Sydney Mangrove Mountain.csv",
+      "rows": 11771
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Sydney Marsfield.csv",
+      "rows": 669
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Sydney Observatory Hill.csv",
+      "rows": 3370
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Sydney Olympic Park.csv",
+      "rows": 5562
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Sydney Orchard Hills Treatment Works.csv",
+      "rows": 6756
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Sydney Parramatta North.csv",
+      "rows": 21633
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Sydney Penrith Lakes.csv",
+      "rows": 11406
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Sydney Prospect Reservoir.csv",
+      "rows": 19505
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Sydney Richmond RAAF.csv",
+      "rows": 12136
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Sydney Richmond UWS.csv",
+      "rows": 3833
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Sydney Seven Hills.csv",
+      "rows": 4017
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Sydney Terrey Hills.csv",
+      "rows": 8119
+    },
+    {
+      "file": ".\\consolidated_data_base/min temp 2\\Sydney Western Sydney Airport.csv",
+      "rows": 448
+    }
+  ],
+  "total_training_examples": 2422695,
+  "hidden_layers": [
+    128,
+    64,
+    32
+  ],
+  "epochs": 10,
+  "batch_size": 32,
+  "learning_rate": 0.001
+}
