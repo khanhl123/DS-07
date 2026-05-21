@@ -1,5 +1,39 @@
 import { describe, it, expect } from "vitest";
-import { averageYearSeries, summariseMonthly } from "../useStationDaily";
+import {
+  averageYearSeries,
+  buildDailyUrl,
+  buildPredictedUrl,
+  summariseMonthly,
+} from "../useStationDaily";
+
+describe("buildDailyUrl", () => {
+  it("returns null without a station", () => {
+    expect(buildDailyUrl(null, 0, 2025)).toBeNull();
+  });
+
+  it("strips leading zeros from station number", () => {
+    // "066062" → 66062 (Number.parseInt) so the backend ID matches the DB.
+    const url = buildDailyUrl({ n: "066062" }, 5, 2024);
+    expect(url).toBe("/api/stations/66062/daily?year=2024&month=6");
+  });
+});
+
+describe("buildPredictedUrl", () => {
+  it("returns null without a station", () => {
+    expect(buildPredictedUrl(null, 0, 2027)).toBeNull();
+  });
+
+  it("includes lat/lng so the backend can call NN models without a stations table", () => {
+    const url = buildPredictedUrl(
+      { n: "066062", lat: -33.87, lng: 151.21 },
+      5, // monthIndex 5 → June
+      2027,
+    );
+    expect(url).toBe(
+      "/api/stations/66062/predicted?year=2027&month=6&lat=-33.87&lng=151.21",
+    );
+  });
+});
 
 describe("summariseMonthly", () => {
   it("returns the zero-shape when no daily rows", () => {

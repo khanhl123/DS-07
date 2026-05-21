@@ -42,6 +42,7 @@ import {
 } from "./data/placeholderData";
 import {
   useStationDaily,
+  useStationPredicted,
   useStationYearly,
   useStationYears,
   summariseMonthly,
@@ -78,11 +79,30 @@ export default function App() {
     [selectedStationNumber],
   );
 
+  // Reset on data-source change so a prior prediction can't leak across
+  // selections.
+  const [predictRequested, setPredictRequested] = useState(false);
+  useEffect(() => {
+    setPredictRequested(false);
+  }, [selectedStationNumber, selectedMonthIndex, selectedYear, granularity]);
+
+  const historical = useStationDaily(
+    selectedStation,
+    selectedMonthIndex,
+    selectedYear,
+    !predictRequested,
+  );
+  const predicted = useStationPredicted(
+    selectedStation,
+    selectedMonthIndex,
+    selectedYear,
+    predictRequested,
+  );
   const {
     data: dailyData,
     loading: dailyLoading,
     error: dailyError,
-  } = useStationDaily(selectedStation, selectedMonthIndex, selectedYear);
+  } = predictRequested ? predicted : historical;
   const monthlySummary = useMemo(() => summariseMonthly(dailyData), [dailyData]);
 
   const {
@@ -215,7 +235,9 @@ export default function App() {
 
     try {
       const lines = [
-        "Marathon Weather Planner — Historical Summary",
+        predictRequested
+          ? "Marathon Weather Planner — NN-Predicted Summary"
+          : "Marathon Weather Planner — Historical Summary",
         "=============================================",
         `Station: ${selectedStation.name} (#${selectedStation.n}, ${selectedStation.state})`,
         `Month: ${MONTH_NAMES_LONG[selectedMonthIndex]}`,
@@ -233,7 +255,9 @@ export default function App() {
         `Avg rainfall: ${summary.rainfall}mm — ${summary.dryDaysPct}% dry days`,
         `Avg UV index: ${summary.uvIndex} — ${summary.uvHighPct}% high+ days`,
         "",
-        "Historical analysis only — not a weather forecast.",
+        predictRequested
+          ? "NN-predicted weather — not a recorded observation."
+          : "Historical analysis only — not a weather forecast.",
       ];
       const blob = new Blob([lines.join("\n")], {
         type: "text/plain;charset=utf-8",
@@ -241,7 +265,7 @@ export default function App() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `marathon-historical-${selectedStation.n}-${MONTHS[selectedMonthIndex]}-${selectedYear}.txt`;
+      a.download = `marathon-${predictRequested ? "predicted" : "historical"}-${selectedStation.n}-${MONTHS[selectedMonthIndex]}-${selectedYear}.txt`;
       a.style.display = "none";
       document.body.appendChild(a);
       a.click();
@@ -357,7 +381,7 @@ export default function App() {
               className="mt-2 text-xl font-bold"
               style={{ color: "var(--text-primary)" }}
             >
-              Historical weather patterns —{" "}
+              {predictRequested ? "NN-predicted weather" : "Historical weather patterns"} —{" "}
               <span style={{ color: "var(--primary)" }}>
                 {selectedStation.name}
               </span>
@@ -366,8 +390,9 @@ export default function App() {
               className="mt-1 text-sm"
               style={{ color: "var(--text-secondary)" }}
             >
-              Past observations, not a forecast. Showing{" "}
-              {MONTH_NAMES_LONG[selectedMonthIndex]} historical data.
+              {predictRequested
+                ? `NN-predicted daily weather for ${MONTH_NAMES_LONG[selectedMonthIndex]}; extrapolated from historical training data.`
+                : `Past observations, not a forecast. Showing ${MONTH_NAMES_LONG[selectedMonthIndex]} historical data.`}
             </p>
           </div>
           <span
@@ -520,6 +545,7 @@ export default function App() {
             dailyData={dailyData}
             thresholds={thresholds}
             monthIndex={selectedMonthIndex}
+            isPredicted={predictRequested}
           />
         )}
 
@@ -529,6 +555,8 @@ export default function App() {
           empty={hasNoData}
           timeframe={timeframeLabel}
           stationName={selectedStation.name}
+          canPredict={granularity === "daily" && !predictRequested}
+          onPredict={() => setPredictRequested(true)}
         />
 
         {/* KPI row */}
@@ -565,9 +593,9 @@ export default function App() {
 
         {/* Chart grid */}
         <div className="mt-4 grid gap-3 md:grid-cols-2">
-          <MaxTempChart data={chartData} xKey={chartXKey} />
-          <MinTempChart data={chartData} xKey={chartXKey} />
-          <RainfallChart data={chartData} xKey={chartXKey} />
+          <MaxTempChart data={chartData} xKey={chartXKey} isPredicted={predictRequested} />
+          <MinTempChart data={chartData} xKey={chartXKey} isPredicted={predictRequested} />
+          <RainfallChart data={chartData} xKey={chartXKey} isPredicted={predictRequested} />
           <UVIndexChart data={chartData} xKey={chartXKey} />
         </div>
 
@@ -593,7 +621,7 @@ export default function App() {
             </>
           ) : (
             <>
-              Based on these historical patterns, here's the overall suitability
+              Based on these {predictRequested ? "predicted" : "historical"} patterns, here's the overall suitability
               assessment for <strong>{selectedStation.name}</strong> in{" "}
               <strong>{MONTH_NAMES_LONG[selectedMonthIndex]}</strong>.
             </>
@@ -607,14 +635,14 @@ export default function App() {
       <section id="suitability" className="section-card" aria-labelledby="suit-title">
         <header className="mb-4">
           <StepBadge variant="suitability">
-            Step 3: is it historically suitable?
+            Step 3: {predictRequested ? "will conditions be suitable?" : "is it historically suitable?"}
           </StepBadge>
           <h2
             id="suit-title"
             className="mt-2 text-xl font-bold"
             style={{ color: "var(--text-primary)" }}
           >
-            Historical suitability —{" "}
+            {predictRequested ? "Predicted suitability" : "Historical suitability"} —{" "}
             <span style={{ color: "var(--primary)" }}>
               {selectedStation.name}, {MONTH_NAMES_LONG[selectedMonthIndex]}
             </span>
@@ -623,7 +651,9 @@ export default function App() {
             className="mt-1 text-sm"
             style={{ color: "var(--text-secondary)" }}
           >
-            Assessment based on recorded max/min temperature, rainfall, and UV index observations.
+            {predictRequested
+              ? "Assessment based on NN-predicted max/min temperature, rainfall, and UV index."
+              : "Assessment based on recorded max/min temperature, rainfall, and UV index observations."}
           </p>
         </header>
 
@@ -664,7 +694,9 @@ export default function App() {
               className="mt-3 max-w-[210px] text-center text-[11px]"
               style={{ color: "var(--text-secondary)" }}
             >
-              Based on historical observations only, not a forecast.
+              {predictRequested
+                ? "Based on NN-predicted weather; uncertainty is higher than historical estimates."
+                : "Based on historical observations only, not a forecast."}
             </p>
           </div>
 
@@ -676,7 +708,7 @@ export default function App() {
               detail={`avg ${summary.maxTemp}°C`}
               assessment={summary.maxTemp > thresholds.maxTemp
                 ? "Above your threshold — heat stress risk elevated (Ely et al. marathon pacing literature)."
-                : "Within your threshold — acceptable historical range."}
+                : "Within your threshold — acceptable range."}
             />
             <RiskRow
               color="#3B8BD4"
@@ -691,8 +723,8 @@ export default function App() {
               label="Rainfall"
               detail={`avg ${summary.rainfall} mm — ${summary.dryDaysPct}% dry`}
               assessment={summary.rainfall > thresholds.rainfall
-                ? "Historically wet — plan for track and spectator conditions."
-                : "Low historical rainfall — generally dry."}
+                ? "Wet conditions — plan for track and spectator considerations."
+                : "Low rainfall — generally dry."}
             />
             <RiskRow
               color="#EF9F27"
@@ -733,7 +765,7 @@ export default function App() {
                 className="text-sm font-semibold"
                 style={{ color: "var(--text-primary)" }}
               >
-                Daily historical suitability — {MONTH_NAMES_LONG[selectedMonthIndex]}
+                Daily {predictRequested ? "predicted" : "historical"} suitability — {MONTH_NAMES_LONG[selectedMonthIndex]}
               </h4>
               <p className="text-[11px]" style={{ color: "var(--text-secondary)" }}>
                 Each cell coloured by the day's score against your thresholds.
@@ -745,6 +777,7 @@ export default function App() {
               onSelectDay={() => {}}
               selectedMonth={selectedMonthIndex + 1}
               selectedYear={selectedYear}
+              isPredicted={predictRequested}
             />
           </div>
         )}
@@ -759,11 +792,9 @@ export default function App() {
             color: "var(--text-muted)",
           }}
         >
-          This tool analyses historical BoM observations — it does not predict future weather.
-          Suitability scores reflect past patterns using max temp, min temp, rainfall, and UV.
-          Humidity and wind are not available. UV index is estimated from BoM daily solar
-          exposure (MJ/m²) using a linear conversion; treat it as an indicative peak, not an
-          official UV measurement. Use alongside official forecasts and local knowledge.
+          {predictRequested
+            ? "Currently showing NN-predicted weather, extrapolated from historical BoM training data — not real observations. Suitability scores reflect predicted conditions using max temp, min temp, rainfall, and UV. Humidity and wind are not predicted. UV index is estimated from predicted solar exposure (MJ/m²) using a linear conversion. Treat predictions as indicative; uncertainty grows with distance from observed years. Use alongside official forecasts and local knowledge."
+            : "This tool analyses historical BoM observations — it does not predict future weather. Suitability scores reflect past patterns using max temp, min temp, rainfall, and UV. Humidity and wind are not available. UV index is estimated from BoM daily solar exposure (MJ/m²) using a linear conversion; treat it as an indicative peak, not an official UV measurement. Use alongside official forecasts and local knowledge."}
         </div>
 
         <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
@@ -940,7 +971,10 @@ function RiskRow({ color, label, detail, assessment }) {
   );
 }
 
-function DataStatusBanner({ loading, error, empty, timeframe, stationName }) {
+function DataStatusBanner({
+  loading, error, empty, timeframe, stationName,
+  canPredict = false, onPredict,
+}) {
   if (!loading && !error && !empty) return null;
   let bg = "var(--surface)";
   let border = "1px solid var(--border)";
@@ -959,6 +993,7 @@ function DataStatusBanner({ loading, error, empty, timeframe, stationName }) {
     color = "#7a5a0a";
     text = `No observations recorded for ${stationName} in ${timeframe}.`;
   }
+  const showPredictButton = empty && canPredict && !loading && !error;
   return (
     <div
       role={error ? "alert" : "status"}
@@ -968,9 +1003,32 @@ function DataStatusBanner({ loading, error, empty, timeframe, stationName }) {
         border,
         borderRadius: "var(--radius)",
         color,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        gap: 8,
       }}
     >
-      {text}
+      <span>{text}</span>
+      {showPredictButton && (
+        <button
+          type="button"
+          onClick={onPredict}
+          style={{
+            padding: "4px 10px",
+            fontSize: 11,
+            fontWeight: 600,
+            background: "var(--primary)",
+            color: "#fff",
+            border: "none",
+            borderRadius: 4,
+            cursor: "pointer",
+            whiteSpace: "nowrap",
+          }}
+        >
+          Predict with NN model
+        </button>
+      )}
     </div>
   );
 }

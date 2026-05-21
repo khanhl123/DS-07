@@ -9,6 +9,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from models.suitability_score_model import (
     get_suitability_colour,
     get_suitability_score,
+    get_suitability_verdict,
 )
 
 
@@ -160,3 +161,26 @@ def test_score_bucket_consistent(inputs):
         assert colour == "ORANGE"
     else:
         assert colour == "GREEN"
+
+
+# ---------------------------------------------------------------------------
+# Verdict combines score + colour in one call
+# ---------------------------------------------------------------------------
+
+@pytest.mark.parametrize(
+    "inputs",
+    [
+        (11.0, 8.0, 3.0, 0.5),
+        (22.0, 16.0, 7.0, 1.0),
+        (35.0, 25.0, 11.0, 5.0),
+    ],
+)
+def test_verdict_matches_individual_functions(inputs):
+    verdict = get_suitability_verdict(*inputs)
+    assert verdict["score"] == get_suitability_score(*inputs)
+    assert verdict["colour"] == get_suitability_colour(*inputs)
+
+
+def test_verdict_propagates_validation_errors():
+    with pytest.raises(ValueError):
+        get_suitability_verdict(float("nan"), 10.0, 5.0, 0.0)

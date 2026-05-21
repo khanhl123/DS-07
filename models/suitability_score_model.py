@@ -308,18 +308,37 @@ def get_suitability_score(max_temp_c, min_temp_c, uv_index, rainfall_mm):
     )
 
 
+def _score_to_colour(score):
+    if score <= 40:
+        return "RED"
+    if score <= 70:
+        return "ORANGE"
+    return "GREEN"
+
+
 def get_suitability_colour(max_temp_c, min_temp_c, uv_index, rainfall_mm):
     """
     Returns 'RED', 'ORANGE', or 'GREEN' based on marathon suitability.
 
     See get_suitability_score for parameter and exception semantics.
     """
+    return _score_to_colour(
+        get_suitability_score(max_temp_c, min_temp_c, uv_index, rainfall_mm)
+    )
+
+
+def get_suitability_verdict(max_temp_c, min_temp_c, uv_index, rainfall_mm):
+    """
+    Returns {"score": float, "colour": str} in a single pass.
+
+    Equivalent to calling get_suitability_score and get_suitability_colour
+    together, but computes the score only once. Use this when you need both
+    values (e.g. an API response carrying score and colour for the same row).
+
+    See get_suitability_score for parameter and exception semantics.
+    """
     score = get_suitability_score(max_temp_c, min_temp_c, uv_index, rainfall_mm)
-    if score <= 40:
-        return "RED"
-    if score <= 70:
-        return "ORANGE"
-    return "GREEN"
+    return {"score": score, "colour": _score_to_colour(score)}
 
 
 # ---------------------------------------------------------------------------

@@ -131,6 +131,125 @@ class TestRowToDaily:
         assert out["minTemp"] == 12.0
 
 
+class TestStationPredicted:
+    """Endpoint test for /predicted — mocks predict_one so no real NN load."""
+
+    def setup_method(self):
+        from fastapi.testclient import TestClient
+        self.client = TestClient(main.app)
+
+    def _fake_predict(self, attribute, lat, lng, year, month, day):
+        # Deterministic per-attribute values so we can assert response shape.
+        return {
+            "max_temp": 22.0,
+            "min_temp": 12.0,
+            "uv": 10.0,   # solar MJ → ~UV 5
+            "rainfall": 0.5,
+        }[attribute]
+
+    def test_returns_one_row_per_day(self, monkeypatch):
+        monkeypatch.setattr(main, "predict_one", self._fake_predict)
+        # April has 30 days
+        resp = self.client.get(
+            "/api/stations/66062/predicted",
+            params={"year": main.PREDICTED_MAX_YEAR, "month": 4,
+                    "lat": -33.87, "lng": 151.21},
+        )
+        assert resp.status_code == 200
+        body = resp.json()
+        assert len(body) == 30
+        assert body[0]["day"] == 1
+        assert body[-1]["day"] == 30
+
+    def test_row_shape_and_predicted_flag(self, monkeypatch):
+        monkeypatch.setattr(main, "predict_one", self._fake_predict)
+        resp = self.client.get(
+            "/api/stations/66062/predicted",
+            params={"year": main.PREDICTED_MAX_YEAR, "month": 6,
+                    "lat": -33.87, "lng": 151.21},
+        )
+        row = resp.json()[0]
+        assert row["isPredicted"] is True
+        assert row["date"] == f"{main.PREDICTED_MAX_YEAR:04d}-06-01"
+        assert row["maxTemp"] == 22.0
+        assert row["minTemp"] == 12.0
+        assert row["rainfall"] == 0.5
+        # solar 10 MJ * 0.45 = 4.5 → round() uses banker's rounding → 4
+        assert row["uvIndex"] == 4
+        assert row["marathonVerdict"] is not None
+
+    def test_negative_rainfall_clamped_to_zero(self, monkeypatch):
+        def negative_rain(attribute, *_args, **_kwargs):
+            return {"max_temp": 20.0, "min_temp": 10.0, "uv": 8.0, "rainfall": -3.0}[attribute]
+        monkeypatch.setattr(main, "predict_one", negative_rain)
+        resp = self.client.get(
+            "/api/stations/1/predicted",
+            params={"year": main.PREDICTED_MAX_YEAR, "month": 1,
+                    "lat": 0.0, "lng": 0.0},
+        )
+        assert resp.json()[0]["rainfall"] == 0.0
+
+    def test_invalid_month_returns_400(self, monkeypatch):
+        monkeypatch.setattr(main, "predict_one", self._fake_predict)
+        resp = self.client.get(
+            "/api/stations/1/predicted",
+            params={"year": main.PREDICTED_MAX_YEAR, "month": 13,
+                    "lat": 0.0, "lng": 0.0},
+        )
+        assert resp.status_code == 400
+
+    def test_year_beyond_cap_returns_400(self, monkeypatch):
+        monkeypatch.setattr(main, "predict_one", self._fake_predict)
+        resp = self.client.get(
+            "/api/stations/1/predicted",
+            params={"year": main.PREDICTED_MAX_YEAR + 1, "month": 1,
+                    "lat": 0.0, "lng": 0.0},
+        )
+        assert resp.status_code == 400
+
+    def test_year_below_min_returns_400(self, monkeypatch):
+        monkeypatch.setattr(main, "predict_one", self._fake_predict)
+        resp = self.client.get(
+            "/api/stations/1/predicted",
+            params={"year": main.PREDICTED_MIN_YEAR - 1, "month": 1,
+                    "lat": 0.0, "lng": 0.0},
+        )
+        assert resp.status_code == 400
+
+    def test_missing_model_returns_503(self, monkeypatch):
+        def missing(*_args, **_kwargs):
+            raise FileNotFoundError("nn_max_temp_model.joblib not found")
+        monkeypatch.setattr(main, "predict_one", missing)
+        resp = self.client.get(
+            "/api/stations/1/predicted",
+            params={"year": main.PREDICTED_MAX_YEAR, "month": 1,
+                    "lat": 0.0, "lng": 0.0},
+        )
+        assert resp.status_code == 503
+
+    def test_os_error_returns_503(self, monkeypatch):
+        def io_fail(*_args, **_kwargs):
+            raise OSError("disk read failure")
+        monkeypatch.setattr(main, "predict_one", io_fail)
+        resp = self.client.get(
+            "/api/stations/1/predicted",
+            params={"year": main.PREDICTED_MAX_YEAR, "month": 1,
+                    "lat": 0.0, "lng": 0.0},
+        )
+        assert resp.status_code == 503
+
+    def test_unexpected_error_returns_503(self, monkeypatch):
+        def boom(*_args, **_kwargs):
+            raise RuntimeError("sklearn version mismatch")
+        monkeypatch.setattr(main, "predict_one", boom)
+        resp = self.client.get(
+            "/api/stations/1/predicted",
+            params={"year": main.PREDICTED_MAX_YEAR, "month": 1,
+                    "lat": 0.0, "lng": 0.0},
+        )
+        assert resp.status_code == 503
+
+
 class TestResolveCorsOrigins:
     def setup_method(self):
         # Each test gets a clean env

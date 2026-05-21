@@ -19,10 +19,14 @@ _REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__f
 if _REPO_ROOT not in sys.path:
     sys.path.insert(0, _REPO_ROOT)
 
-from models.suitability_score_model import (
-    get_suitability_colour,
-    get_suitability_score,
-)
+from models.suitability_score_model import get_suitability_verdict
+from models.nn_weather_predictor import predict_one
+
+# NN trained through ~2024; beyond 2026 is unreliable. /years uses this cap
+# to decide which future years (if any) appear in the dropdown.
+PREDICTED_MAX_YEAR = 2026
+# Sanity floor — /daily covers historical years; /predicted is for future use.
+PREDICTED_MIN_YEAR = 1950
 
 load_dotenv()
 
@@ -92,11 +96,10 @@ def _marathon_verdict(max_temp, min_temp, uv_index, rainfall_mm):
     if any(v is None for v in (max_temp, min_temp, uv_index, rainfall_mm)):
         return None
     try:
-        score = get_suitability_score(max_temp, min_temp, uv_index, rainfall_mm)
-        colour = get_suitability_colour(max_temp, min_temp, uv_index, rainfall_mm)
+        verdict = get_suitability_verdict(max_temp, min_temp, uv_index, rainfall_mm)
     except ValueError:
         return None
-    return {"score": round(score, 1), "colour": colour}
+    return {"score": round(verdict["score"], 1), "colour": verdict["colour"]}
 
 
 def _row_to_daily(r):
@@ -205,7 +208,13 @@ def station_yearly(station_number: int, year: int):
 
 @app.get("/api/stations/{station_number}/years")
 def station_years(station_number: int):
-    """Distinct years available for a station — to populate the year selector."""
+    """Distinct years available for a station — to populate the year selector.
+
+    Prepends future years up to ``PREDICTED_MAX_YEAR`` (served by NN
+    prediction) in descending order ahead of the historical years. Once the
+    real-world calendar passes the cap, ``future`` becomes empty and the
+    dropdown is historical-only.
+    """
     with engine.connect() as conn:
         rows = conn.execute(
             text("""
@@ -216,4 +225,57 @@ def station_years(station_number: int):
             """),
             {"n": station_number},
         ).all()
-    return [r.y for r in rows]
+    historical = [r.y for r in rows]
+    current = date.today().year
+    future = list(range(PREDICTED_MAX_YEAR, current, -1))
+    return future + historical
+
+
+@app.get("/api/stations/{station_number}/predicted")
+def station_predicted(
+    station_number: int, year: int, month: int, lat: float, lng: float,
+):
+    """NN-predicted daily weather for a future month.
+
+    Mirrors the /daily response shape so the frontend can swap data sources
+    transparently. Each row is flagged ``isPredicted=True`` so the UI can
+    badge it. ``station_number`` is accepted for URL symmetry but not used —
+    the models predict from lat/lng directly.
+    """
+    if not 1 <= month <= 12:
+        raise HTTPException(400, "month must be 1..12")
+    if year > PREDICTED_MAX_YEAR:
+        raise HTTPException(
+            400, f"prediction not allowed beyond year {PREDICTED_MAX_YEAR}"
+        )
+    if year < PREDICTED_MIN_YEAR:
+        raise HTTPException(
+            400, f"prediction not allowed before year {PREDICTED_MIN_YEAR}"
+        )
+    days = monthrange(year, month)[1]
+    out = []
+    for day in range(1, days + 1):
+        try:
+            max_t = predict_one("max_temp", lat, lng, year, month, day)
+            min_t = predict_one("min_temp", lat, lng, year, month, day)
+            solar = predict_one("uv", lat, lng, year, month, day)
+            rain_raw = predict_one("rainfall", lat, lng, year, month, day)
+        except (FileNotFoundError, OSError):
+            raise HTTPException(503, "Prediction models not available")
+        except Exception:
+            raise HTTPException(503, "Prediction service error")
+        max_temp = round(max_t, 1)
+        min_temp = round(min_t, 1)
+        rainfall = round(max(0.0, rain_raw), 1)
+        uv = solar_to_uv(solar)
+        out.append({
+            "day": day,
+            "date": f"{year:04d}-{month:02d}-{day:02d}",
+            "maxTemp": max_temp,
+            "minTemp": min_temp,
+            "rainfall": rainfall,
+            "uvIndex": uv,
+            "marathonVerdict": _marathon_verdict(max_temp, min_temp, uv, rainfall),
+            "isPredicted": True,
+        })
+    return out

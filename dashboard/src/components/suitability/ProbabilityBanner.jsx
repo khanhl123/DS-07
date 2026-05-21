@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { Info } from "lucide-react";
 import { MONTH_NAMES_LONG } from "../../data/placeholderData";
 
-export default function ProbabilityBanner({ dailyData, thresholds, monthIndex }) {
+export default function ProbabilityBanner({ dailyData, thresholds, monthIndex, isPredicted = false }) {
   const pct = useMemo(() => {
     if (!dailyData?.length) return 0;
     const good = dailyData.filter(
@@ -33,7 +33,8 @@ export default function ProbabilityBanner({ dailyData, thresholds, monthIndex })
       <div className="min-w-0">
         <div className="flex flex-wrap items-center gap-2">
           <p className="text-sm" style={{ color: "var(--text-primary)" }}>
-            of historical {MONTH_NAMES_LONG[monthIndex]} days at this station had{" "}
+            of {isPredicted ? "NN-predicted" : "historical"}{" "}
+            {MONTH_NAMES_LONG[monthIndex]} days at this station had{" "}
             <strong>suitable conditions</strong> based on your thresholds.
           </p>
           <span className="relative inline-flex group">
@@ -69,8 +70,10 @@ export default function ProbabilityBanner({ dailyData, thresholds, monthIndex })
           </span>
         </div>
         <p className="text-[11px]" style={{ color: "var(--text-secondary)" }}>
-          Recalculates when you adjust thresholds above. Based on historical
-          observations only, not a forecast.
+          Recalculates when you adjust thresholds above.{" "}
+          {isPredicted
+            ? "Based on NN-predicted weather; uncertainty is higher than historical estimates."
+            : "Based on historical observations only, not a forecast."}
         </p>
       </div>
     </div>

@@ -10,7 +10,7 @@ import {
 
 const COLOR = "#1D9E75";
 
-export default function RainfallChart({ data, xKey, height = 200 }) {
+export default function RainfallChart({ data, xKey, height = 200, isPredicted = false }) {
   return (
     <div
       className="subcard"
@@ -31,7 +31,7 @@ export default function RainfallChart({ data, xKey, height = 200 }) {
           className="text-[11px]"
           style={{ color: "var(--text-secondary)" }}
         >
-          mm — historical daily totals
+          mm — {isPredicted ? "NN-predicted" : "historical"} daily totals
         </div>
       </div>
       <ResponsiveContainer width="100%" height={height}>

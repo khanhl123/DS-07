@@ -7,7 +7,7 @@ import { CheckCircle2, AlertTriangle, XCircle } from "lucide-react";
 
 const suitIcons = { suitable: CheckCircle2, mixed: AlertTriangle, not_suitable: XCircle };
 
-export default function SuitabilityCalendar({ dailyData, selectedDay, onSelectDay, selectedMonth, selectedYear }) {
+export default function SuitabilityCalendar({ dailyData, selectedDay, onSelectDay, selectedMonth, selectedYear, isPredicted = false }) {
   const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
   const firstDay = new Date(selectedYear, selectedMonth - 1, 1).getDay();
   const daysInMonth = new Date(selectedYear, selectedMonth, 0).getDate();
@@ -19,7 +19,27 @@ export default function SuitabilityCalendar({ dailyData, selectedDay, onSelectDa
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <h4 className="text-sm font-semibold text-[var(--text)]">{monthNames[selectedMonth - 1]} {selectedYear}</h4>
+        <h4 className="text-sm font-semibold text-[var(--text)]">
+          {monthNames[selectedMonth - 1]} {selectedYear}
+          {isPredicted && (
+            <span
+              title="NN-predicted weather, not a recorded observation"
+              style={{
+                marginLeft: 8,
+                padding: "1px 6px",
+                fontSize: 9,
+                background: "var(--primary)",
+                color: "#fff",
+                borderRadius: 4,
+                fontWeight: 700,
+                letterSpacing: "0.04em",
+                verticalAlign: "middle",
+              }}
+            >
+              PREDICTED
+            </span>
+          )}
+        </h4>
         <div className="flex items-center gap-3" aria-label="Legend">
           {Object.entries(suitabilityConfig).map(([key, cfg]) => (
             <div key={key} className="flex items-center gap-1.5 text-[10px] font-medium text-[var(--text-secondary)]">

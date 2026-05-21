@@ -1,5 +1,6 @@
 import argparse
 import csv
+import functools
 import json
 import os
 import sys
@@ -259,6 +260,25 @@ def predict(args):
     print(f"Predicted {config['label']}: {prediction[0]:.2f} {config['unit']}")
 
 
+@functools.lru_cache(maxsize=8)
+def _load_model(attribute, output_dir):
+    """Cache-loaded (model, mean, std) for one attribute.
+
+    Why: a single /predicted API request calls predict_one ~120 times
+    (4 attrs × ~30 days). Reloading the .joblib + norm.json each call
+    measured ~2s per month; caching cuts it to one disk read per process.
+    """
+    import numpy as np
+    import joblib
+    model_file, norm_file, _ = get_default_paths(attribute, output_dir)
+    model = joblib.load(model_file)
+    with open(norm_file, 'r', encoding='utf-8') as f:
+        norm = json.load(f)
+    mean = np.array(norm['mean'], dtype=np.float32)
+    std = np.array(norm['std'], dtype=np.float32)
+    return model, mean, std
+
+
 def predict_one(attribute, latitude, longitude, year, month, day, output_dir='models'):
     """Programmatic single-day prediction for API use.
 
@@ -272,16 +292,10 @@ def predict_one(attribute, latitude, longitude, year, month, day, output_dir='mo
     ``models/KNOWN_ISSUES.md``.
     """
     import numpy as np
-    import joblib
     if attribute not in ATTRIBUTE_CONFIG:
         raise ValueError(f"unknown attribute {attribute!r}")
-    model_file, norm_file, _ = get_default_paths(attribute, output_dir)
-    model = joblib.load(model_file)
-    with open(norm_file, 'r', encoding='utf-8') as f:
-        norm = json.load(f)
+    model, mean, std = _load_model(attribute, output_dir)
     X = np.array([[latitude, longitude, day, month, year]], dtype=np.float32)
-    mean = np.array(norm['mean'], dtype=np.float32)
-    std = np.array(norm['std'], dtype=np.float32)
     X_norm = (X - mean) / std
     return float(model.predict(X_norm)[0])
 

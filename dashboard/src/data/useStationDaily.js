@@ -49,13 +49,31 @@ function useFetched(url, fallback) {
 
 const EMPTY_ARRAY = [];
 
-// Daily array for one station + month.
-// Shape: [{ day, date, maxTemp, minTemp, rainfall, uvIndex }, ...]
-export function useStationDaily(station, monthIndex, year) {
-  const url = station
-    ? `/api/stations/${Number.parseInt(station.n, 10)}/daily` +
-      `?year=${year}&month=${monthIndex + 1}`
-    : null;
+export function buildDailyUrl(station, monthIndex, year) {
+  if (!station) return null;
+  return (
+    `/api/stations/${Number.parseInt(station.n, 10)}/daily` +
+    `?year=${year}&month=${monthIndex + 1}`
+  );
+}
+
+export function buildPredictedUrl(station, monthIndex, year) {
+  if (!station) return null;
+  return (
+    `/api/stations/${Number.parseInt(station.n, 10)}/predicted` +
+    `?year=${year}&month=${monthIndex + 1}` +
+    `&lat=${station.lat}&lng=${station.lng}`
+  );
+}
+
+export function useStationDaily(station, monthIndex, year, enabled = true) {
+  const url = enabled ? buildDailyUrl(station, monthIndex, year) : null;
+  return useFetched(url, EMPTY_ARRAY);
+}
+
+// Default enabled=false: prediction is expensive, callers must opt in.
+export function useStationPredicted(station, monthIndex, year, enabled = false) {
+  const url = enabled ? buildPredictedUrl(station, monthIndex, year) : null;
   return useFetched(url, EMPTY_ARRAY);
 }
 

@@ -1,6 +1,6 @@
 import TrendChartWrapper from "./TrendChartWrapper";
 
-export default function MinTempChart({ data, xKey }) {
+export default function MinTempChart({ data, xKey, isPredicted = false }) {
   return (
     <TrendChartWrapper
       data={data}
@@ -8,7 +8,7 @@ export default function MinTempChart({ data, xKey }) {
       xKey={xKey}
       label="Min temperature"
       unit="°C"
-      sublabel="°C — historical daily readings"
+      sublabel={`°C — ${isPredicted ? "NN-predicted" : "historical"} daily readings`}
       color="#3B8BD4"
     />
   );
