@@ -9,11 +9,17 @@
 
 import { STATIONS } from "./stations.js";
 
+// Defaults aligned with the expert model knee points in
+// models/suitability_score_model.py (WMA / WHO research-backed boundaries):
+//   maxTemp 18 → expert score drops 78→60 above this (WMA yellow→red)
+//   minTemp 5  → expert score drops 95→65 below this
+//   rainfall 5 → expert score drops 65→42 above this
+//   uv 5       → expert score drops 78→52 above this (WHO moderate→high)
 export const DEFAULT_THRESHOLDS = {
-  maxTemp: 26, // °C — day is unsuitable above this
-  minTemp: 8,  // °C — day is unsuitable below this
-  rainfall: 4, // mm
-  uv: 6,       // UV index
+  maxTemp: 18, // °C — day is unsuitable above this
+  minTemp: 5,  // °C — day is unsuitable below this
+  rainfall: 5, // mm
+  uv: 5,       // UV index
 };
 
 // Expert verdict bucket colours — mirror the model's RED/ORANGE/GREEN output
