@@ -17,6 +17,12 @@ export default function ThresholdPanel({
   const updated = (patch) => onChange({ ...thresholds, ...patch });
   const reset = () => onChange({ ...DEFAULT_THRESHOLDS });
 
+  const isDefault =
+    thresholds.maxTemp === DEFAULT_THRESHOLDS.maxTemp &&
+    thresholds.minTemp === DEFAULT_THRESHOLDS.minTemp &&
+    thresholds.rainfall === DEFAULT_THRESHOLDS.rainfall &&
+    thresholds.uv === DEFAULT_THRESHOLDS.uv;
+
   const liveScore = selectedStation
     ? computeAdjustedScore(
         selectedStation.monthlyScores[selectedMonthIndex],
@@ -78,22 +84,24 @@ export default function ThresholdPanel({
             </p>
           </div>
         </div>
-        <button
-          type="button"
-          onClick={reset}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold"
-          style={{
-            border: "1px solid var(--primary-border)",
-            borderRadius: "var(--radius)",
-            background: "#fff",
-            color: "var(--text-secondary)",
-            cursor: "pointer",
-            whiteSpace: "nowrap",
-          }}
-        >
-          <RotateCcw className="h-3 w-3" />
-          Reset to defaults
-        </button>
+        {!isDefault && (
+          <button
+            type="button"
+            onClick={reset}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold"
+            style={{
+              border: "1px solid var(--primary-border)",
+              borderRadius: "var(--radius)",
+              background: "#fff",
+              color: "var(--text-secondary)",
+              cursor: "pointer",
+              whiteSpace: "nowrap",
+            }}
+          >
+            <RotateCcw className="h-3 w-3" />
+            Reset to defaults
+          </button>
+        )}
       </div>
 
       {/* ── Sliders + live score ── */}
