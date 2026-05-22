@@ -83,6 +83,21 @@ export default function CoverageHints() {
           />
           Dim + dotted = no score for this month; coloured by the station's historical average
         </span>
+        <span className="flex items-center gap-1.5">
+          <span
+            aria-hidden="true"
+            style={{
+              width: 10,
+              height: 10,
+              borderRadius: 999,
+              background: "#D8D5CB",
+              opacity: 0.7,
+              border: "1.5px solid #fff",
+              boxShadow: "0 0 0 0.5px #999",
+            }}
+          />
+          Grey = station is missing 3+ weather attributes (data too sparse to score)
+        </span>
       </div>
     </div>
   );

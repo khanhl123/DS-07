@@ -10,6 +10,7 @@ import auStates from "../../data/au-states.json";
 import {
   getSuitabilityColor,
   getStationAverageScore,
+  SCORE_COLORS,
   STATE_FULL_NAMES,
 } from "../../data/placeholderData";
 import StationPopup from "./StationPopup";
@@ -102,27 +103,35 @@ export default function LeafletMap({
           const isSelected = station.n === selectedStationNumber;
           const score = station.monthlyScores[monthIndex];
           const confidence = station.monthlyConfidence?.[monthIndex] ?? null;
-          // When the selected month is unscorable, fall back to the station's
-          // climatology average so the marker still conveys where this place
-          // sits overall — dimmed + dotted so it's clearly not month-specific.
-          const isFallback = score == null;
-          const displayScore = isFallback
-            ? getStationAverageScore(station)
-            : score;
-          const fill = getSuitabilityColor(displayScore);
-          const fillOpacity = isFallback ? 0.35 : 0.9;
-          // Two non-colour cues, distinct from each other so they don't blur
-          // together at small marker sizes:
-          //   "1,3" (dotted)  -> fallback (no month-specific score at all)
-          //   "3,2" (dashed)  -> partial confidence on a real month-specific score
-          const isPartial = !isFallback && confidence === "partial";
-          const dashArray = isSelected
-            ? undefined
-            : isFallback
-              ? "1,3"
-              : isPartial
-                ? "3,2"
-                : undefined;
+          // Stations missing 3+ of the 4 weather attributes across the
+          // climatology window get a solid grey marker — the per-month score
+          // and the station average are both untrustworthy here, so honesty
+          // beats a tinted fallback. Default to 0 for legacy data so existing
+          // stations.js files (pre-pipeline-rerun) keep current behaviour.
+          const isLowDataStation = (station.missingAttrCount ?? 0) >= 3;
+          // When the selected month alone is unscorable but the station has
+          // enough overall coverage, fall back to the station's climatology
+          // average — dimmed + dotted so it's clearly not month-specific.
+          const isFallback = score == null && !isLowDataStation;
+          let fill, fillOpacity, dashArray;
+          if (isLowDataStation) {
+            fill = SCORE_COLORS.missing;
+            fillOpacity = 0.5;
+            dashArray = undefined;
+          } else if (isFallback) {
+            fill = getSuitabilityColor(getStationAverageScore(station));
+            fillOpacity = 0.35;
+            dashArray = isSelected ? undefined : "1,3";
+          } else {
+            // Two non-colour cues, distinct from each other so they don't
+            // blur together at small marker sizes:
+            //   "3,2" (dashed) -> partial confidence on a month-specific score
+            //   "1,3" (dotted) -> climatology fallback (no month-specific score)
+            const isPartial = confidence === "partial";
+            fill = getSuitabilityColor(score);
+            fillOpacity = 0.9;
+            dashArray = isPartial && !isSelected ? "3,2" : undefined;
+          }
           return (
             <CircleMarker
               key={station.n}
