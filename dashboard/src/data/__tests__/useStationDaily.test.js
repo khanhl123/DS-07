@@ -36,9 +36,11 @@ describe("buildPredictedUrl", () => {
 });
 
 describe("summariseMonthly", () => {
-  it("returns the zero-shape when no daily rows", () => {
-    expect(summariseMonthly([])).toMatchObject({ maxTemp: 0, dryDaysPct: 0 });
-    expect(summariseMonthly(undefined)).toMatchObject({ maxTemp: 0 });
+  it("returns the null-shape when no daily rows", () => {
+    // Empty/undefined input maps to null fields (not zero) so KPI cards render
+    // "—" rather than a misleading "0°C / 0 mm". See useStationDaily.js:142.
+    expect(summariseMonthly([])).toMatchObject({ maxTemp: null, dryDaysPct: null });
+    expect(summariseMonthly(undefined)).toMatchObject({ maxTemp: null });
   });
 
   it("excludes null readings from each metric's average independently", () => {
