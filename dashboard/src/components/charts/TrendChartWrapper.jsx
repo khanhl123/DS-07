@@ -38,7 +38,7 @@ export default function TrendChartWrapper({
         }
       >
       <ResponsiveContainer width="100%" height={height}>
-        <AreaChart data={data} margin={{ top: 5, right: 10, left: -10, bottom: 0 }}>
+        <AreaChart data={data} margin={{ top: 5, right: 10, left: 0, bottom: 0 }}>
           <defs>
             <linearGradient id={`grad-${dataKey}`} x1="0" y1="0" x2="0" y2="1">
               <stop offset="5%" stopColor={color} stopOpacity={0.22} />
@@ -56,7 +56,7 @@ export default function TrendChartWrapper({
             tick={{ fontSize: 11, fill: "#7A8A7C" }}
             axisLine={false}
             tickLine={false}
-            width={36}
+            width={48}
             domain={["auto", "auto"]}
             allowDecimals={false}
             tickFormatter={(v) => `${v}${unit}`}

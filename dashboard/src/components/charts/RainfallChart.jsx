@@ -35,7 +35,7 @@ export default function RainfallChart({ data, xKey, height = 200, isPredicted = 
         </div>
       </div>
       <ResponsiveContainer width="100%" height={height}>
-        <BarChart data={data} margin={{ top: 5, right: 10, left: -10, bottom: 0 }}>
+        <BarChart data={data} margin={{ top: 5, right: 10, left: 0, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#E8E6DC" vertical={false} />
           <XAxis
             dataKey={xKey}
@@ -47,7 +47,7 @@ export default function RainfallChart({ data, xKey, height = 200, isPredicted = 
             tick={{ fontSize: 11, fill: "#7A8A7C" }}
             axisLine={false}
             tickLine={false}
-            width={36}
+            width={48}
             domain={[0, "auto"]}
             allowDecimals={false}
             tickCount={5}
