@@ -27,7 +27,7 @@ export default function HeroSection({ onStart, onJumpTo }) {
       title: "Plan",
       icon: Target,
       description:
-        "Get an explainable suitability score from the marathon-running expert model, view daily traffic-light calendars, and export the analysis for stakeholders.",
+        "Get an explainable suitability score from the marathon-running expert model, view daily traffic-light calendars for past years or NN-projected future years, and export the analysis for stakeholders.",
     },
   ];
 
