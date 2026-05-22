@@ -342,6 +342,101 @@ def get_suitability_verdict(max_temp_c, min_temp_c, uv_index, rainfall_mm):
 
 
 # ---------------------------------------------------------------------------
+# Partial-data scoring
+# ---------------------------------------------------------------------------
+
+# Minimum fraction of total component weight that must survive after dropping
+# unavailable components, for a partial score to be reported. Below this the
+# remaining signal is too thin to be defensible as a marathon recommendation.
+_PARTIAL_THRESHOLD = 0.50
+
+_COMPONENT_WEIGHTS = {
+    "max_temp": 0.37,
+    "min_temp": 0.12,
+    "temp_range": 0.10,
+    "uv": 0.23,
+    "rainfall": 0.18,
+}
+
+_NULL_VERDICT = {"score": None, "colour": None, "confidence": None}
+
+
+def _coerce_optional(value, name, range_=None):
+    """Coerce-or-None. Returns None for None input; raises for NaN/inf/out-of-range."""
+    if value is None:
+        return None
+    try:
+        result = float(value)
+    except (TypeError, ValueError) as exc:
+        raise ValueError(f"{name} must be numeric, got {value!r}") from exc
+    if math.isnan(result) or math.isinf(result):
+        raise ValueError(f"{name} must be finite, got {value!r}")
+    if range_ is not None and not range_[0] <= result <= range_[1]:
+        raise ValueError(f"{name} outside plausible range {range_}: {result}")
+    return result
+
+
+def get_partial_suitability_verdict(
+    max_temp_c, min_temp_c=None, uv_index=None, rainfall_mm=None
+):
+    """
+    Returns {"score", "colour", "confidence"} using whatever components are
+    provided. Designed for stations where some BoM measurements are absent.
+
+    Rules:
+      - max_temp is mandatory. If missing, returns the null verdict.
+      - If only max_temp is provided (no UV / rain / min), retained weight is
+        37% (< 50%): returns the null verdict.
+      - min_temp and temp_range are linked: if either max or min is missing,
+        or if min > max, both min and range are dropped.
+      - Weights of surviving components are renormalised so the score stays
+        on the 0-100 scale.
+      - confidence is "full" when all four input attributes are present (and
+        usable), "partial" when at least one is missing but the score is
+        still eligible, and None when the score is None.
+
+    Inputs are validated like the strict path: NaN/inf/non-numeric/out-of-range
+    for any value that IS provided still raises ValueError. The None handling
+    is the only relaxation.
+    """
+    max_t = _coerce_optional(max_temp_c, "max_temp_c", _TEMP_RANGE)
+    min_t = _coerce_optional(min_temp_c, "min_temp_c", _TEMP_RANGE)
+    uv = _coerce_optional(uv_index, "uv_index", _UV_RANGE)
+    rain = _coerce_optional(rainfall_mm, "rainfall_mm")
+    if rain is not None and rain < 0.0:
+        raise ValueError(f"rainfall_mm cannot be negative: {rain}")
+
+    if max_t is None:
+        return dict(_NULL_VERDICT)
+
+    components = [("max_temp", _score_max_temp(max_t))]
+
+    have_range = min_t is not None and min_t <= max_t
+    if have_range:
+        components.append(("min_temp", _score_min_temp(min_t)))
+        components.append(("temp_range", _score_temp_range(max_t - min_t)))
+
+    if uv is not None:
+        components.append(("uv", _score_uv(uv)))
+
+    if rain is not None:
+        components.append(("rainfall", _score_rainfall(rain)))
+
+    retained = sum(_COMPONENT_WEIGHTS[name] for name, _ in components)
+    if retained < _PARTIAL_THRESHOLD:
+        return dict(_NULL_VERDICT)
+
+    weighted = sum(_COMPONENT_WEIGHTS[name] * s for name, s in components)
+    score = weighted / retained
+    confidence = "full" if math.isclose(retained, 1.0) else "partial"
+    return {
+        "score": score,
+        "colour": _score_to_colour(score),
+        "confidence": confidence,
+    }
+
+
+# ---------------------------------------------------------------------------
 # Example usage
 # ---------------------------------------------------------------------------
 

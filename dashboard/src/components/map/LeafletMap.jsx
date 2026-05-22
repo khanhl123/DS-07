@@ -100,10 +100,14 @@ export default function LeafletMap({
         {stations.map((station) => {
           const isSelected = station.n === selectedStationNumber;
           const score = station.monthlyScores[monthIndex];
+          const confidence = station.monthlyConfidence?.[monthIndex] ?? null;
           const fill = getSuitabilityColor(score);
           // Translucent grey for unscorable months so the marker stays
           // visible and clickable but is clearly distinct from a real score.
           const fillOpacity = score == null ? 0.5 : 0.9;
+          // Dashed border on partial-data scores — non-color cue so the
+          // distinction survives the score colour band and colour-blindness.
+          const isPartial = confidence === "partial";
           return (
             <CircleMarker
               key={station.n}
@@ -114,6 +118,7 @@ export default function LeafletMap({
                 color: isSelected ? "#0F6E56" : "#ffffff",
                 weight: isSelected ? 3 : 1.5,
                 fillOpacity,
+                dashArray: isPartial && !isSelected ? "3,2" : undefined,
               }}
               eventHandlers={{
                 click: () => onSelectStation(station.n),

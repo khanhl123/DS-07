@@ -40,7 +40,17 @@ export default function StationPopup({ station, monthIndex, year, onSelect }) {
   const isError = cacheHit && cached.value === null;
 
   const verdictScore = summary?.marathonVerdict?.score;
+  const verdictConfidence = summary?.marathonVerdict?.confidence;
   const hasVerdict = verdictScore != null;
+  const isPartial = hasVerdict && verdictConfidence === "partial";
+  const missingAttrs = summary
+    ? [
+        summary.maxTemp == null && "max temp",
+        summary.minTemp == null && "min temp",
+        summary.rainfall == null && "rainfall",
+        summary.uvIndex == null && "UV",
+      ].filter(Boolean)
+    : [];
 
   return (
     <div style={{ minWidth: 200, fontFamily: "inherit" }}>
@@ -121,6 +131,20 @@ export default function StationPopup({ station, monthIndex, year, onSelect }) {
               SCORE_NA_TEXT
             )}
           </span>
+        </div>
+      )}
+      {isPartial && (
+        <div
+          style={{
+            fontSize: 10,
+            color: "var(--text-muted)",
+            marginTop: -4,
+            marginBottom: 8,
+            fontStyle: "italic",
+          }}
+        >
+          Partial data
+          {missingAttrs.length ? ` — ${missingAttrs.join(", ")} unavailable` : ""}
         </div>
       )}
       <button

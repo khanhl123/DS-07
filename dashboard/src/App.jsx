@@ -143,6 +143,10 @@ export default function App() {
   const expertScore =
     yearMonth?.marathonVerdict?.score ??
     selectedStation.monthlyScores[selectedMonthIndex];
+  const expertConfidence =
+    yearMonth?.marathonVerdict?.confidence ??
+    selectedStation.monthlyConfidence?.[selectedMonthIndex] ??
+    null;
 
   const suitabilityKey = getSuitabilityKey(expertScore);
   const scoreColor = getSuitabilityColor(expertScore);
@@ -630,12 +634,27 @@ export default function App() {
               {expertScore == null ? SCORE_NA_TEXT : scoreLabel}
             </span>
             {expertScore != null && <TrafficLight active={suitabilityKey} />}
+            {expertScore != null && expertConfidence === "partial" && (
+              <span
+                className="mt-2 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide"
+                style={{
+                  background: "var(--surface-alt)",
+                  color: "var(--text-secondary)",
+                  border: "1px dashed var(--border)",
+                }}
+                title="Score computed from a subset of weather attributes (the model renormalised over what's available)"
+              >
+                Partial data
+              </span>
+            )}
             <p
               className="mt-3 max-w-[210px] text-center text-[11px]"
               style={{ color: "var(--text-secondary)" }}
             >
               {expertScore == null
                 ? "At least one of max temp, min temp, UV, or rainfall is missing for this month."
+                : expertConfidence === "partial"
+                ? "Some attributes were unavailable for this month; the model renormalised over the rest. Treat as indicative."
                 : predictRequested
                 ? "Based on NN-predicted weather; uncertainty is higher than historical estimates."
                 : "Based on historical observations only, not a forecast."}

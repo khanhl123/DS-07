@@ -19,7 +19,7 @@ _REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__f
 if _REPO_ROOT not in sys.path:
     sys.path.insert(0, _REPO_ROOT)
 
-from models.suitability_score_model import get_suitability_verdict
+from models.suitability_score_model import get_partial_suitability_verdict
 from models.nn_weather_predictor import predict_one
 
 # NN trained through ~2024; beyond 2026 is unreliable. /years uses this cap
@@ -90,22 +90,33 @@ def _round1(v):
 def _marathon_verdict(max_temp, min_temp, uv_index, rainfall_mm):
     """Marathon suitability verdict for a single day or monthly aggregate.
 
-    Returns {"score": float, "colour": str} or None if any input is missing
-    or fails the model's range validation.
+    Returns {"score", "colour", "confidence"} or None if even partial-data
+    scoring can't produce a defensible number (max_temp missing, or remaining
+    weight after dropping unavailable components falls below the model's
+    threshold). The model handles missing-input rules — this layer only
+    catches residual ValueError from NaN/range failures.
     """
-    if any(v is None for v in (max_temp, min_temp, uv_index, rainfall_mm)):
-        return None
     try:
-        verdict = get_suitability_verdict(max_temp, min_temp, uv_index, rainfall_mm)
+        verdict = get_partial_suitability_verdict(
+            max_temp, min_temp, uv_index, rainfall_mm
+        )
     except ValueError:
         return None
-    return {"score": round(verdict["score"], 1), "colour": verdict["colour"]}
+    if verdict["score"] is None:
+        return None
+    return {
+        "score": round(verdict["score"], 1),
+        "colour": verdict["colour"],
+        "confidence": verdict["confidence"],
+    }
 
 
 def _row_to_daily(r):
     max_temp = _round1(r.max_temp)
     min_temp = _round1(r.min_temp)
-    rainfall = _round1(r.rainfall_mm) if r.rainfall_mm is not None else 0.0
+    # Don't substitute 0 for missing rainfall — the partial-scoring model
+    # will drop the component instead of recording a fake-perfect rain score.
+    rainfall = _round1(r.rainfall_mm)
     uv = solar_to_uv(r.solar_exposure_mj)
     return {
         "day": r.observation_date.day,

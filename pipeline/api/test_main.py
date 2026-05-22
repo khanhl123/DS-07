@@ -67,15 +67,38 @@ class TestRound1:
 
 
 class TestMarathonVerdict:
-    def test_returns_none_when_any_input_is_none(self):
+    def test_returns_none_when_max_temp_missing(self):
+        # max_temp is the only mandatory input; the model can't anchor a
+        # marathon-suitability score without it.
         assert main._marathon_verdict(None, 10, 5, 0) is None
-        assert main._marathon_verdict(20, None, 5, 0) is None
-        assert main._marathon_verdict(20, 10, None, 0) is None
-        assert main._marathon_verdict(20, 10, 5, None) is None
 
-    def test_returns_none_when_model_validation_fails(self):
-        # min > max — the model raises ValueError, which the helper swallows
-        assert main._marathon_verdict(10, 15, 5, 0) is None
+    def test_partial_when_only_max_temp_missing_among_others(self):
+        # With max present and at least one other component, the model
+        # renormalises and returns a partial verdict.
+        v = main._marathon_verdict(20.0, None, 5.0, 0.5)
+        assert v is not None
+        assert v["confidence"] == "partial"
+
+    def test_partial_when_rainfall_missing(self):
+        # The dominant real-world case: temp + UV but no rainfall.
+        v = main._marathon_verdict(20.0, 10.0, 5.0, None)
+        assert v["confidence"] == "partial"
+        assert v["colour"] in ("RED", "ORANGE", "GREEN")
+
+    def test_full_when_all_inputs_present(self):
+        v = main._marathon_verdict(11.0, 8.0, 3, 0.5)
+        assert v["confidence"] == "full"
+
+    def test_returns_none_when_only_max_present(self):
+        # max_temp alone is 37% < 50% threshold -> insufficient signal.
+        assert main._marathon_verdict(20.0, None, None, None) is None
+
+    def test_inverted_min_max_returns_partial_not_none(self):
+        # Previously this returned None (model raised on min > max). Now the
+        # partial path drops min_temp + temp_range and scores the rest.
+        v = main._marathon_verdict(10, 15, 5, 0)
+        assert v is not None
+        assert v["confidence"] == "partial"
 
     def test_returns_none_on_negative_rainfall(self):
         # Defensive: bad DB data shouldn't bubble a 500 to the dashboard
@@ -96,6 +119,10 @@ class TestMarathonVerdict:
         verdict = main._marathon_verdict(11.0, 8.0, 3, 0.5)
         # round(x, 1) means at most one digit after the decimal point
         assert verdict["score"] == round(verdict["score"], 1)
+
+    def test_verdict_includes_confidence_field(self):
+        v = main._marathon_verdict(11.0, 8.0, 3, 0.5)
+        assert "confidence" in v
 
 
 class TestRowToDaily:

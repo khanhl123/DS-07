@@ -32,6 +32,58 @@ export default function CoverageHints() {
           . Click a dot to explore. Zoom in to separate clustered stations.
         </p>
       </div>
+      <div
+        className="flex flex-wrap items-center gap-x-4 gap-y-1 px-3 py-1.5 text-[11px]"
+        style={{ color: "var(--text-secondary)" }}
+        aria-label="Marker legend"
+      >
+        <span className="font-semibold" style={{ color: "var(--text-primary)" }}>
+          Markers:
+        </span>
+        <span className="flex items-center gap-1.5">
+          <span
+            aria-hidden="true"
+            style={{
+              width: 10,
+              height: 10,
+              borderRadius: 999,
+              background: "#59C459",
+              border: "1.5px solid #fff",
+              boxShadow: "0 0 0 0.5px #999",
+            }}
+          />
+          Solid = full data
+        </span>
+        <span className="flex items-center gap-1.5">
+          <span
+            aria-hidden="true"
+            style={{
+              width: 10,
+              height: 10,
+              borderRadius: 999,
+              background: "#59C459",
+              border: "1.5px dashed #fff",
+              boxShadow: "0 0 0 0.5px #999",
+            }}
+          />
+          Dashed = partial data (some attributes unavailable; score renormalised)
+        </span>
+        <span className="flex items-center gap-1.5">
+          <span
+            aria-hidden="true"
+            style={{
+              width: 10,
+              height: 10,
+              borderRadius: 999,
+              background: "#D8D5CB",
+              opacity: 0.7,
+              border: "1.5px solid #fff",
+              boxShadow: "0 0 0 0.5px #999",
+            }}
+          />
+          Grey = no score this month
+        </span>
+      </div>
     </div>
   );
 }

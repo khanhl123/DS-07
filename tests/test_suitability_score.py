@@ -7,6 +7,7 @@ import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from models.suitability_score_model import (
+    get_partial_suitability_verdict,
     get_suitability_colour,
     get_suitability_score,
     get_suitability_verdict,
@@ -184,3 +185,92 @@ def test_verdict_matches_individual_functions(inputs):
 def test_verdict_propagates_validation_errors():
     with pytest.raises(ValueError):
         get_suitability_verdict(float("nan"), 10.0, 5.0, 0.0)
+
+
+# ---------------------------------------------------------------------------
+# Partial-data verdict — relaxed entrypoint for stations with missing attrs.
+# Strict verdict above must keep raising on None; partial path is opt-in.
+# ---------------------------------------------------------------------------
+
+def _approx(a, b, tol=1e-6):
+    return abs(a - b) < tol
+
+
+def test_partial_full_data_matches_strict():
+    inputs = (11.0, 8.0, 3.0, 0.5)
+    v = get_partial_suitability_verdict(*inputs)
+    assert v["confidence"] == "full"
+    assert _approx(v["score"], get_suitability_score(*inputs))
+    assert v["colour"] == get_suitability_colour(*inputs)
+
+
+def test_partial_missing_max_returns_null():
+    v = get_partial_suitability_verdict(None, 10.0, 5.0, 0.5)
+    assert v == {"score": None, "colour": None, "confidence": None}
+
+
+def test_partial_only_max_below_threshold():
+    # max_temp alone is 37% < 50% threshold -> null
+    v = get_partial_suitability_verdict(20.0, None, None, None)
+    assert v["score"] is None
+    assert v["confidence"] is None
+
+
+def test_partial_max_plus_uv_eligible():
+    # 37% + 23% = 60% >= 50% -> partial
+    v = get_partial_suitability_verdict(20.0, None, 5.0, None)
+    assert v["confidence"] == "partial"
+    assert 0.0 <= v["score"] <= 100.0
+
+
+def test_partial_missing_rainfall():
+    # Common BoM case: temp + UV but no rainfall
+    v = get_partial_suitability_verdict(20.0, 10.0, 5.0, None)
+    assert v["confidence"] == "partial"
+    # Score is renormalised over 82% of weight (everything except rainfall)
+    assert 0.0 <= v["score"] <= 100.0
+
+
+def test_partial_missing_min_drops_range():
+    # When min is missing, temp_range is also dropped (range needs both)
+    v = get_partial_suitability_verdict(20.0, None, 5.0, 0.5)
+    assert v["confidence"] == "partial"
+    # Retained = 37 + 23 + 18 = 78% (min 12% + range 10% dropped)
+    assert 0.0 <= v["score"] <= 100.0
+
+
+def test_partial_inverted_min_max_drops_min_no_raise():
+    # The pipeline used to raise on min > max; partial path treats it as
+    # "min unusable" and continues scoring the rest of the components.
+    v = get_partial_suitability_verdict(10.0, 15.0, 5.0, 0.5)
+    assert v["confidence"] == "partial"
+    assert v["score"] is not None
+
+
+def test_partial_nan_on_present_input_still_raises():
+    # The relaxation is None-handling only; NaN/inf on a present input
+    # is a programming error and must still surface as ValueError.
+    with pytest.raises(ValueError, match="uv_index"):
+        get_partial_suitability_verdict(20.0, 10.0, float("nan"), 0.5)
+
+
+def test_partial_out_of_range_on_present_input_still_raises():
+    with pytest.raises(ValueError, match="max_temp_c"):
+        get_partial_suitability_verdict(99.0, None, 5.0, None)
+
+
+def test_partial_negative_rainfall_still_raises():
+    with pytest.raises(ValueError, match="rainfall_mm"):
+        get_partial_suitability_verdict(20.0, 10.0, 5.0, -1.0)
+
+
+def test_partial_score_in_valid_range():
+    for inputs in [
+        (20.0, 10.0, 5.0, None),
+        (20.0, None, 5.0, 0.5),
+        (20.0, None, None, 0.5),  # 37+18 = 55% -> partial
+    ]:
+        v = get_partial_suitability_verdict(*inputs)
+        if v["score"] is not None:
+            assert 0.0 <= v["score"] <= 100.0
+            assert v["colour"] in {"RED", "ORANGE", "GREEN"}
