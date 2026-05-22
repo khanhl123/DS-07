@@ -15,7 +15,6 @@ import ThresholdPanel from "./components/map/ThresholdPanel";
 import ReverseSearchResults from "./components/map/ReverseSearchResults";
 import CoverageHints from "./components/map/CoverageHints";
 import NearbyStationChips from "./components/map/NearbyStationChips";
-import ProbabilityBanner from "./components/suitability/ProbabilityBanner";
 import RiskProfile from "./components/suitability/RiskProfile";
 import MonthStrip from "./components/suitability/MonthStrip";
 import MaxTempChart from "./components/charts/MaxTempChart";
@@ -527,7 +526,7 @@ export default function App() {
           </label>
         </div>
 
-        {isMonthly ? (
+        {isMonthly && (
           <div
             className="p-3 text-xs"
             style={{
@@ -538,15 +537,8 @@ export default function App() {
             }}
           >
             Monthly view — switch back to <strong>Daily</strong> for the
-            suitability probability, risk profile, and per-day calendar.
+            risk profile and per-day calendar.
           </div>
-        ) : (
-          <ProbabilityBanner
-            dailyData={dailyData}
-            thresholds={thresholds}
-            monthIndex={selectedMonthIndex}
-            isPredicted={predictRequested}
-          />
         )}
 
         <DataStatusBanner

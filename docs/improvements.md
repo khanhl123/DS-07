@@ -12,9 +12,7 @@ Reviewed against current dashboard code on `main`.
 | # | Item | Why it fits | Files |
 |---|------|-------------|-------|
 | 1 | Quarterly/Annually buttons | Already flagged in code (`enabled: false`, "Coming soon" tooltip). Quick polish: ensure disabled cursor + tooltip render correctly. | `dashboard/src/App.jsx:326–363` |
-| 6 | Banner vs. calendar contradiction | Real bug — two scoring methods coexist: `ProbabilityBanner` uses strict AND-logic; `SuitabilityCalendar` uses penalty-based 0–100. Add an info icon/tooltip explaining the difference. Pure UX, no data dependency. | `dashboard/src/components/suitability/ProbabilityBanner.jsx`, `dashboard/src/App.jsx` (calendar mapping), `dashboard/src/data/placeholderData.js` (scoring fns) |
 | 7 | Export button has no feedback | `exportSummary()` triggers a silent download — no loading state, no toast, no confirmation. Add a loading state on the button + a toast. | `dashboard/src/App.jsx:174–204, 664–679` |
-| 9 | Historical disclaimer prominence | Text exists in 3 places (HeaderBar 10px, two App.jsx captions) but never near the suitability score. Move/duplicate it directly under `ProbabilityBanner`. Trivial, high-trust payoff. | `dashboard/src/components/layout/HeaderBar.jsx`, `dashboard/src/App.jsx:293, 655` |
 
 ## 2. DO if mobile is in scope
 
@@ -40,14 +38,12 @@ Reviewed against current dashboard code on `main`.
 
 ## Suggested fix order (rough effort)
 
-1. **#9** disclaimer placement — ~5 min
-2. **#1** disable styling polish — ~15 min
-3. **#7** export button feedback — ~30 min (toast + loading state)
-4. **#6** scoring explainer tooltip — ~30 min
-5. **#4** sticky selection bar — 1–2 hr (real component work)
-6. **#8** mobile map controls — ~30 min CSS (if mobile in scope)
-7. **#2, #3** verify-then-decide — ~15 min check
-8. **#5** defer
+1. **#1** disable styling polish — ~15 min
+2. **#7** export button feedback — ~30 min (toast + loading state)
+3. **#4** sticky selection bar — 1–2 hr (real component work)
+4. **#8** mobile map controls — ~30 min CSS (if mobile in scope)
+5. **#2, #3** verify-then-decide — ~15 min check
+6. **#5** defer
 
 ---
 
