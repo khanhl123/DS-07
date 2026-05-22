@@ -75,13 +75,13 @@ export default function CoverageHints() {
               width: 10,
               height: 10,
               borderRadius: 999,
-              background: "#D8D5CB",
-              opacity: 0.7,
-              border: "1.5px solid #fff",
+              background: "#59C459",
+              opacity: 0.35,
+              border: "1.5px dotted #fff",
               boxShadow: "0 0 0 0.5px #999",
             }}
           />
-          Grey = no score this month
+          Dim + dotted = no score for this month; coloured by the station's historical average
         </span>
       </div>
     </div>

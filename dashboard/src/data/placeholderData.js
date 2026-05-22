@@ -97,6 +97,17 @@ export function getSuitabilityKey(score) {
   return "not_suitable";
 }
 
+// Mean of the station's non-null monthly scores. Used by the map as a
+// climatology fallback so a station with no score for the selected month
+// still shows where it sits overall, instead of dropping to grey.
+// Returns null when every month is unscorable so callers can render the
+// honest "missing" state.
+export function getStationAverageScore(station) {
+  const scores = station?.monthlyScores?.filter((s) => s != null) ?? [];
+  if (scores.length === 0) return null;
+  return scores.reduce((sum, s) => sum + s, 0) / scores.length;
+}
+
 export const suitabilityConfig = {
   suitable: {
     label: "Suitable",

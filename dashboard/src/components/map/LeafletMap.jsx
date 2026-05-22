@@ -9,6 +9,7 @@ import {
 import auStates from "../../data/au-states.json";
 import {
   getSuitabilityColor,
+  getStationAverageScore,
   STATE_FULL_NAMES,
 } from "../../data/placeholderData";
 import StationPopup from "./StationPopup";
@@ -101,13 +102,27 @@ export default function LeafletMap({
           const isSelected = station.n === selectedStationNumber;
           const score = station.monthlyScores[monthIndex];
           const confidence = station.monthlyConfidence?.[monthIndex] ?? null;
-          const fill = getSuitabilityColor(score);
-          // Translucent grey for unscorable months so the marker stays
-          // visible and clickable but is clearly distinct from a real score.
-          const fillOpacity = score == null ? 0.5 : 0.9;
-          // Dashed border on partial-data scores — non-color cue so the
-          // distinction survives the score colour band and colour-blindness.
-          const isPartial = confidence === "partial";
+          // When the selected month is unscorable, fall back to the station's
+          // climatology average so the marker still conveys where this place
+          // sits overall — dimmed + dotted so it's clearly not month-specific.
+          const isFallback = score == null;
+          const displayScore = isFallback
+            ? getStationAverageScore(station)
+            : score;
+          const fill = getSuitabilityColor(displayScore);
+          const fillOpacity = isFallback ? 0.35 : 0.9;
+          // Two non-colour cues, distinct from each other so they don't blur
+          // together at small marker sizes:
+          //   "1,3" (dotted)  -> fallback (no month-specific score at all)
+          //   "3,2" (dashed)  -> partial confidence on a real month-specific score
+          const isPartial = !isFallback && confidence === "partial";
+          const dashArray = isSelected
+            ? undefined
+            : isFallback
+              ? "1,3"
+              : isPartial
+                ? "3,2"
+                : undefined;
           return (
             <CircleMarker
               key={station.n}
@@ -118,7 +133,7 @@ export default function LeafletMap({
                 color: isSelected ? "#0F6E56" : "#ffffff",
                 weight: isSelected ? 3 : 1.5,
                 fillOpacity,
-                dashArray: isPartial && !isSelected ? "3,2" : undefined,
+                dashArray,
               }}
               eventHandlers={{
                 click: () => onSelectStation(station.n),
