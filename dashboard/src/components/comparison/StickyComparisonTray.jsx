@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { X, ChevronsUp, ChevronsDown } from "lucide-react";
 import {
-  computeAdjustedScore,
   getSuitabilityColor,
   stationsByNumber,
   MONTHS,
@@ -11,7 +10,6 @@ export default function StickyComparisonTray({
   comparedStationNumbers,
   primaryStationNumber,
   selectedMonthIndex,
-  thresholds,
   onRemove,
   onSelectPrimary,
 }) {
@@ -22,10 +20,7 @@ export default function StickyComparisonTray({
     .filter(Boolean)
     .map((s) => ({
       station: s,
-      score: computeAdjustedScore(
-        s.monthlyScores[selectedMonthIndex],
-        thresholds,
-      ),
+      score: s.monthlyScores[selectedMonthIndex],
     }));
 
   return (
@@ -85,7 +80,7 @@ export default function StickyComparisonTray({
                   >
                     {station.name}
                   </button>
-                  <span className="tabular-nums font-semibold">{score}</span>
+                  <span className="tabular-nums font-semibold">{score ?? "—"}</span>
                   {!isPrimary && (
                     <button
                       type="button"
@@ -139,8 +134,7 @@ export default function StickyComparisonTray({
                 <tr style={{ color: "var(--text-secondary)" }}>
                   <th className="text-left py-1 pr-4">Station</th>
                   <th className="text-left py-1 pr-4">State</th>
-                  <th className="text-right py-1 pr-4">Adj. score</th>
-                  <th className="text-right py-1 pr-4">Base (month)</th>
+                  <th className="text-right py-1 pr-4">Expert score</th>
                   <th className="text-right py-1">Lat, Lng</th>
                 </tr>
               </thead>
@@ -151,11 +145,8 @@ export default function StickyComparisonTray({
                     <td className="py-1 pr-4">{station.state}</td>
                     <td className="py-1 pr-4 text-right tabular-nums">
                       <span style={{ color: getSuitabilityColor(score), fontWeight: 700 }}>
-                        {score}
+                        {score ?? "—"}
                       </span>
-                    </td>
-                    <td className="py-1 pr-4 text-right tabular-nums">
-                      {station.monthlyScores[selectedMonthIndex]}
                     </td>
                     <td className="py-1 text-right tabular-nums">
                       {station.lat.toFixed(2)}, {station.lng.toFixed(2)}

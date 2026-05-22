@@ -1,8 +1,5 @@
 import { useMemo } from "react";
-import {
-  computeAdjustedScore,
-  getSuitabilityColor,
-} from "../../data/placeholderData";
+import { getSuitabilityColor } from "../../data/placeholderData";
 
 const R_KM = 6371;
 const toRad = (deg) => (deg * Math.PI) / 180;
@@ -22,7 +19,6 @@ export default function NearbyStationChips({
   selectedStation,
   stations,
   monthIndex,
-  thresholds,
   onSelect,
 }) {
   const nearby = useMemo(() => {
@@ -57,10 +53,7 @@ export default function NearbyStationChips({
           height: 8,
           borderRadius: 999,
           background: getSuitabilityColor(
-            computeAdjustedScore(
-              selectedStation.monthlyScores[monthIndex],
-              thresholds,
-            ),
+            selectedStation.monthlyScores[monthIndex],
           ),
         }}
       />
@@ -82,10 +75,7 @@ export default function NearbyStationChips({
       </span>
       {primaryChip}
       {nearby.map(({ station, km }) => {
-        const score = computeAdjustedScore(
-          station.monthlyScores[monthIndex],
-          thresholds,
-        );
+        const score = station.monthlyScores[monthIndex];
         return (
           <button
             key={station.n}

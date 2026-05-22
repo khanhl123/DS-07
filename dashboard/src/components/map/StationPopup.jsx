@@ -1,25 +1,15 @@
 import { useEffect, useState } from "react";
 import {
-  computeAdjustedScore,
-  EXPERT_VERDICT_COLORS,
-  EXPERT_VERDICT_LABELS,
   getSuitabilityColor,
   getSuitabilityLabel,
   MONTHS,
+  SCORE_COLORS,
+  SCORE_NA_TEXT,
 } from "../../data/placeholderData";
 
-export default function StationPopup({ station, monthIndex, year, thresholds, onSelect }) {
-  const score = computeAdjustedScore(
-    station.monthlyScores[monthIndex],
-    thresholds,
-  );
-  const color = getSuitabilityColor(score);
-  const label = getSuitabilityLabel(score);
-
-  // Hits the yearly endpoint (not daily) so the monthly summary and the
-  // "Expert" verdict are both the server-side values — the same numbers
-  // the yearly chart shows. Picking out data[monthIndex] gives us one
-  // pre-aggregated row computed by the same code path everywhere.
+export default function StationPopup({ station, monthIndex, year, onSelect }) {
+  // Hits the yearly endpoint so the monthly summary and the suitability
+  // verdict are the same year-specific numbers the yearly chart shows.
   const [cached, setCached] = useState({ key: null, value: null });
   const cacheKey = `${station.n}|${monthIndex}|${year}`;
 
@@ -49,6 +39,9 @@ export default function StationPopup({ station, monthIndex, year, thresholds, on
   const summary = cacheHit ? cached.value : null;
   const isError = cacheHit && cached.value === null;
 
+  const verdictScore = summary?.marathonVerdict?.score;
+  const hasVerdict = verdictScore != null;
+
   return (
     <div style={{ minWidth: 200, fontFamily: "inherit" }}>
       <div style={{ fontWeight: 700, fontSize: 13, color: "var(--text-primary)" }}>
@@ -70,12 +63,12 @@ export default function StationPopup({ station, monthIndex, year, thresholds, on
       >
         {summary ? (
           <>
-            <div>Max: <strong>{summary.maxTemp}°C</strong></div>
-            <div>Min: <strong>{summary.minTemp}°C</strong></div>
-            <div>Rain: <strong>{summary.rainfall}mm</strong></div>
+            <div>Max: <strong>{summary.maxTemp == null ? "—" : `${summary.maxTemp}°C`}</strong></div>
+            <div>Min: <strong>{summary.minTemp == null ? "—" : `${summary.minTemp}°C`}</strong></div>
+            <div>Rain: <strong>{summary.rainfall == null ? "—" : `${summary.rainfall}mm`}</strong></div>
             <div>
               UV<span style={{ fontSize: 9, color: "var(--text-muted)" }}>*</span>:{" "}
-              <strong>{summary.uvIndex}</strong>
+              <strong>{summary.uvIndex ?? "—"}</strong>
             </div>
           </>
         ) : isError ? (
@@ -88,28 +81,7 @@ export default function StationPopup({ station, monthIndex, year, thresholds, on
           </div>
         )}
       </div>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 6,
-          marginBottom: 4,
-        }}
-      >
-        <span
-          aria-hidden="true"
-          style={{
-            width: 10,
-            height: 10,
-            borderRadius: 999,
-            background: color,
-          }}
-        />
-        <span style={{ fontSize: 11, color: "var(--text-primary)" }}>
-          Score <strong>{score}</strong> — {label}
-        </span>
-      </div>
-      {summary?.marathonVerdict && (
+      {summary && (
         <div
           style={{
             display: "flex",
@@ -117,7 +89,11 @@ export default function StationPopup({ station, monthIndex, year, thresholds, on
             gap: 6,
             marginBottom: 8,
           }}
-          title="Independent expert verdict based on marathon-running research"
+          title={
+            hasVerdict
+              ? "Suitability based on the marathon-running research model"
+              : SCORE_NA_TEXT
+          }
         >
           <span
             aria-hidden="true"
@@ -125,12 +101,25 @@ export default function StationPopup({ station, monthIndex, year, thresholds, on
               width: 10,
               height: 10,
               borderRadius: 999,
-              background: EXPERT_VERDICT_COLORS[summary.marathonVerdict.colour],
+              background: hasVerdict
+                ? getSuitabilityColor(verdictScore)
+                : SCORE_COLORS.missing,
             }}
           />
-          <span style={{ fontSize: 11, color: "var(--text-secondary)" }}>
-            Expert <strong>{summary.marathonVerdict.score}</strong> —{" "}
-            {EXPERT_VERDICT_LABELS[summary.marathonVerdict.colour]}
+          <span
+            style={{
+              fontSize: 11,
+              color: hasVerdict ? "var(--text-primary)" : "var(--text-muted)",
+            }}
+          >
+            {hasVerdict ? (
+              <>
+                Suitability <strong>{verdictScore}</strong> —{" "}
+                {getSuitabilityLabel(verdictScore)}
+              </>
+            ) : (
+              SCORE_NA_TEXT
+            )}
           </span>
         </div>
       )}

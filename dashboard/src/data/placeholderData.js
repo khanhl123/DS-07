@@ -9,34 +9,10 @@
 
 import { STATIONS } from "./stations.js";
 
-// Defaults aligned with the expert model knee points in
-// models/suitability_score_model.py (WMA / WHO research-backed boundaries):
-//   maxTemp 18 → expert score drops 78→60 above this (WMA yellow→red)
-//   minTemp 5  → expert score drops 95→65 below this
-//   rainfall 5 → expert score drops 65→42 above this
-//   uv 5       → expert score drops 78→52 above this (WHO moderate→high)
-export const DEFAULT_THRESHOLDS = {
-  maxTemp: 18, // °C — day is unsuitable above this
-  minTemp: 5,  // °C — day is unsuitable below this
-  rainfall: 5, // mm
-  uv: 5,       // UV index
-};
-
-// Expert verdict bucket colours — mirror the model's RED/ORANGE/GREEN output
-// from models/suitability_score_model.py. Shared by the calendar dot and the
-// "Expert" row in station popups.
-export const EXPERT_VERDICT_COLORS = {
-  GREEN: "#59C459",
-  ORANGE: "#EFA827",
-  RED: "#E24B4A",
-};
-
-export const EXPERT_VERDICT_LABELS = {
-  GREEN: "Suitable",
-  ORANGE: "Mixed",
-  RED: "Unsuitable",
-};
-
+// Bucket boundaries mirror the expert model in
+// models/suitability_score_model.py (RED ≤ 40, ORANGE ≤ 70, GREEN > 70).
+// All score consumers — map markers, calendar dots, popups, KPI card —
+// share these so colour bands stay consistent everywhere.
 export const MONTHS = [
   "Jan", "Feb", "Mar", "Apr", "May", "Jun",
   "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
@@ -47,8 +23,8 @@ export const MONTH_NAMES_LONG = [
   "July", "August", "September", "October", "November", "December",
 ];
 
-// Stations now ship with real monthlyScores precomputed from historical
-// climatology by pipeline/generate_stations_js.py — no client-side heuristic.
+// Stations ship with monthlyScores precomputed by the expert model on
+// long-term climatology — see pipeline/generate_stations_js.py.
 export const stations = STATIONS;
 
 export const stationsByNumber = Object.fromEntries(stations.map((s) => [s.n, s]));
@@ -93,71 +69,31 @@ export const SCORE_COLORS = {
   suitable: "#59C459",
   moderate: "#EFA827",
   unsuitable: "#E24B4A",
+  missing: "#D8D5CB",
 };
 
-// Threshold-aware score adjustment applied on top of a station's monthly base score.
-//
-// NOTE: this is a LINEAR APPROXIMATION around DEFAULT_THRESHOLDS, not a real
-// recompute. baseScore comes from monthlyScores precomputed against the
-// defaults by pipeline/generate_stations_js.py; the modifier here is a single
-// constant per slider state and gets added uniformly to every station. That
-// means *rank order on the map is preserved* under any slider configuration
-// (ties may appear when scores clamp at 0 or 100), but the absolute gap
-// between stations under unusual thresholds will be too small. For exact
-// per-day scoring against the user's thresholds, use scoreDayAgainstThresholds
-// below on daily rows. The approximation is intentional — recomputing
-// monthlyScores from daily data on every slider drag would require either
-// shipping all daily data to the client or hammering the API.
-export function computeAdjustedScore(baseScore, thresholds) {
-  const d = DEFAULT_THRESHOLDS;
-  let modifier = 0;
-  modifier += (thresholds.maxTemp - d.maxTemp) * 1.5;
-  modifier -= (thresholds.minTemp - d.minTemp) * 1.0;
-  modifier += (thresholds.rainfall - d.rainfall) * 1.2;
-  modifier += (thresholds.uv - d.uv) * 1.5;
-  return Math.max(0, Math.min(100, Math.round(baseScore + modifier)));
-}
-
-// Score a single synthesised day against the current thresholds (0..100).
-export function scoreDayAgainstThresholds(day, thresholds) {
-  let score = 100;
-  if (day.maxTemp > thresholds.maxTemp) {
-    score -= (day.maxTemp - thresholds.maxTemp) * 5;
-  }
-  // Intentional cold-weather floor independent of the minTemp slider: days
-  // where the *daytime high* stays below 10°C are unsuitable for most runners
-  // regardless of the user's minTemp tolerance. Keep in sync with score_day
-  // in pipeline/generate_stations_js.py.
-  if (day.maxTemp < 10) {
-    score -= (10 - day.maxTemp) * 3;
-  }
-  if (day.minTemp < thresholds.minTemp) {
-    score -= (thresholds.minTemp - day.minTemp) * 3;
-  }
-  if (day.rainfall > thresholds.rainfall) {
-    score -= (day.rainfall - thresholds.rainfall) * 8;
-  }
-  if (day.uvIndex > thresholds.uv) {
-    score -= (day.uvIndex - thresholds.uv) * 6;
-  }
-  return Math.max(0, Math.min(100, Math.round(score)));
-}
+// Shown wherever a numeric score would normally appear but at least one of
+// the four model inputs (max temp, min temp, UV, rainfall) is missing.
+export const SCORE_NA_TEXT = "Missing data, score not available";
 
 export function getSuitabilityColor(score) {
-  if (score >= 65) return SCORE_COLORS.suitable;
-  if (score >= 40) return SCORE_COLORS.moderate;
+  if (score == null) return SCORE_COLORS.missing;
+  if (score > 70) return SCORE_COLORS.suitable;
+  if (score > 40) return SCORE_COLORS.moderate;
   return SCORE_COLORS.unsuitable;
 }
 
 export function getSuitabilityLabel(score) {
-  if (score >= 65) return "Suitable";
-  if (score >= 40) return "Mixed";
+  if (score == null) return "Missing data";
+  if (score > 70) return "Suitable";
+  if (score > 40) return "Mixed";
   return "Unsuitable";
 }
 
 export function getSuitabilityKey(score) {
-  if (score >= 65) return "suitable";
-  if (score >= 40) return "mixed";
+  if (score == null) return "missing";
+  if (score > 70) return "suitable";
+  if (score > 40) return "mixed";
   return "not_suitable";
 }
 
@@ -186,5 +122,12 @@ export const suitabilityConfig = {
     chipBorder: "border-[#E9A7A6]",
     hex: SCORE_COLORS.unsuitable,
   },
+  missing: {
+    label: "Missing data",
+    color: "bg-[#D8D5CB]",
+    textColor: "text-[var(--text-muted)]",
+    chipBg: "bg-[#F2F0E6]",
+    chipBorder: "border-[#D8D5CB]",
+    hex: SCORE_COLORS.missing,
+  },
 };
-

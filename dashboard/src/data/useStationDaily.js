@@ -140,24 +140,26 @@ export function averageYearSeries(yearSeries) {
 // Missing values are excluded from each metric independently so a sparse
 // field doesn't drag the average toward zero or mark gaps as "dry".
 export function summariseMonthly(daily) {
+  // null (not 0) so KPI cards render "—" instead of misleading "0°C / 0 mm"
+  // when a field is completely missing for the period.
   const empty = {
-    maxTemp: 0, maxTempMin: 0, maxTempMax: 0,
-    minTemp: 0, minTempMin: 0, minTempMax: 0,
-    rainfall: 0, dryDaysPct: 0,
-    uvIndex: 0, uvHighPct: 0,
+    maxTemp: null, maxTempMin: null, maxTempMax: null,
+    minTemp: null, minTempMin: null, minTempMax: null,
+    rainfall: null, dryDaysPct: null,
+    uvIndex: null, uvHighPct: null,
   };
   if (!daily?.length) return empty;
 
   const present = (k) =>
     daily.map((d) => d[k]).filter((v) => v != null);
   const avg1 = (vals) =>
-    vals.length ? +(vals.reduce((a, v) => a + v, 0) / vals.length).toFixed(1) : 0;
+    vals.length ? +(vals.reduce((a, v) => a + v, 0) / vals.length).toFixed(1) : null;
   const min1 = (vals) =>
-    vals.length ? +Math.min(...vals).toFixed(1) : 0;
+    vals.length ? +Math.min(...vals).toFixed(1) : null;
   const max1 = (vals) =>
-    vals.length ? +Math.max(...vals).toFixed(1) : 0;
+    vals.length ? +Math.max(...vals).toFixed(1) : null;
   const pct = (vals, pred) =>
-    vals.length ? Math.round((vals.filter(pred).length / vals.length) * 100) : 0;
+    vals.length ? Math.round((vals.filter(pred).length / vals.length) * 100) : null;
 
   const maxTempVals = present("maxTemp");
   const minTempVals = present("minTemp");

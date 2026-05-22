@@ -1,38 +1,68 @@
 import { useMemo } from "react";
 import { summariseMonthly } from "../../data/useStationDaily";
 
-function metricScore(metric, value, thresholds) {
-  switch (metric) {
-    case "maxTemp": {
-      if (value <= thresholds.maxTemp) return 90;
-      const over = value - thresholds.maxTemp;
-      return Math.max(10, Math.round(90 - over * 10));
-    }
-    case "minTemp": {
-      if (value >= thresholds.minTemp) return 90;
-      const under = thresholds.minTemp - value;
-      return Math.max(10, Math.round(90 - under * 8));
-    }
-    case "rainfall": {
-      if (value <= thresholds.rainfall) return 90;
-      const over = value - thresholds.rainfall;
-      return Math.max(10, Math.round(90 - over * 12));
-    }
-    case "uv": {
-      if (value <= thresholds.uv) return 90;
-      const over = value - thresholds.uv;
-      return Math.max(10, Math.round(90 - over * 10));
-    }
-    default:
-      return 50;
-  }
+// Per-component scoring ports from models/suitability_score_model.py. Each
+// returns 0..100 reflecting how favourable that single weather variable is
+// for marathon-running, using the same research-backed knee points as the
+// composite score. Returns null (not 0) when the input is missing so the
+// UI can distinguish "missing data" from "low score".
+function scoreMaxTemp(t) {
+  if (t == null) return null;
+  if (t < 0) return 15;
+  if (t < 5) return 40;
+  if (t < 8) return 70;
+  if (t < 12) return 100;
+  if (t < 15) return 90;
+  if (t < 18) return 78;
+  if (t < 22) return 60;
+  if (t < 25) return 38;
+  if (t < 28) return 20;
+  if (t < 32) return 8;
+  return 0;
+}
+
+function scoreMinTemp(t) {
+  if (t == null) return null;
+  if (t < -5) return 10;
+  if (t < 0) return 30;
+  if (t < 5) return 65;
+  if (t < 10) return 95;
+  if (t < 15) return 100;
+  if (t < 18) return 80;
+  if (t < 22) return 55;
+  return 25;
+}
+
+function scoreRainfall(r) {
+  if (r == null) return null;
+  if (r === 0) return 100;
+  if (r <= 1) return 92;
+  if (r <= 2.5) return 80;
+  if (r <= 5) return 65;
+  if (r <= 10) return 42;
+  if (r <= 20) return 20;
+  if (r <= 30) return 8;
+  return 2;
+}
+
+function scoreUv(u) {
+  if (u == null) return null;
+  if (u <= 2) return 100;
+  if (u <= 5) return 78;
+  if (u <= 7) return 52;
+  if (u <= 10) return 22;
+  return 0;
 }
 
 function fillColor(score) {
-  if (score >= 65) return "#59C459";
-  if (score >= 40) return "#EFA827";
+  if (score == null) return "#D8D5CB";
+  if (score > 70) return "#59C459";
+  if (score > 40) return "#EFA827";
   return "#E24B4A";
 }
+
+const MISSING_BAR_BG =
+  "linear-gradient(45deg, #E6E3D7 25%, #F2F0E6 25%, #F2F0E6 50%, #E6E3D7 50%, #E6E3D7 75%, #F2F0E6 75%) 0/8px 8px";
 
 const INTERPRETATIONS = {
   maxTemp: "Max temperature is the primary risk factor. Consider an early morning start or selecting a cooler month.",
@@ -41,18 +71,24 @@ const INTERPRETATIONS = {
   uv: "UV is the primary risk factor. Consider early morning start times before 7am to reduce exposure.",
 };
 
-export default function RiskProfile({ dailyData, thresholds }) {
+export default function RiskProfile({ dailyData }) {
   const rows = useMemo(() => {
     const s = summariseMonthly(dailyData);
+    const v = (val, unit) => (val == null ? `— ${unit} avg` : `${val}${unit} avg`);
     return [
-      { key: "maxTemp", name: "Max temperature", score: metricScore("maxTemp", s.maxTemp, thresholds), value: `${s.maxTemp}°C avg` },
-      { key: "minTemp", name: "Min temperature", score: metricScore("minTemp", s.minTemp, thresholds), value: `${s.minTemp}°C avg` },
-      { key: "rainfall", name: "Rainfall", score: metricScore("rainfall", s.rainfall, thresholds), value: `${s.rainfall}mm avg` },
-      { key: "uv", name: "UV index", score: metricScore("uv", s.uvIndex, thresholds), value: `${s.uvIndex} avg` },
+      { key: "maxTemp", name: "Max temperature", score: scoreMaxTemp(s.maxTemp), value: v(s.maxTemp, "°C") },
+      { key: "minTemp", name: "Min temperature", score: scoreMinTemp(s.minTemp), value: v(s.minTemp, "°C") },
+      { key: "rainfall", name: "Rainfall", score: scoreRainfall(s.rainfall), value: v(s.rainfall, "mm") },
+      { key: "uv", name: "UV index", score: scoreUv(s.uvIndex), value: s.uvIndex == null ? "— avg" : `${s.uvIndex} avg` },
     ];
-  }, [dailyData, thresholds]);
+  }, [dailyData]);
 
-  const weakest = rows.reduce((a, b) => (a.score <= b.score ? a : b), rows[0]);
+  // Filter nulls before reducing — `null <= number` coerces to 0 and would
+  // falsely pick a missing-data row as the weakest factor.
+  const scorable = rows.filter((r) => r.score != null);
+  const weakest = scorable.length
+    ? scorable.reduce((a, b) => (a.score <= b.score ? a : b))
+    : null;
 
   return (
     <div
@@ -88,8 +124,8 @@ export default function RiskProfile({ dailyData, thresholds }) {
             >
               <div
                 style={{
-                  width: `${row.score}%`,
-                  background: fillColor(row.score),
+                  width: row.score == null ? "100%" : `${row.score}%`,
+                  background: row.score == null ? MISSING_BAR_BG : fillColor(row.score),
                   height: "100%",
                   transition: "width 0.3s ease, background 0.3s ease",
                 }}
@@ -105,7 +141,7 @@ export default function RiskProfile({ dailyData, thresholds }) {
               className="text-xs font-bold text-right tabular-nums"
               style={{ color: fillColor(row.score) }}
             >
-              {row.score}
+              {row.score ?? "—"}
             </span>
           </div>
         ))}
@@ -114,7 +150,9 @@ export default function RiskProfile({ dailyData, thresholds }) {
         className="mt-3 text-[11px]"
         style={{ color: "var(--text-secondary)" }}
       >
-        {INTERPRETATIONS[weakest.key]}
+        {weakest
+          ? INTERPRETATIONS[weakest.key]
+          : "Insufficient data to identify a limiting factor for this period."}
       </p>
     </div>
   );

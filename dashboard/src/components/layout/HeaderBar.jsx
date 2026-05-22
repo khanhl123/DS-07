@@ -128,9 +128,16 @@ export default function HeaderBar({ summary }) {
               <span className="strip-divider" aria-hidden="true">|</span>
               <span
                 className="strip-score"
-                style={{ color: summary.scoreColor }}
+                style={{
+                  color:
+                    summary.score == null
+                      ? "var(--text-muted)"
+                      : summary.scoreColor,
+                }}
               >
-                {summary.score}/100 · {summary.scoreLabel}
+                {summary.score == null
+                  ? "—/100 · Missing data"
+                  : `${summary.score}/100 · ${summary.scoreLabel}`}
               </span>
             </>
           ) : (

@@ -1,26 +1,28 @@
-import { useMemo } from "react";
-import { computeAdjustedScore, MONTHS } from "../../data/placeholderData";
+import {
+  MONTHS,
+  getSuitabilityColor,
+  SCORE_NA_TEXT,
+} from "../../data/placeholderData";
 
-function bandForScore(score) {
-  if (score >= 80) return { bg: "#2D9C56", text: "#fff" };
-  if (score >= 65) return { bg: "#59C459", text: "#1e3d1f" };
-  if (score >= 40) return { bg: "#EFA827", text: "#3f2c08" };
-  return { bg: "#E24B4A", text: "#fff" };
+function bandStyle(score) {
+  const bg = getSuitabilityColor(score);
+  // Dark text on the lighter green/orange/missing bands for WCAG AA
+  // contrast; white only on the red band where dark text is unreadable.
+  let text;
+  if (score == null) text = "var(--text-muted)";
+  else if (score > 70) text = "#1e3d1f";
+  else if (score > 40) text = "#3f2c08";
+  else text = "#fff";
+  return { bg, text };
 }
 
 export default function MonthStrip({
   station,
-  thresholds,
   selectedMonthIndex,
   onSelectMonth,
   onStopAnimation,
 }) {
-  const scores = useMemo(() => {
-    if (!station) return MONTHS.map(() => 50);
-    return station.monthlyScores.map((s) =>
-      computeAdjustedScore(s, thresholds),
-    );
-  }, [station, thresholds]);
+  const scores = station ? station.monthlyScores : MONTHS.map(() => null);
 
   return (
     <div
@@ -47,7 +49,7 @@ export default function MonthStrip({
       </div>
       <div className="grid grid-cols-12 gap-1.5">
         {MONTHS.map((m, i) => {
-          const band = bandForScore(scores[i]);
+          const band = bandStyle(scores[i]);
           const isSelected = i === selectedMonthIndex;
           return (
             <button
@@ -67,11 +69,13 @@ export default function MonthStrip({
                 boxShadow: isSelected ? "0 0 0 2px var(--primary)" : "none",
                 transition: "background 0.3s ease",
               }}
-              aria-label={`${m}: score ${scores[i]}${isSelected ? " (selected)" : ""}`}
+              aria-label={`${m}: ${
+                scores[i] == null ? SCORE_NA_TEXT : `score ${scores[i]}`
+              }${isSelected ? " (selected)" : ""}`}
               aria-current={isSelected ? "true" : undefined}
             >
               <span>{m}</span>
-              <span className="tabular-nums">{scores[i]}</span>
+              <span className="tabular-nums">{scores[i] ?? "—"}</span>
             </button>
           );
         })}

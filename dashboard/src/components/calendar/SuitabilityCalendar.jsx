@@ -1,6 +1,6 @@
 ﻿import {
-  EXPERT_VERDICT_COLORS,
-  EXPERT_VERDICT_LABELS,
+  getSuitabilityColor,
+  getSuitabilityLabel,
   suitabilityConfig,
 } from "../../data/placeholderData";
 import { CheckCircle2, AlertTriangle, XCircle } from "lucide-react";
@@ -62,44 +62,52 @@ export default function SuitabilityCalendar({ dailyData, selectedDay, onSelectDa
           {Array.from({ length: daysInMonth }).map((_, i) => {
             const dayNum = i + 1;
             const dayData = dailyMap[dayNum];
-            const suit = dayData?.suitability || "mixed";
-            const cfg = suitabilityConfig[suit];
-            const Icon = suitIcons[suit];
+            const hasScore = dayData?.score != null;
+            const suit = hasScore ? dayData.suitability : null;
+            const cfg = suit ? suitabilityConfig[suit] : null;
+            const Icon = suit ? suitIcons[suit] : null;
             const isSelected = selectedDay === dayNum;
+            const ariaLabel = hasScore
+              ? `Day ${dayNum}, ${cfg.label}, score ${dayData.score}`
+              : `Day ${dayNum}, no data`;
             return (
               <button
                 key={dayNum} type="button" onClick={() => onSelectDay(dayNum)}
                 className={`relative min-h-[72px] border-b border-r border-[var(--border)] p-1.5 text-left transition hover:bg-blue-50/50 focus-visible:z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--accent-blue)] ${
                   isSelected ? "ring-2 ring-inset ring-[var(--accent-blue)] bg-blue-50/60" : ""
                 }`}
-                aria-label={`Day ${dayNum}, ${cfg.label}, score ${dayData?.score || "N/A"}`}
+                aria-label={ariaLabel}
               >
                 <div className="flex items-start justify-between">
                   <span className={`text-xs font-semibold ${isSelected ? "text-[var(--accent-blue)]" : "text-[var(--text)]"}`}>{dayNum}</span>
                   <div className="flex items-center gap-1">
-                    {dayData?.marathonVerdict && (
+                    {hasScore && dayData.marathonVerdict && (
                       <span
-                        title={`Expert verdict: ${EXPERT_VERDICT_LABELS[dayData.marathonVerdict.colour]} (${dayData.marathonVerdict.score})`}
-                        aria-label={`Expert verdict ${EXPERT_VERDICT_LABELS[dayData.marathonVerdict.colour]}`}
+                        title={`Suitability: ${getSuitabilityLabel(dayData.marathonVerdict.score)} (${dayData.marathonVerdict.score})`}
+                        aria-label={`Suitability ${getSuitabilityLabel(dayData.marathonVerdict.score)}`}
                         style={{
                           width: 6,
                           height: 6,
                           borderRadius: 999,
-                          background: EXPERT_VERDICT_COLORS[dayData.marathonVerdict.colour],
+                          background: getSuitabilityColor(dayData.marathonVerdict.score),
                           display: "inline-block",
                         }}
                       />
                     )}
-                    <Icon className={`h-3 w-3 ${cfg.textColor}`} aria-hidden="true" />
+                    {Icon && <Icon className={`h-3 w-3 ${cfg.textColor}`} aria-hidden="true" />}
                   </div>
                 </div>
-                {dayData && (
+                {hasScore ? (
                   <>
                     <div className="mt-2 h-1.5 w-full rounded-full bg-[var(--surface-alt)]">
                       <div className={`h-1.5 rounded-full ${cfg.color}`} style={{ width: `${dayData.score}%` }} />
                     </div>
                     <div className="mt-1 text-[10px] font-medium text-[var(--text-muted)]">{dayData.score}</div>
                   </>
+                ) : (
+                  dayData && (
+                    <div className="mt-2 text-[10px] font-medium text-[var(--text-muted)]">No data</div>
+                  )
                 )}
               </button>
             );

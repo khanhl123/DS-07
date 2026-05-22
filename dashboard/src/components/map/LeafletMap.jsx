@@ -8,7 +8,6 @@ import {
 } from "react-leaflet";
 import auStates from "../../data/au-states.json";
 import {
-  computeAdjustedScore,
   getSuitabilityColor,
   STATE_FULL_NAMES,
 } from "../../data/placeholderData";
@@ -44,21 +43,9 @@ export default function LeafletMap({
   selectedStationNumber,
   monthIndex,
   year,
-  thresholds,
   onSelectStation,
 }) {
   const [tileStatus, setTileStatus] = useState("loading");
-  const scored = useMemo(
-    () =>
-      stations.map((s) => ({
-        ...s,
-        adjustedScore: computeAdjustedScore(
-          s.monthlyScores[monthIndex],
-          thresholds,
-        ),
-      })),
-    [stations, monthIndex, thresholds],
-  );
   const stateStyle = useMemo(() => {
     const supported = new Set(
       stations.map((s) => STATE_FULL_NAMES[s.state]).filter(Boolean),
@@ -110,9 +97,13 @@ export default function LeafletMap({
           }}
         />
         <GeoJSON data={auStates} style={stateStyle} />
-        {scored.map((station) => {
+        {stations.map((station) => {
           const isSelected = station.n === selectedStationNumber;
-          const fill = getSuitabilityColor(station.adjustedScore);
+          const score = station.monthlyScores[monthIndex];
+          const fill = getSuitabilityColor(score);
+          // Translucent grey for unscorable months so the marker stays
+          // visible and clickable but is clearly distinct from a real score.
+          const fillOpacity = score == null ? 0.5 : 0.9;
           return (
             <CircleMarker
               key={station.n}
@@ -122,7 +113,7 @@ export default function LeafletMap({
                 fillColor: fill,
                 color: isSelected ? "#0F6E56" : "#ffffff",
                 weight: isSelected ? 3 : 1.5,
-                fillOpacity: 0.9,
+                fillOpacity,
               }}
               eventHandlers={{
                 click: () => onSelectStation(station.n),
@@ -136,7 +127,6 @@ export default function LeafletMap({
                   station={station}
                   monthIndex={monthIndex}
                   year={year}
-                  thresholds={thresholds}
                   onSelect={() => onSelectStation(station.n)}
                 />
               </Popup>

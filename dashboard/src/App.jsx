@@ -11,7 +11,6 @@ import DashboardLayout from "./components/layout/DashboardLayout";
 import HeroSection from "./components/layout/HeroSection";
 import LeafletMap from "./components/map/LeafletMap";
 import MapToolbar from "./components/map/MapToolbar";
-import ThresholdPanel from "./components/map/ThresholdPanel";
 import CoverageHints from "./components/map/CoverageHints";
 import NearbyStationChips from "./components/map/NearbyStationChips";
 import RiskProfile from "./components/suitability/RiskProfile";
@@ -29,14 +28,12 @@ import {
   stationsByNumber,
   coveredStateCodes,
   DEFAULT_STATION_NUMBER,
-  DEFAULT_THRESHOLDS,
   MONTHS,
   MONTH_NAMES_LONG,
-  computeAdjustedScore,
   getSuitabilityColor,
   getSuitabilityLabel,
-  scoreDayAgainstThresholds,
   getSuitabilityKey,
+  SCORE_NA_TEXT,
 } from "./data/placeholderData";
 import {
   useStationDaily,
@@ -60,7 +57,6 @@ export default function App() {
   const [selectedMonthIndex, setSelectedMonthIndex] = useState(
     new Date().getMonth(),
   );
-  const [thresholds, setThresholds] = useState({ ...DEFAULT_THRESHOLDS });
   const [comparedStations, setComparedStations] = useState([
     DEFAULT_STATION_NUMBER,
   ]);
@@ -102,15 +98,14 @@ export default function App() {
   } = predictRequested ? predicted : historical;
   const monthlySummary = useMemo(() => summariseMonthly(dailyData), [dailyData]);
 
+  // Always fetch yearly so the Section 3 score card can show the year-specific
+  // expert verdict (yearSeries[monthIndex].marathonVerdict) regardless of the
+  // daily/monthly toggle. Same endpoint also powers the monthly KPI averages.
   const {
     data: yearSeries,
     loading: yearlyLoading,
     error: yearlyError,
-  } = useStationYearly(
-    selectedStation,
-    selectedYear,
-    granularity === "monthly",
-  );
+  } = useStationYearly(selectedStation, selectedYear, true);
   const yearAverages = useMemo(
     () => (granularity === "monthly" ? averageYearSeries(yearSeries) : null),
     [granularity, yearSeries],
@@ -138,45 +133,53 @@ export default function App() {
   const chartData = isMonthly ? yearSeries : dailyData;
   const chartXKey = isMonthly ? "monthLabel" : "day";
 
-  const adjustedScore = useMemo(
-    () =>
-      computeAdjustedScore(
-        selectedStation.monthlyScores[selectedMonthIndex],
-        thresholds,
-      ),
-    [selectedStation, selectedMonthIndex, thresholds],
+  // Year-specific expert score for the selected month. Falls back to the
+  // climatology baked into stations.js while the yearly fetch is in flight,
+  // so the score card doesn't pop from "—" to a number on every selection.
+  const yearMonth = useMemo(
+    () => yearSeries?.find?.((m) => m.month === selectedMonthIndex) ?? null,
+    [yearSeries, selectedMonthIndex],
   );
+  const expertScore =
+    yearMonth?.marathonVerdict?.score ??
+    selectedStation.monthlyScores[selectedMonthIndex];
 
-  const suitabilityKey = getSuitabilityKey(adjustedScore);
-  const scoreColor = getSuitabilityColor(adjustedScore);
-  const scoreLabel = getSuitabilityLabel(adjustedScore);
+  const suitabilityKey = getSuitabilityKey(expertScore);
+  const scoreColor = getSuitabilityColor(expertScore);
+  const scoreLabel = getSuitabilityLabel(expertScore);
 
+  // Returns null when every month is unscorable (all-null monthlyScores)
+  // so the UI can say "insufficient data" instead of falsely labelling
+  // January (index 0) as the best window.
   const bestMonthIndex = useMemo(() => {
-    let best = 0;
+    let best = null;
     let bestScore = -1;
     selectedStation.monthlyScores.forEach((s, i) => {
-      const adj = computeAdjustedScore(s, thresholds);
-      if (adj > bestScore) {
-        bestScore = adj;
+      if (s != null && s > bestScore) {
+        bestScore = s;
         best = i;
       }
     });
     return best;
-  }, [selectedStation, thresholds]);
+  }, [selectedStation]);
 
   // Daily data shaped for the existing SuitabilityCalendar component.
+  // Per-day score comes straight from the expert model verdict computed by
+  // the API. Days without a verdict (sparse rows / missing inputs) are passed
+  // through with score=null so the calendar can render them as "no data"
+  // rather than mis-coloured red.
   const calendarData = useMemo(
     () =>
       dailyData.map((d) => {
-        const score = scoreDayAgainstThresholds(d, thresholds);
+        const score = d.marathonVerdict?.score ?? null;
         return {
           day: d.day,
           score,
-          suitability: getSuitabilityKey(score),
+          suitability: score == null ? null : getSuitabilityKey(score),
           marathonVerdict: d.marathonVerdict ?? null,
         };
       }),
-    [dailyData, thresholds],
+    [dailyData],
   );
 
   // Month-animation loop — plays exactly 12 months then stops.
@@ -231,18 +234,14 @@ export default function App() {
         `Station: ${selectedStation.name} (#${selectedStation.n}, ${selectedStation.state})`,
         `Month: ${MONTH_NAMES_LONG[selectedMonthIndex]}`,
         `Year: ${selectedYear}`,
-        `Adjusted suitability score: ${adjustedScore}/100 — ${scoreLabel}`,
+        expertScore == null
+          ? `Expert suitability score: ${SCORE_NA_TEXT.toLowerCase()}`
+          : `Expert suitability score: ${expertScore}/100 — ${scoreLabel}`,
         "",
-        "Thresholds applied:",
-        `  Max temp <= ${thresholds.maxTemp}°C`,
-        `  Min temp >= ${thresholds.minTemp}°C`,
-        `  Rainfall <= ${thresholds.rainfall}mm`,
-        `  UV index <= ${thresholds.uv}`,
-        "",
-        `Avg max temp: ${summary.maxTemp}°C (range ${summary.maxTempMin}–${summary.maxTempMax})`,
-        `Avg min temp: ${summary.minTemp}°C (range ${summary.minTempMin}–${summary.minTempMax})`,
-        `Avg rainfall: ${summary.rainfall}mm — ${summary.dryDaysPct}% dry days`,
-        `Avg UV index: ${summary.uvIndex} — ${summary.uvHighPct}% high+ days`,
+        `Avg max temp: ${fmt(summary.maxTemp, "°C")} (range ${fmtRange(summary.maxTempMin, summary.maxTempMax, "°C")})`,
+        `Avg min temp: ${fmt(summary.minTemp, "°C")} (range ${fmtRange(summary.minTempMin, summary.minTempMax, "°C")})`,
+        `Avg rainfall: ${fmt(summary.rainfall, "mm")} — ${fmt(summary.dryDaysPct, "%")} dry days`,
+        `Avg UV index: ${fmt(summary.uvIndex)} — ${fmt(summary.uvHighPct, "%")} high+ days`,
         "",
         predictRequested
           ? "NN-predicted weather — not a recorded observation."
@@ -288,7 +287,7 @@ export default function App() {
         stationNumber: selectedStation.n,
         stationState: selectedStation.state,
         timeframe: timeframeLabel,
-        score: adjustedScore,
+        score: expertScore,
         scoreLabel,
         scoreColor,
       }}
@@ -323,7 +322,6 @@ export default function App() {
           selectedStationNumber={selectedStationNumber}
           monthIndex={selectedMonthIndex}
           year={selectedYear}
-          thresholds={thresholds}
           onSelectStation={handleSelectStation}
         />
 
@@ -334,18 +332,11 @@ export default function App() {
             selectedMonthIndex={selectedMonthIndex}
             selectedYear={selectedYear}
           />
-          <ThresholdPanel
-            thresholds={thresholds}
-            onChange={setThresholds}
-            selectedStation={selectedStation}
-            selectedMonthIndex={selectedMonthIndex}
-          />
           <CoverageHints />
           <NearbyStationChips
             selectedStation={selectedStation}
             stations={stations}
             monthIndex={selectedMonthIndex}
-            thresholds={thresholds}
             onSelect={handleSelectStation}
           />
         </div>
@@ -550,7 +541,7 @@ export default function App() {
 
         {!isMonthly && (
           <div className="mt-4">
-            <RiskProfile dailyData={dailyData} thresholds={thresholds} />
+            <RiskProfile dailyData={dailyData} />
           </div>
         )}
 
@@ -619,31 +610,33 @@ export default function App() {
               className="text-[10px] uppercase tracking-wider"
               style={{ color: "var(--text-secondary)" }}
             >
-              Adjusted score
+              Expert score
             </span>
             <div className="my-1 flex items-baseline gap-1">
               <span
                 className="text-6xl font-bold tabular-nums"
                 style={{ color: scoreColor }}
               >
-                {adjustedScore}
+                {expertScore ?? "—"}
               </span>
               <span className="text-lg" style={{ color: "var(--text-muted)" }}>
                 /100
               </span>
             </div>
             <span
-              className="mb-3 text-sm font-semibold"
+              className="mb-3 text-sm font-semibold text-center"
               style={{ color: scoreColor }}
             >
-              {scoreLabel}
+              {expertScore == null ? SCORE_NA_TEXT : scoreLabel}
             </span>
-            <TrafficLight active={suitabilityKey} />
+            {expertScore != null && <TrafficLight active={suitabilityKey} />}
             <p
               className="mt-3 max-w-[210px] text-center text-[11px]"
               style={{ color: "var(--text-secondary)" }}
             >
-              {predictRequested
+              {expertScore == null
+                ? "At least one of max temp, min temp, UV, or rainfall is missing for this month."
+                : predictRequested
                 ? "Based on NN-predicted weather; uncertainty is higher than historical estimates."
                 : "Based on historical observations only, not a forecast."}
             </p>
@@ -654,34 +647,26 @@ export default function App() {
             <RiskRow
               color="#E24B4A"
               label="Max temp"
-              detail={`avg ${summary.maxTemp}°C`}
-              assessment={summary.maxTemp > thresholds.maxTemp
-                ? "Above your threshold — heat stress risk elevated (Ely et al. marathon pacing literature)."
-                : "Within your threshold — acceptable range."}
+              detail={`avg ${fmt(summary.maxTemp, "°C")}`}
+              assessment={assessMaxTemp(summary.maxTemp)}
             />
             <RiskRow
               color="#3B8BD4"
               label="Min temp"
-              detail={`avg ${summary.minTemp}°C`}
-              assessment={summary.minTemp < thresholds.minTemp
-                ? "Below your threshold — cold stress possible for waiting runners."
-                : "Within your threshold — comfortable for warm-up."}
+              detail={`avg ${fmt(summary.minTemp, "°C")}`}
+              assessment={assessMinTemp(summary.minTemp)}
             />
             <RiskRow
               color="#1D9E75"
               label="Rainfall"
-              detail={`avg ${summary.rainfall} mm — ${summary.dryDaysPct}% dry`}
-              assessment={summary.rainfall > thresholds.rainfall
-                ? "Wet conditions — plan for track and spectator considerations."
-                : "Low rainfall — generally dry."}
+              detail={`avg ${fmt(summary.rainfall, " mm")} — ${fmt(summary.dryDaysPct, "%")} dry`}
+              assessment={assessRainfall(summary.rainfall)}
             />
             <RiskRow
               color="#EF9F27"
               label="UV index"
-              detail={`avg ${summary.uvIndex} — ${summary.uvHighPct}% high+`}
-              assessment={summary.uvIndex > thresholds.uv
-                ? "High UV exposure (WHO scale) — consider pre-7am starts."
-                : "UV within your threshold."}
+              detail={`avg ${fmt(summary.uvIndex)} — ${fmt(summary.uvHighPct, "%")} high+`}
+              assessment={assessUv(summary.uvIndex)}
             />
             <div
               className="mt-2 p-3 text-xs"
@@ -692,7 +677,13 @@ export default function App() {
                 color: "#0a5a46",
               }}
             >
-              Historical best window: <strong>{MONTH_NAMES_LONG[bestMonthIndex]}</strong> scores highest for this station under your current thresholds.
+              {bestMonthIndex == null
+                ? "Insufficient data to identify a best window for this station."
+                : (
+                  <>
+                    Historical best window: <strong>{MONTH_NAMES_LONG[bestMonthIndex]}</strong> scores highest for this station under the marathon-running expert model.
+                  </>
+                )}
             </div>
           </div>
         </div>
@@ -700,7 +691,6 @@ export default function App() {
         <div className="mt-4">
           <MonthStrip
             station={selectedStation}
-            thresholds={thresholds}
             selectedMonthIndex={selectedMonthIndex}
             onSelectMonth={handleSelectMonth}
             onStopAnimation={() => isAnimating && setIsAnimating(false)}
@@ -717,7 +707,7 @@ export default function App() {
                 Daily {predictRequested ? "predicted" : "historical"} suitability — {MONTH_NAMES_LONG[selectedMonthIndex]}
               </h4>
               <p className="text-[11px]" style={{ color: "var(--text-secondary)" }}>
-                Each cell coloured by the day's score against your thresholds.
+                Each cell coloured by the marathon-running expert model's verdict for that day.
               </p>
             </div>
             <SuitabilityCalendar
@@ -790,7 +780,6 @@ export default function App() {
         comparedStationNumbers={comparedStations}
         primaryStationNumber={selectedStationNumber}
         selectedMonthIndex={selectedMonthIndex}
-        thresholds={thresholds}
         onRemove={handleRemoveFromComparison}
         onSelectPrimary={setSelectedStationNumber}
       />
@@ -918,6 +907,50 @@ function RiskRow({ color, label, detail, assessment }) {
       </div>
     </div>
   );
+}
+
+// Research-backed risk copy. Bands mirror the knee points of the expert model
+// (models/suitability_score_model.py) so the assessment text agrees with what
+// the score itself reacts to.
+function assessMaxTemp(t) {
+  if (t == null) return "No data.";
+  if (t < 8) return "Cool side of optimal — light layers needed at the start.";
+  if (t < 12) return "Optimal window — fast-marathon climate (London/Berlin record range).";
+  if (t < 15) return "Mild — slight performance decline begins above ~13°C (Ely et al.).";
+  if (t < 18) return "Warm — WMA yellow-flag zone; hydration plan matters.";
+  if (t < 22) return "Hot — WMA red-flag zone; pace reduction expected, heat illness risk rising.";
+  if (t < 25) return "Very hot — serious heat-stress risk for recreational runners.";
+  return "Dangerous heat — WMA black-flag territory; race cancellation likely.";
+}
+
+function assessMinTemp(t) {
+  if (t == null) return "No data.";
+  if (t < 0) return "Sub-zero start — ice and hypothermia risk at the gun.";
+  if (t < 5) return "Cold start — full layering required; pavement may be icy.";
+  if (t < 10) return "Cool start — comfortable with light gear, body warms naturally.";
+  if (t < 15) return "Optimal start temperature — comfortable through early kilometres.";
+  if (t < 18) return "Warm start — hydration strategy needed from km 1.";
+  if (t < 22) return "Hot start — body under heat stress before the gun (Roberts, 2010).";
+  return "Very hot overnight — race-day heat will compound rapidly.";
+}
+
+function assessRainfall(r) {
+  if (r == null) return "No data.";
+  if (r < 1) return "Dry — optimal grip and thermoregulation.";
+  if (r < 2.5) return "Light rain — mild evaporative cooling benefit in warm conditions (Vihma, 2010).";
+  if (r < 5) return "Moderate rain — wet shoes, slight grip reduction.";
+  if (r < 10) return "Heavy-ish rain — meaningful grip and blister risk.";
+  if (r < 20) return "Heavy rain — hypothermia risk for slower finishers; amber-warning territory.";
+  return "Extreme rainfall — dangerous; race organisers would typically issue safety warnings.";
+}
+
+function assessUv(u) {
+  if (u == null) return "No data.";
+  if (u <= 2) return "Low UV (WHO scale) — negligible radiant heat load.";
+  if (u <= 5) return "Moderate UV — manageable with sunscreen and a cap.";
+  if (u <= 7) return "High UV — noticeable radiant heat over 4+ hours; sun protection mandatory.";
+  if (u <= 10) return "Very high UV — WHO advises avoiding prolonged outdoor activity.";
+  return "Extreme UV — WHO advises staying indoors during peak hours.";
 }
 
 function DataStatusBanner({
