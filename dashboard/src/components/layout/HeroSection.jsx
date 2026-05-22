@@ -115,7 +115,7 @@ export default function HeroSection({ onStart, onJumpTo }) {
 
         <p className="hero-disclaimer">
           Based on historical Bureau of Meteorology data. This website is meant
-          to be a decision-support tool, not a weather forecast.
+          to be a decision-support tool, we are unable to guarantee 100% accuracy.
         </p>
       </div>
     </section>
