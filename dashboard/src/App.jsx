@@ -588,7 +588,7 @@ export default function App() {
           >
             {predictRequested ? "Predicted suitability" : "Historical suitability"} —{" "}
             <span style={{ color: "var(--primary)" }}>
-              {selectedStation.name}, {MONTH_NAMES_LONG[selectedMonthIndex]}
+              {selectedStation.name}, {MONTH_NAMES_LONG[selectedMonthIndex]} {selectedYear}
             </span>
           </h2>
           <p
@@ -614,7 +614,7 @@ export default function App() {
               className="text-[10px] uppercase tracking-wider"
               style={{ color: "var(--text-secondary)" }}
             >
-              Expert score
+              Expert score · {MONTHS[selectedMonthIndex]} {selectedYear}
             </span>
             <div className="my-1 flex items-baseline gap-1">
               <span
@@ -707,15 +707,6 @@ export default function App() {
           </div>
         </div>
 
-        <div className="mt-4">
-          <MonthStrip
-            station={selectedStation}
-            selectedMonthIndex={selectedMonthIndex}
-            onSelectMonth={handleSelectMonth}
-            onStopAnimation={() => isAnimating && setIsAnimating(false)}
-          />
-        </div>
-
         {!isMonthly && (
           <div className="mt-4">
             <div className="mb-2">
@@ -739,6 +730,15 @@ export default function App() {
             />
           </div>
         )}
+
+        <div className="mt-4">
+          <MonthStrip
+            station={selectedStation}
+            selectedMonthIndex={selectedMonthIndex}
+            onSelectMonth={handleSelectMonth}
+            onStopAnimation={() => isAnimating && setIsAnimating(false)}
+          />
+        </div>
 
         <div
           className="mt-4 p-3"

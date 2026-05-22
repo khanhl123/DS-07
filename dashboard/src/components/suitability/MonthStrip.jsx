@@ -38,13 +38,13 @@ export default function MonthStrip({
           className="text-sm font-semibold"
           style={{ color: "var(--text-primary)" }}
         >
-          Best month to host — {station?.name ?? "—"}
+          Best month to host (long-term average) — {station?.name ?? "—"}
         </h4>
         <span
           className="text-[11px]"
           style={{ color: "var(--text-secondary)" }}
         >
-          Click any month to jump there
+          Climatology across all years · click any month to jump there
         </span>
       </div>
       <div className="grid grid-cols-12 gap-1.5">
