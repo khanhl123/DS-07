@@ -11,7 +11,6 @@ Reviewed against current dashboard code on `main`.
 
 | # | Item | Why it fits | Files |
 |---|------|-------------|-------|
-| 1 | Quarterly/Annually buttons | Already flagged in code (`enabled: false`, "Coming soon" tooltip). Quick polish: ensure disabled cursor + tooltip render correctly. | `dashboard/src/App.jsx:326–363` |
 | 7 | Export button has no feedback | `exportSummary()` triggers a silent download — no loading state, no toast, no confirmation. Add a loading state on the button + a toast. | `dashboard/src/App.jsx:174–204, 664–679` |
 
 ## 2. DO if mobile is in scope
@@ -38,12 +37,11 @@ Reviewed against current dashboard code on `main`.
 
 ## Suggested fix order (rough effort)
 
-1. **#1** disable styling polish — ~15 min
-2. **#7** export button feedback — ~30 min (toast + loading state)
-3. **#4** sticky selection bar — 1–2 hr (real component work)
-4. **#8** mobile map controls — ~30 min CSS (if mobile in scope)
-5. **#2, #3** verify-then-decide — ~15 min check
-6. **#5** defer
+1. **#7** export button feedback — ~30 min (toast + loading state)
+2. **#4** sticky selection bar — 1–2 hr (real component work)
+3. **#8** mobile map controls — ~30 min CSS (if mobile in scope)
+4. **#2, #3** verify-then-decide — ~15 min check
+5. **#5** defer
 
 ---
 

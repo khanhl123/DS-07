@@ -423,58 +423,32 @@ export default function App() {
             Granularity
           </div>
           {[
-            { k: "daily", label: "Daily", enabled: true },
-            { k: "monthly", label: "Monthly", enabled: true },
-            { k: "quarterly", label: "Quarterly", enabled: false },
-            { k: "annually", label: "Annually", enabled: false },
+            { k: "daily", label: "Daily" },
+            { k: "monthly", label: "Monthly" },
           ].map((g) => (
-            <span key={g.k} className="relative inline-flex group">
-              <button
-                type="button"
-                onClick={() => g.enabled && setGranularity(g.k)}
-                disabled={!g.enabled}
-                className="px-2.5 py-1 text-xs font-semibold transition"
-                style={{
-                  background: !g.enabled
-                    ? "#F6F5EF"
-                    : granularity === g.k
-                    ? "var(--primary-lightest)"
-                    : "#fff",
-                  color: !g.enabled
-                    ? "var(--text-muted)"
-                    : granularity === g.k
+            <button
+              key={g.k}
+              type="button"
+              onClick={() => setGranularity(g.k)}
+              className="px-2.5 py-1 text-xs font-semibold transition"
+              style={{
+                background:
+                  granularity === g.k ? "var(--primary-lightest)" : "#fff",
+                color:
+                  granularity === g.k
                     ? "var(--primary)"
                     : "var(--text-secondary)",
-                  border:
-                    granularity === g.k
-                      ? "1px solid var(--primary-border)"
-                      : "1px solid var(--border)",
-                  borderRadius: "var(--radius)",
-                  cursor: g.enabled ? "pointer" : "not-allowed",
-                  opacity: g.enabled ? 1 : 0.72,
-                }}
-                aria-pressed={granularity === g.k}
-                aria-disabled={!g.enabled}
-                aria-describedby={!g.enabled ? `${g.k}-coming-soon` : undefined}
-              >
-                {g.label}
-              </button>
-              {!g.enabled && (
-                <span
-                  id={`${g.k}-coming-soon`}
-                  role="tooltip"
-                  className="pointer-events-none absolute left-1/2 top-8 z-20 hidden w-52 -translate-x-1/2 p-2 text-[11px] shadow-lg group-hover:block group-focus-within:block"
-                  style={{
-                    background: "#fff",
-                    border: "1px solid var(--border)",
-                    borderRadius: "var(--radius)",
-                    color: "var(--text-secondary)",
-                  }}
-                >
-                  Coming soon — needs cleaned multi-year aggregation data.
-                </span>
-              )}
-            </span>
+                border:
+                  granularity === g.k
+                    ? "1px solid var(--primary-border)"
+                    : "1px solid var(--border)",
+                borderRadius: "var(--radius)",
+                cursor: "pointer",
+              }}
+              aria-pressed={granularity === g.k}
+            >
+              {g.label}
+            </button>
           ))}
           <div
             className="mx-2 h-5 w-px"
