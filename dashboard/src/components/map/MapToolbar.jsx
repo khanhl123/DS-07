@@ -1,13 +1,11 @@
-import { Play, Pause, Target } from "lucide-react";
-import { MONTHS, MONTH_NAMES_LONG } from "../../data/placeholderData";
+import { Play, Pause } from "lucide-react";
+import { MONTHS } from "../../data/placeholderData";
 
 export default function MapToolbar({
   isAnimating,
   onToggleAnimate,
   selectedMonthIndex,
   selectedYear,
-  reverseSearchMonth,
-  onReverseSearchChange,
 }) {
   return (
     <div
@@ -40,38 +38,6 @@ export default function MapToolbar({
         aria-live="polite"
       >
         {MONTHS[selectedMonthIndex]} {selectedYear}
-      </div>
-
-      <div className="ml-auto flex flex-wrap items-center gap-3">
-        <label
-          className="inline-flex items-center gap-2 text-xs font-semibold"
-          style={{ color: "var(--text-secondary)" }}
-        >
-          <Target className="h-3.5 w-3.5" aria-hidden="true" />
-          Find best for:
-          <select
-            value={reverseSearchMonth ?? ""}
-            onChange={(e) => {
-              const v = e.target.value;
-              onReverseSearchChange(v === "" ? null : Number(v));
-            }}
-            style={{
-              padding: "4px 8px",
-              border: "1px solid var(--border)",
-              borderRadius: "var(--radius)",
-              background: "#fff",
-              fontSize: 12,
-              color: "var(--text-primary)",
-            }}
-          >
-            <option value="">— none —</option>
-            {MONTH_NAMES_LONG.map((n, i) => (
-              <option key={i} value={i}>
-                {n}
-              </option>
-            ))}
-          </select>
-        </label>
       </div>
     </div>
   );

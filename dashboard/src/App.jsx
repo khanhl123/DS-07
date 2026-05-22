@@ -12,7 +12,6 @@ import HeroSection from "./components/layout/HeroSection";
 import LeafletMap from "./components/map/LeafletMap";
 import MapToolbar from "./components/map/MapToolbar";
 import ThresholdPanel from "./components/map/ThresholdPanel";
-import ReverseSearchResults from "./components/map/ReverseSearchResults";
 import CoverageHints from "./components/map/CoverageHints";
 import NearbyStationChips from "./components/map/NearbyStationChips";
 import RiskProfile from "./components/suitability/RiskProfile";
@@ -67,7 +66,6 @@ export default function App() {
   ]);
   const [isAnimating, setIsAnimating] = useState(false);
   const animStepsRef = useRef(0);
-  const [reverseSearchMonth, setReverseSearchMonth] = useState(null);
   const [granularity, setGranularity] = useState("daily");
   const [selectedYear, setSelectedYear] = useState(2024);
   const [exportStatus, setExportStatus] = useState("idle");
@@ -220,14 +218,6 @@ export default function App() {
     setSelectedMonthIndex(i);
   };
 
-  const handleReverseSearch = (m) => {
-    setReverseSearchMonth(m);
-    if (m != null) {
-      setSelectedMonthIndex(m);
-      if (isAnimating) setIsAnimating(false);
-    }
-  };
-
   const exportSummary = async () => {
     setExportStatus("exporting");
     await new Promise((resolve) => window.setTimeout(resolve, 250));
@@ -343,19 +333,12 @@ export default function App() {
             onToggleAnimate={handleToggleAnimate}
             selectedMonthIndex={selectedMonthIndex}
             selectedYear={selectedYear}
-            reverseSearchMonth={reverseSearchMonth}
-            onReverseSearchChange={handleReverseSearch}
           />
           <ThresholdPanel
             thresholds={thresholds}
             onChange={setThresholds}
             selectedStation={selectedStation}
             selectedMonthIndex={selectedMonthIndex}
-          />
-          <ReverseSearchResults
-            monthIndex={reverseSearchMonth}
-            thresholds={thresholds}
-            onSelectStation={handleSelectStation}
           />
           <CoverageHints />
           <NearbyStationChips

@@ -182,12 +182,3 @@ export const suitabilityConfig = {
   },
 };
 
-// Rank every station for a given month using the current thresholds.
-export function rankStationsForMonth(monthIndex, thresholds, limit = 5) {
-  const rows = stations.map((s) => ({
-    station: s,
-    score: computeAdjustedScore(s.monthlyScores[monthIndex], thresholds),
-  }));
-  rows.sort((a, b) => b.score - a.score);
-  return rows.slice(0, limit);
-}
