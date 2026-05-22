@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Thermometer,
   ThermometerSun,
@@ -10,7 +10,6 @@ import {
 import DashboardLayout from "./components/layout/DashboardLayout";
 import HeroSection from "./components/layout/HeroSection";
 import LeafletMap from "./components/map/LeafletMap";
-import MapToolbar from "./components/map/MapToolbar";
 import CoverageHints from "./components/map/CoverageHints";
 import NearbyStationChips from "./components/map/NearbyStationChips";
 import RiskProfile from "./components/suitability/RiskProfile";
@@ -44,8 +43,6 @@ import {
   averageYearSeries,
 } from "./data/useStationDaily";
 
-const ANIMATION_INTERVAL_MS = 1200;
-
 const fmt = (v, unit = "") => (v == null ? "—" : `${v}${unit}`);
 const fmtRange = (lo, hi, unit = "") =>
   lo == null || hi == null ? "—" : `${lo}–${hi}${unit}`;
@@ -60,8 +57,6 @@ export default function App() {
   const [comparedStations, setComparedStations] = useState([
     DEFAULT_STATION_NUMBER,
   ]);
-  const [isAnimating, setIsAnimating] = useState(false);
-  const animStepsRef = useRef(0);
   const [granularity, setGranularity] = useState("daily");
   const [selectedYear, setSelectedYear] = useState(2024);
   const [exportStatus, setExportStatus] = useState("idle");
@@ -186,19 +181,6 @@ export default function App() {
     [dailyData],
   );
 
-  // Month-animation loop — plays exactly 12 months then stops.
-  useEffect(() => {
-    if (!isAnimating) return;
-    const id = setInterval(() => {
-      setSelectedMonthIndex((m) => (m + 1) % 12);
-      animStepsRef.current += 1;
-      if (animStepsRef.current >= 12) {
-        setIsAnimating(false);
-      }
-    }, ANIMATION_INTERVAL_MS);
-    return () => clearInterval(id);
-  }, [isAnimating]);
-
   const handleSelectStation = (n) => {
     setSelectedStationNumber(n);
     setHasUserSelected(true);
@@ -213,15 +195,7 @@ export default function App() {
     setComparedStations((prev) => prev.filter((x) => x !== n));
   };
 
-  const handleToggleAnimate = () => {
-    setIsAnimating((v) => {
-      if (!v) animStepsRef.current = 0;
-      return !v;
-    });
-  };
-
   const handleSelectMonth = (i) => {
-    if (isAnimating) setIsAnimating(false);
     setSelectedMonthIndex(i);
   };
 
@@ -330,12 +304,6 @@ export default function App() {
         />
 
         <div className="mt-3 flex flex-col gap-3">
-          <MapToolbar
-            isAnimating={isAnimating}
-            onToggleAnimate={handleToggleAnimate}
-            selectedMonthIndex={selectedMonthIndex}
-            selectedYear={selectedYear}
-          />
           <CoverageHints />
           <NearbyStationChips
             selectedStation={selectedStation}
@@ -736,7 +704,6 @@ export default function App() {
             station={selectedStation}
             selectedMonthIndex={selectedMonthIndex}
             onSelectMonth={handleSelectMonth}
-            onStopAnimation={() => isAnimating && setIsAnimating(false)}
           />
         </div>
 

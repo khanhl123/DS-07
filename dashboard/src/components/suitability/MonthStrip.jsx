@@ -20,7 +20,6 @@ export default function MonthStrip({
   station,
   selectedMonthIndex,
   onSelectMonth,
-  onStopAnimation,
 }) {
   const scores = station ? station.monthlyScores : MONTHS.map(() => null);
 
@@ -55,10 +54,7 @@ export default function MonthStrip({
             <button
               key={m}
               type="button"
-              onClick={() => {
-                onStopAnimation?.();
-                onSelectMonth(i);
-              }}
+              onClick={() => onSelectMonth(i)}
               className="flex flex-col items-center gap-0.5 px-2 py-2 text-[11px] font-semibold"
               style={{
                 background: band.bg,
