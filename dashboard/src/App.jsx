@@ -6,6 +6,7 @@ import {
   Sun,
   Download,
   MapPin,
+  Target,
 } from "lucide-react";
 import DashboardLayout from "./components/layout/DashboardLayout";
 import HeroSection from "./components/layout/HeroSection";
@@ -56,6 +57,7 @@ export default function App() {
   const [selectedYear, setSelectedYear] = useState(2024);
   const [exportStatus, setExportStatus] = useState("idle");
   const [hasUserSelected, setHasUserSelected] = useState(false);
+  const [suitabilityRevealed, setSuitabilityRevealed] = useState(false);
 
   const selectedStation = useMemo(
     () => stationsByNumber[selectedStationNumber] ?? stations[0],
@@ -239,7 +241,8 @@ export default function App() {
     : `${MONTH_NAMES_LONG[selectedMonthIndex]} ${selectedYear}`;
 
   const scrollToSection = (id) => {
-    const el = document.getElementById(id);
+    let el = document.getElementById(id);
+    if (!el && id === "suitability") el = document.getElementById("suitability-cta");
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
@@ -521,6 +524,8 @@ export default function App() {
         </div>
       </section>
 
+      {suitabilityRevealed ? (
+        <>
       <ConnectorLine text={connectorText} />
 
       {/* ====== SECTION 3 — SUITABILITY ====== */}
@@ -738,6 +743,27 @@ export default function App() {
           )}
         </div>
       </section>
+        </>
+      ) : (
+        <div id="suitability-cta" className="my-6 flex justify-center">
+          <button
+            type="button"
+            onClick={() => setSuitabilityRevealed(true)}
+            className="inline-flex items-center gap-2 px-6 py-3 text-base font-semibold"
+            style={{
+              background: "var(--primary)",
+              color: "#fff",
+              border: 0,
+              borderRadius: "var(--radius)",
+              cursor: "pointer",
+              boxShadow: "0 2px 12px rgba(0,0,0,0.08)",
+            }}
+          >
+            <Target className="h-4 w-4" />
+            Calculate Me
+          </button>
+        </div>
+      )}
     </DashboardLayout>
   );
 }
