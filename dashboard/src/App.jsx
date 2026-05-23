@@ -11,7 +11,6 @@ import DashboardLayout from "./components/layout/DashboardLayout";
 import HeroSection from "./components/layout/HeroSection";
 import LeafletMap from "./components/map/LeafletMap";
 import CoverageHints from "./components/map/CoverageHints";
-import NearbyStationChips from "./components/map/NearbyStationChips";
 import RiskProfile from "./components/suitability/RiskProfile";
 import MonthStrip from "./components/suitability/MonthStrip";
 import MaxTempChart from "./components/charts/MaxTempChart";
@@ -19,7 +18,6 @@ import MinTempChart from "./components/charts/MinTempChart";
 import RainfallChart from "./components/charts/RainfallChart";
 import UVIndexChart from "./components/charts/UVIndexChart";
 import SuitabilityCalendar from "./components/calendar/SuitabilityCalendar";
-import StickyComparisonTray from "./components/comparison/StickyComparisonTray";
 import ConnectorLine from "./components/common/ConnectorLine";
 import StepBadge from "./components/common/StepBadge";
 import {
@@ -54,9 +52,6 @@ export default function App() {
   const [selectedMonthIndex, setSelectedMonthIndex] = useState(
     new Date().getMonth(),
   );
-  const [comparedStations, setComparedStations] = useState([
-    DEFAULT_STATION_NUMBER,
-  ]);
   const [granularity, setGranularity] = useState("daily");
   const [selectedYear, setSelectedYear] = useState(2024);
   const [exportStatus, setExportStatus] = useState("idle");
@@ -184,15 +179,6 @@ export default function App() {
   const handleSelectStation = (n) => {
     setSelectedStationNumber(n);
     setHasUserSelected(true);
-    setComparedStations((prev) => {
-      if (prev.includes(n)) return prev;
-      const next = [n, ...prev].slice(0, 5);
-      return next;
-    });
-  };
-
-  const handleRemoveFromComparison = (n) => {
-    setComparedStations((prev) => prev.filter((x) => x !== n));
   };
 
   const handleSelectMonth = (i) => {
@@ -303,14 +289,8 @@ export default function App() {
           onSelectStation={handleSelectStation}
         />
 
-        <div className="mt-3 flex flex-col gap-3">
+        <div className="mt-3">
           <CoverageHints />
-          <NearbyStationChips
-            selectedStation={selectedStation}
-            stations={stations}
-            monthIndex={selectedMonthIndex}
-            onSelect={handleSelectStation}
-          />
         </div>
       </section>
 
@@ -722,10 +702,7 @@ export default function App() {
             : "This tool analyses historical BoM observations — it does not predict future weather. Suitability scores reflect past patterns using max temp, min temp, rainfall, and UV. Humidity and wind are not available. UV index is estimated from BoM daily solar exposure (MJ/m²) using a linear conversion; treat it as an indicative peak, not an official UV measurement. Use alongside official forecasts and local knowledge."}
         </div>
 
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-          <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
-            Compare <strong>{selectedStation.name}</strong> against other stations in the tray below.
-          </p>
+        <div className="mt-4 flex flex-wrap items-center justify-end gap-3">
           <button
             type="button"
             onClick={exportSummary}
@@ -761,14 +738,6 @@ export default function App() {
           )}
         </div>
       </section>
-
-      <StickyComparisonTray
-        comparedStationNumbers={comparedStations}
-        primaryStationNumber={selectedStationNumber}
-        selectedMonthIndex={selectedMonthIndex}
-        onRemove={handleRemoveFromComparison}
-        onSelectPrimary={setSelectedStationNumber}
-      />
     </DashboardLayout>
   );
 }

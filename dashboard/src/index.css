@@ -617,14 +617,3 @@ input[type="range"].themed::-moz-range-thumb {
   background: var(--primary); cursor: pointer;
   border: 2px solid #fff; box-shadow: 0 0 0 1px var(--primary-border);
 }
-
-/* ── Sticky comparison tray ──────────────────────────────────────────────── */
-.sticky-tray {
-  position: fixed; bottom: 0; left: 0; right: 0;
-  background: var(--card-bg);
-  border-top: 1px solid var(--border);
-  border-top-left-radius: var(--radius);
-  border-top-right-radius: var(--radius);
-  box-shadow: 0 -4px 20px rgba(30, 28, 26, 0.08);
-  z-index: 40;
-}
