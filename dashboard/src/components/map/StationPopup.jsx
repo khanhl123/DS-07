@@ -1,11 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  getSuitabilityColor,
-  getSuitabilityLabel,
-  MONTHS,
-  SCORE_COLORS,
-  SCORE_NA_TEXT,
-} from "../../data/placeholderData";
+import { MONTHS } from "../../data/placeholderData";
 
 export default function StationPopup({ station, monthIndex, year, onSelect }) {
   // Hits the yearly endpoint so the monthly summary and the suitability
@@ -38,19 +32,6 @@ export default function StationPopup({ station, monthIndex, year, onSelect }) {
   const cacheHit = cached.key === cacheKey;
   const summary = cacheHit ? cached.value : null;
   const isError = cacheHit && cached.value === null;
-
-  const verdictScore = summary?.marathonVerdict?.score;
-  const verdictConfidence = summary?.marathonVerdict?.confidence;
-  const hasVerdict = verdictScore != null;
-  const isPartial = hasVerdict && verdictConfidence === "partial";
-  const missingAttrs = summary
-    ? [
-        summary.maxTemp == null && "max temp",
-        summary.minTemp == null && "min temp",
-        summary.rainfall == null && "rainfall",
-        summary.uvIndex == null && "UV",
-      ].filter(Boolean)
-    : [];
 
   return (
     <div style={{ minWidth: 200, fontFamily: "inherit" }}>
@@ -91,62 +72,6 @@ export default function StationPopup({ station, monthIndex, year, onSelect }) {
           </div>
         )}
       </div>
-      {summary && (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 6,
-            marginBottom: 8,
-          }}
-          title={
-            hasVerdict
-              ? "Suitability based on the marathon-running research model"
-              : SCORE_NA_TEXT
-          }
-        >
-          <span
-            aria-hidden="true"
-            style={{
-              width: 10,
-              height: 10,
-              borderRadius: 999,
-              background: hasVerdict
-                ? getSuitabilityColor(verdictScore)
-                : SCORE_COLORS.missing,
-            }}
-          />
-          <span
-            style={{
-              fontSize: 11,
-              color: hasVerdict ? "var(--text-primary)" : "var(--text-muted)",
-            }}
-          >
-            {hasVerdict ? (
-              <>
-                Suitability <strong>{verdictScore}</strong> —{" "}
-                {getSuitabilityLabel(verdictScore)}
-              </>
-            ) : (
-              SCORE_NA_TEXT
-            )}
-          </span>
-        </div>
-      )}
-      {isPartial && (
-        <div
-          style={{
-            fontSize: 10,
-            color: "var(--text-muted)",
-            marginTop: -4,
-            marginBottom: 8,
-            fontStyle: "italic",
-          }}
-        >
-          Partial data
-          {missingAttrs.length ? ` — ${missingAttrs.join(", ")} unavailable` : ""}
-        </div>
-      )}
       <button
         type="button"
         onClick={() => {

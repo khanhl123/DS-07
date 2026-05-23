@@ -7,12 +7,7 @@ import {
   GeoJSON,
 } from "react-leaflet";
 import auStates from "../../data/au-states.json";
-import {
-  getSuitabilityColor,
-  getStationAverageScore,
-  SCORE_COLORS,
-  STATE_FULL_NAMES,
-} from "../../data/placeholderData";
+import { SCORE_COLORS, STATE_FULL_NAMES } from "../../data/placeholderData";
 import StationPopup from "./StationPopup";
 
 const TILE_URL =
@@ -101,37 +96,14 @@ export default function LeafletMap({
         <GeoJSON data={auStates} style={stateStyle} />
         {stations.map((station) => {
           const isSelected = station.n === selectedStationNumber;
-          const score = station.monthlyScores[monthIndex];
-          const confidence = station.monthlyConfidence?.[monthIndex] ?? null;
-          // Stations missing 3+ of the 4 weather attributes across the
-          // climatology window get a solid grey marker — the per-month score
-          // and the station average are both untrustworthy here, so honesty
-          // beats a tinted fallback. Default to 0 for legacy data so existing
-          // stations.js files (pre-pipeline-rerun) keep current behaviour.
-          const isLowDataStation = (station.missingAttrCount ?? 0) >= 3;
-          // When the selected month alone is unscorable but the station has
-          // enough overall coverage, fall back to the station's climatology
-          // average — dimmed + dotted so it's clearly not month-specific.
-          const isFallback = score == null && !isLowDataStation;
-          let fill, fillOpacity, dashArray;
-          if (isLowDataStation) {
-            fill = SCORE_COLORS.missing;
-            fillOpacity = 0.5;
-            dashArray = undefined;
-          } else if (isFallback) {
-            fill = getSuitabilityColor(getStationAverageScore(station));
-            fillOpacity = 0.35;
-            dashArray = isSelected ? undefined : "1,3";
-          } else {
-            // Two non-colour cues, distinct from each other so they don't
-            // blur together at small marker sizes:
-            //   "3,2" (dashed) -> partial confidence on a month-specific score
-            //   "1,3" (dotted) -> climatology fallback (no month-specific score)
-            const isPartial = confidence === "partial";
-            fill = getSuitabilityColor(score);
-            fillOpacity = 0.9;
-            dashArray = isPartial && !isSelected ? "3,2" : undefined;
-          }
+          // Markers encode data completeness, not score, so users aren't
+          // misled by a month-specific colour at Step 1 before they've
+          // actively picked a month in Step 2.
+          const missing = station.missingAttrCount ?? 0;
+          let fill;
+          if (missing === 0) fill = SCORE_COLORS.suitable;       // 4/4 attrs
+          else if (missing <= 2) fill = SCORE_COLORS.moderate;   // 2-3/4 attrs
+          else fill = SCORE_COLORS.missing;                       // 0-1/4 attrs
           return (
             <CircleMarker
               key={station.n}
@@ -141,8 +113,7 @@ export default function LeafletMap({
                 fillColor: fill,
                 color: isSelected ? "#0F6E56" : "#ffffff",
                 weight: isSelected ? 3 : 1.5,
-                fillOpacity,
-                dashArray,
+                fillOpacity: 0.9,
               }}
               eventHandlers={{
                 click: () => onSelectStation(station.n),

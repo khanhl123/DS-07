@@ -38,7 +38,7 @@ export default function CoverageHints() {
         aria-label="Marker legend"
       >
         <span className="font-semibold" style={{ color: "var(--text-primary)" }}>
-          Markers:
+          Markers (by data completeness):
         </span>
         <span className="flex items-center gap-1.5">
           <span
@@ -52,7 +52,7 @@ export default function CoverageHints() {
               boxShadow: "0 0 0 0.5px #999",
             }}
           />
-          Solid = full data
+          Green = full data (all 4 attributes)
         </span>
         <span className="flex items-center gap-1.5">
           <span
@@ -61,27 +61,12 @@ export default function CoverageHints() {
               width: 10,
               height: 10,
               borderRadius: 999,
-              background: "#59C459",
-              border: "1.5px dashed #fff",
+              background: "#EFA827",
+              border: "1.5px solid #fff",
               boxShadow: "0 0 0 0.5px #999",
             }}
           />
-          Dashed = partial data (some attributes unavailable; score renormalised)
-        </span>
-        <span className="flex items-center gap-1.5">
-          <span
-            aria-hidden="true"
-            style={{
-              width: 10,
-              height: 10,
-              borderRadius: 999,
-              background: "#59C459",
-              opacity: 0.35,
-              border: "1.5px dotted #fff",
-              boxShadow: "0 0 0 0.5px #999",
-            }}
-          />
-          Dim + dotted = no score for this month; coloured by the station's historical average
+          Orange = partial data (2–3 of 4 attributes)
         </span>
         <span className="flex items-center gap-1.5">
           <span
@@ -91,12 +76,11 @@ export default function CoverageHints() {
               height: 10,
               borderRadius: 999,
               background: "#D8D5CB",
-              opacity: 0.7,
               border: "1.5px solid #fff",
               boxShadow: "0 0 0 0.5px #999",
             }}
           />
-          Grey = station is missing 3+ weather attributes (data too sparse to score)
+          Grey = severely incomplete (0–1 of 4 attributes)
         </span>
       </div>
     </div>
