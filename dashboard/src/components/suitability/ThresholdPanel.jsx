@@ -43,10 +43,11 @@ export default function ThresholdPanel({
             style={{ color: "var(--text-secondary)" }}
           >
             Set your weather limits — the score below (and the big Step 3
-            score) average a per-day sub-score for each of the four metrics,
-            with a linear penalty when actual weather sits past your limit.
-            The map, month strip, calendar dots, and station popups still
-            show the independent expert verdict for actual recorded weather.
+            score) = this station/month's climatology ceiling times the
+            share of days meeting all four cut-offs. Loosen sliders to climb
+            back toward the climatology; tighten to drop below it. The map,
+            month strip, calendar dots, and station popups still show the
+            independent expert verdict for actual recorded weather.
           </p>
         </div>
         <button

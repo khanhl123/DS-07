@@ -44,8 +44,8 @@ import {
 } from "./data/useStationDaily";
 import {
   DEFAULT_THRESHOLDS,
-  computeMonthlyScore,
   computeProbability,
+  computeSuitabilityScore,
 } from "./utils/suitabilityScore";
 
 const fmt = (v, unit = "") => (v == null ? "—" : `${v}${unit}`);
@@ -149,13 +149,14 @@ export default function App() {
     yearMonth?.marathonVerdict?.score ??
     selectedStation.monthlyScores[selectedMonthIndex];
 
-  // The headline score is computeMonthlyScore (mean of per-day threshold-
-  // relative scores). Probability is the separate "share of days meeting
-  // every threshold" stat. Both come from utils/suitabilityScore.js.
+  // Step 3 score = climatology × passRate. Climatology is the per-month
+  // Python expert verdict (baselineScore above); passRate is the share of
+  // days whose four actual metrics meet the user's slider thresholds.
+  // Climatology acts as a ceiling — the score can never exceed it.
   const thresholdRows = isMonthly ? yearSeries : dailyData;
   const thresholdVerdict = useMemo(() => {
-    const score = computeMonthlyScore(thresholdRows, debouncedThresholds);
     const probability = computeProbability(thresholdRows, debouncedThresholds);
+    const score = computeSuitabilityScore(baselineScore, probability);
     const total = thresholdRows.filter(
       (r) =>
         r &&
@@ -172,14 +173,17 @@ export default function App() {
         ? getSuitabilityLabel(score)
         : `${getSuitabilityLabel(score)} with your thresholds`;
     return { score, probability, total, passed, colour, statusLabel };
-  }, [thresholdRows, debouncedThresholds]);
+  }, [thresholdRows, debouncedThresholds, baselineScore]);
 
   // Big Step 3 score follows the sliders once the user has revealed Section
   // 3 (i.e. clicked Calculate Me). Before that, the sticky summary bar
   // shows the climatology so it agrees with the map and month strip.
-  const effectiveScore = suitabilityRevealed
-    ? thresholdVerdict.score
-    : baselineScore;
+  // Falls back to the bare climatology while passRate is still null (no
+  // daily data yet) so the card doesn't blink "—" on every selection.
+  const effectiveScore =
+    suitabilityRevealed && thresholdVerdict.score != null
+      ? thresholdVerdict.score
+      : baselineScore;
 
   const suitabilityKey = getSuitabilityKey(effectiveScore);
   const scoreColor = getSuitabilityColor(effectiveScore);
@@ -640,15 +644,16 @@ export default function App() {
               className="mt-3 max-w-[210px] text-center text-[11px]"
               style={{ color: "var(--text-secondary)" }}
             >
-              Mean of per-day threshold-relative scores: each metric earns up
-              to 25 points, with a linear penalty when actual weather sits
-              past your slider value.
+              Climatology ceiling{baselineScore != null ? ` (${baselineScore})` : ""}{" "}
+              weighted by the share of days meeting every slider cut-off.
+              Loosen sliders to climb back toward the ceiling; tighten to drop
+              below it.
               {thresholdVerdict.total > 0 && thresholdVerdict.probability != null && (
                 <>
                   {" "}
                   {thresholdVerdict.probability}% of {thresholdVerdict.total}{" "}
                   {isMonthly ? "month" : "day"}
-                  {thresholdVerdict.total === 1 ? "" : "s"} meet every cut-off.
+                  {thresholdVerdict.total === 1 ? "" : "s"} pass.
                 </>
               )}
             </p>
