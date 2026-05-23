@@ -1,8 +1,6 @@
 import { RotateCcw } from "lucide-react";
-import {
-  DEFAULT_THRESHOLDS,
-  THRESHOLD_RANGES,
-} from "../../utils/personalThresholds";
+import { DEFAULT_THRESHOLDS } from "../../utils/suitabilityScore";
+import { THRESHOLD_RANGES } from "../../utils/personalThresholds";
 
 const KEYS = ["maxTemp", "minTemp", "rainfall", "uvIndex"];
 
@@ -45,9 +43,10 @@ export default function ThresholdPanel({
             style={{ color: "var(--text-secondary)" }}
           >
             Set your weather limits — the score below (and the big Step 3
-            score) average the expert verdict only over days that meet all
-            four cut-offs. The map, month strip, calendar dots, and station
-            popups still show the independent expert verdict.
+            score) average a per-day sub-score for each of the four metrics,
+            with a linear penalty when actual weather sits past your limit.
+            The map, month strip, calendar dots, and station popups still
+            show the independent expert verdict for actual recorded weather.
           </p>
         </div>
         <button

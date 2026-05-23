@@ -44,8 +44,9 @@ import {
 } from "./data/useStationDaily";
 import {
   DEFAULT_THRESHOLDS,
-  evaluateThresholds,
-} from "./utils/personalThresholds";
+  computeMonthlyScore,
+  computeProbability,
+} from "./utils/suitabilityScore";
 
 const fmt = (v, unit = "") => (v == null ? "—" : `${v}${unit}`);
 const fmtRange = (lo, hi, unit = "") =>
@@ -137,9 +138,9 @@ export default function App() {
   const chartData = isMonthly ? yearSeries : dailyData;
   const chartXKey = isMonthly ? "monthLabel" : "day";
 
-  // Year-specific expert score for the selected month. Falls back to the
-  // climatology baked into stations.js while the yearly fetch is in flight,
-  // so the score card doesn't pop from "—" to a number on every selection.
+  // Climatology score for the sticky summary bar before the user reveals
+  // Section 3 (and the threshold panel). Falls back to the cached monthly
+  // score baked into stations.js while the yearly fetch is in flight.
   const yearMonth = useMemo(
     () => yearSeries?.find?.((m) => m.month === selectedMonthIndex) ?? null,
     [yearSeries, selectedMonthIndex],
@@ -147,26 +148,38 @@ export default function App() {
   const baselineScore =
     yearMonth?.marathonVerdict?.score ??
     selectedStation.monthlyScores[selectedMonthIndex];
-  const expertConfidence =
-    yearMonth?.marathonVerdict?.confidence ??
-    selectedStation.monthlyConfidence?.[selectedMonthIndex] ??
-    null;
 
-  // Daily rows that drive the threshold mask: actual daily rows when on
-  // the daily granularity, year-monthly rows otherwise. Both shapes carry
-  // `marathonVerdict.score`, so the same helper works against either.
+  // The headline score is computeMonthlyScore (mean of per-day threshold-
+  // relative scores). Probability is the separate "share of days meeting
+  // every threshold" stat. Both come from utils/suitabilityScore.js.
   const thresholdRows = isMonthly ? yearSeries : dailyData;
-  const thresholdVerdict = useMemo(
-    () => evaluateThresholds(thresholdRows, debouncedThresholds),
-    [thresholdRows, debouncedThresholds],
-  );
+  const thresholdVerdict = useMemo(() => {
+    const score = computeMonthlyScore(thresholdRows, debouncedThresholds);
+    const probability = computeProbability(thresholdRows, debouncedThresholds);
+    const total = thresholdRows.filter(
+      (r) =>
+        r &&
+        Number.isFinite(r.maxTemp) &&
+        Number.isFinite(r.minTemp) &&
+        Number.isFinite(r.rainfall) &&
+        Number.isFinite(r.uvIndex),
+    ).length;
+    const passed =
+      probability == null ? 0 : Math.round((probability / 100) * total);
+    const colour = getSuitabilityColor(score);
+    const statusLabel =
+      score == null
+        ? getSuitabilityLabel(score)
+        : `${getSuitabilityLabel(score)} with your thresholds`;
+    return { score, probability, total, passed, colour, statusLabel };
+  }, [thresholdRows, debouncedThresholds]);
 
-  // Big score follows the sliders once we have data to mask over; while
-  // the daily/monthly fetch is in flight we fall back to the climatology so
-  // the card doesn't blink "—" on every selection.
-  const effectiveScore =
-    thresholdRows.length > 0 ? thresholdVerdict.score : baselineScore;
-  const usingBaseline = effectiveScore === baselineScore;
+  // Big Step 3 score follows the sliders once the user has revealed Section
+  // 3 (i.e. clicked Calculate Me). Before that, the sticky summary bar
+  // shows the climatology so it agrees with the map and month strip.
+  const effectiveScore = suitabilityRevealed
+    ? thresholdVerdict.score
+    : baselineScore;
 
   const suitabilityKey = getSuitabilityKey(effectiveScore);
   const scoreColor = getSuitabilityColor(effectiveScore);
@@ -623,36 +636,21 @@ export default function App() {
               {effectiveScore == null ? SCORE_NA_TEXT : scoreLabel}
             </span>
             {effectiveScore != null && <TrafficLight active={suitabilityKey} />}
-            {effectiveScore != null &&
-              usingBaseline &&
-              expertConfidence === "partial" && (
-                <span
-                  className="mt-2 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide"
-                  style={{
-                    background: "var(--surface-alt)",
-                    color: "var(--text-secondary)",
-                    border: "1px dashed var(--border)",
-                  }}
-                  title="Score computed from a subset of weather attributes (the model renormalised over what's available)"
-                >
-                  Partial data
-                </span>
-              )}
             <p
               className="mt-3 max-w-[210px] text-center text-[11px]"
               style={{ color: "var(--text-secondary)" }}
             >
-              {effectiveScore == null
-                ? thresholdRows.length > 0
-                  ? "No days in this period pass all four of your thresholds — loosen a slider to see a score."
-                  : "At least one of max temp, min temp, UV, or rainfall is missing for this month."
-                : usingBaseline && expertConfidence === "partial"
-                ? "Some attributes were unavailable for this month; the model renormalised over the rest. Treat as indicative."
-                : !usingBaseline
-                ? `Averaged the expert verdict over the ${thresholdVerdict.scored} day${thresholdVerdict.scored === 1 ? "" : "s"} that meet your thresholds. Adjust sliders above to refine.`
-                : predictRequested
-                ? "Based on NN-predicted weather; uncertainty is higher than historical estimates."
-                : "Based on historical observations only, not a forecast."}
+              Mean of per-day threshold-relative scores: each metric earns up
+              to 25 points, with a linear penalty when actual weather sits
+              past your slider value.
+              {thresholdVerdict.total > 0 && thresholdVerdict.probability != null && (
+                <>
+                  {" "}
+                  {thresholdVerdict.probability}% of {thresholdVerdict.total}{" "}
+                  {isMonthly ? "month" : "day"}
+                  {thresholdVerdict.total === 1 ? "" : "s"} meet every cut-off.
+                </>
+              )}
             </p>
           </div>
 
