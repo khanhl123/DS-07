@@ -42,6 +42,10 @@ import {
   summariseMonthly,
   averageYearSeries,
 } from "./data/useStationDaily";
+import {
+  DEFAULT_THRESHOLDS,
+  evaluateThresholds,
+} from "./utils/personalThresholds";
 
 const fmt = (v, unit = "") => (v == null ? "—" : `${v}${unit}`);
 const fmtRange = (lo, hi, unit = "") =>
@@ -59,6 +63,13 @@ export default function App() {
   const [exportStatus, setExportStatus] = useState("idle");
   const [hasUserSelected, setHasUserSelected] = useState(false);
   const [suitabilityRevealed, setSuitabilityRevealed] = useState(false);
+  const [thresholds, setThresholds] = useState(DEFAULT_THRESHOLDS);
+  const [debouncedThresholds, setDebouncedThresholds] =
+    useState(DEFAULT_THRESHOLDS);
+  useEffect(() => {
+    const id = window.setTimeout(() => setDebouncedThresholds(thresholds), 150);
+    return () => window.clearTimeout(id);
+  }, [thresholds]);
 
   const selectedStation = useMemo(
     () => stationsByNumber[selectedStationNumber] ?? stations[0],
@@ -133,7 +144,7 @@ export default function App() {
     () => yearSeries?.find?.((m) => m.month === selectedMonthIndex) ?? null,
     [yearSeries, selectedMonthIndex],
   );
-  const expertScore =
+  const baselineScore =
     yearMonth?.marathonVerdict?.score ??
     selectedStation.monthlyScores[selectedMonthIndex];
   const expertConfidence =
@@ -141,9 +152,25 @@ export default function App() {
     selectedStation.monthlyConfidence?.[selectedMonthIndex] ??
     null;
 
-  const suitabilityKey = getSuitabilityKey(expertScore);
-  const scoreColor = getSuitabilityColor(expertScore);
-  const scoreLabel = getSuitabilityLabel(expertScore);
+  // Daily rows that drive the threshold mask: actual daily rows when on
+  // the daily granularity, year-monthly rows otherwise. Both shapes carry
+  // `marathonVerdict.score`, so the same helper works against either.
+  const thresholdRows = isMonthly ? yearSeries : dailyData;
+  const thresholdVerdict = useMemo(
+    () => evaluateThresholds(thresholdRows, debouncedThresholds),
+    [thresholdRows, debouncedThresholds],
+  );
+
+  // Big score follows the sliders once we have data to mask over; while
+  // the daily/monthly fetch is in flight we fall back to the climatology so
+  // the card doesn't blink "—" on every selection.
+  const effectiveScore =
+    thresholdRows.length > 0 ? thresholdVerdict.score : baselineScore;
+  const usingBaseline = effectiveScore === baselineScore;
+
+  const suitabilityKey = getSuitabilityKey(effectiveScore);
+  const scoreColor = getSuitabilityColor(effectiveScore);
+  const scoreLabel = getSuitabilityLabel(effectiveScore);
 
   // Returns null when every month is unscorable (all-null monthlyScores)
   // so the UI can say "insufficient data" instead of falsely labelling
@@ -201,9 +228,9 @@ export default function App() {
         `Station: ${selectedStation.name} (#${selectedStation.n}, ${selectedStation.state})`,
         `Month: ${MONTH_NAMES_LONG[selectedMonthIndex]}`,
         `Year: ${selectedYear}`,
-        expertScore == null
-          ? `Expert suitability score: ${SCORE_NA_TEXT.toLowerCase()}`
-          : `Expert suitability score: ${expertScore}/100 — ${scoreLabel}`,
+        effectiveScore == null
+          ? `Suitability score: ${SCORE_NA_TEXT.toLowerCase()}`
+          : `Suitability score: ${effectiveScore}/100 — ${scoreLabel}`,
         "",
         `Avg max temp: ${fmt(summary.maxTemp, "°C")} (range ${fmtRange(summary.maxTempMin, summary.maxTempMax, "°C")})`,
         `Avg min temp: ${fmt(summary.minTemp, "°C")} (range ${fmtRange(summary.minTempMin, summary.minTempMax, "°C")})`,
@@ -255,7 +282,7 @@ export default function App() {
         stationNumber: selectedStation.n,
         stationState: selectedStation.state,
         timeframe: timeframeLabel,
-        score: expertScore,
+        score: effectiveScore,
         scoreLabel,
         scoreColor,
       }}
@@ -556,7 +583,9 @@ export default function App() {
         </header>
 
         <ThresholdPanel
-          dailyData={dailyData}
+          thresholds={thresholds}
+          onChange={setThresholds}
+          verdict={thresholdVerdict}
           stationName={selectedStation.name}
           monthLabel={MONTH_NAMES_LONG[selectedMonthIndex]}
         />
@@ -574,14 +603,14 @@ export default function App() {
               className="text-[10px] uppercase tracking-wider"
               style={{ color: "var(--text-secondary)" }}
             >
-              Expert score · {MONTHS[selectedMonthIndex]} {selectedYear}
+              Suitability score · {MONTHS[selectedMonthIndex]} {selectedYear}
             </span>
             <div className="my-1 flex items-baseline gap-1">
               <span
                 className="text-6xl font-bold tabular-nums"
                 style={{ color: scoreColor }}
               >
-                {expertScore ?? "—"}
+                {effectiveScore ?? "—"}
               </span>
               <span className="text-lg" style={{ color: "var(--text-muted)" }}>
                 /100
@@ -591,30 +620,36 @@ export default function App() {
               className="mb-3 text-sm font-semibold text-center"
               style={{ color: scoreColor }}
             >
-              {expertScore == null ? SCORE_NA_TEXT : scoreLabel}
+              {effectiveScore == null ? SCORE_NA_TEXT : scoreLabel}
             </span>
-            {expertScore != null && <TrafficLight active={suitabilityKey} />}
-            {expertScore != null && expertConfidence === "partial" && (
-              <span
-                className="mt-2 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide"
-                style={{
-                  background: "var(--surface-alt)",
-                  color: "var(--text-secondary)",
-                  border: "1px dashed var(--border)",
-                }}
-                title="Score computed from a subset of weather attributes (the model renormalised over what's available)"
-              >
-                Partial data
-              </span>
-            )}
+            {effectiveScore != null && <TrafficLight active={suitabilityKey} />}
+            {effectiveScore != null &&
+              usingBaseline &&
+              expertConfidence === "partial" && (
+                <span
+                  className="mt-2 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide"
+                  style={{
+                    background: "var(--surface-alt)",
+                    color: "var(--text-secondary)",
+                    border: "1px dashed var(--border)",
+                  }}
+                  title="Score computed from a subset of weather attributes (the model renormalised over what's available)"
+                >
+                  Partial data
+                </span>
+              )}
             <p
               className="mt-3 max-w-[210px] text-center text-[11px]"
               style={{ color: "var(--text-secondary)" }}
             >
-              {expertScore == null
-                ? "At least one of max temp, min temp, UV, or rainfall is missing for this month."
-                : expertConfidence === "partial"
+              {effectiveScore == null
+                ? thresholdRows.length > 0
+                  ? "No days in this period pass all four of your thresholds — loosen a slider to see a score."
+                  : "At least one of max temp, min temp, UV, or rainfall is missing for this month."
+                : usingBaseline && expertConfidence === "partial"
                 ? "Some attributes were unavailable for this month; the model renormalised over the rest. Treat as indicative."
+                : !usingBaseline
+                ? `Averaged the expert verdict over the ${thresholdVerdict.scored} day${thresholdVerdict.scored === 1 ? "" : "s"} that meet your thresholds. Adjust sliders above to refine.`
                 : predictRequested
                 ? "Based on NN-predicted weather; uncertainty is higher than historical estimates."
                 : "Based on historical observations only, not a forecast."}

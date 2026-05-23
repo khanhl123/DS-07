@@ -1,7 +1,10 @@
-// Personal-preference threshold helpers for the Step 3 "Adjust Thresholds"
-// panel. Independent of the expert suitability model — the user picks four
-// cut-offs and we report the share of days in the current period that meet
-// all four simultaneously.
+// Threshold-masked expert score for the Step 3 "Adjust Thresholds" panel.
+// For the currently selected period, drop days that fail any of the user's
+// four cut-offs and average the per-day expert verdict (`marathonVerdict.score`)
+// over the rest. At lenient defaults most days pass and the score stays close
+// to the climatology baseline; tightening sliders excludes days and the score
+// moves. Both the panel's small live-score card and the big Step 3 score card
+// render this same number, so the two views stay in sync.
 
 export const DEFAULT_THRESHOLDS = Object.freeze({
   maxTemp: 28,
@@ -26,7 +29,7 @@ function dayPasses(row, t) {
   );
 }
 
-export function evaluateDays(rows, thresholds) {
+export function evaluateThresholds(rows, thresholds) {
   const usable = (rows || []).filter(
     (r) =>
       r &&
@@ -40,25 +43,46 @@ export function evaluateDays(rows, thresholds) {
     return {
       total: 0,
       passed: 0,
+      scored: 0,
       score: null,
       statusLabel: "No daily data",
       colour: "var(--text-muted)",
     };
   }
-  const passed = usable.filter((r) => dayPasses(r, thresholds)).length;
-  const score = Math.round((passed / total) * 100);
+
+  const passing = usable.filter((r) => dayPasses(r, thresholds));
+  const passed = passing.length;
+
+  const scoredRows = passing.filter((r) =>
+    Number.isFinite(r?.marathonVerdict?.score),
+  );
+  const scored = scoredRows.length;
+
+  if (!scored) {
+    return {
+      total,
+      passed,
+      scored: 0,
+      score: null,
+      statusLabel: "No passing days for your thresholds",
+      colour: "var(--text-muted)",
+    };
+  }
+
+  const sum = scoredRows.reduce((acc, r) => acc + r.marathonVerdict.score, 0);
+  const score = Math.round(sum / scored);
 
   let colour;
   let statusLabel;
-  if (score >= 65) {
+  if (score > 70) {
     colour = "var(--color-suitable)";
     statusLabel = "Suitable with your thresholds";
-  } else if (score >= 40) {
+  } else if (score > 40) {
     colour = "var(--color-moderate)";
     statusLabel = "Mixed with your thresholds";
   } else {
     colour = "var(--color-unsuitable)";
     statusLabel = "Unsuitable with your thresholds";
   }
-  return { total, passed, score, statusLabel, colour };
+  return { total, passed, scored, score, statusLabel, colour };
 }

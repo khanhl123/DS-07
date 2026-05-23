@@ -1,9 +1,7 @@
-import { useEffect, useMemo, useState } from "react";
 import { RotateCcw } from "lucide-react";
 import {
   DEFAULT_THRESHOLDS,
   THRESHOLD_RANGES,
-  evaluateDays,
 } from "../../utils/personalThresholds";
 
 const KEYS = ["maxTemp", "minTemp", "rainfall", "uvIndex"];
@@ -14,20 +12,13 @@ function formatValue(key, value) {
   return `${display}${unit}`;
 }
 
-export default function ThresholdPanel({ dailyData, stationName, monthLabel }) {
-  const [thresholds, setThresholds] = useState(DEFAULT_THRESHOLDS);
-  const [debounced, setDebounced] = useState(DEFAULT_THRESHOLDS);
-
-  useEffect(() => {
-    const id = window.setTimeout(() => setDebounced(thresholds), 150);
-    return () => window.clearTimeout(id);
-  }, [thresholds]);
-
-  const verdict = useMemo(
-    () => evaluateDays(dailyData, debounced),
-    [dailyData, debounced],
-  );
-
+export default function ThresholdPanel({
+  thresholds,
+  onChange,
+  verdict,
+  stationName,
+  monthLabel,
+}) {
   const isAtDefaults = KEYS.every((k) => thresholds[k] === DEFAULT_THRESHOLDS[k]);
 
   return (
@@ -53,14 +44,15 @@ export default function ThresholdPanel({ dailyData, stationName, monthLabel }) {
             className="mt-1 text-xs"
             style={{ color: "var(--text-secondary)" }}
           >
-            Set your weather limits — the live score below updates instantly. The
-            map, month strip, calendar dots, and station popups continue to show
-            the independent expert verdict based on marathon-running research.
+            Set your weather limits — the score below (and the big Step 3
+            score) average the expert verdict only over days that meet all
+            four cut-offs. The map, month strip, calendar dots, and station
+            popups still show the independent expert verdict.
           </p>
         </div>
         <button
           type="button"
-          onClick={() => setThresholds(DEFAULT_THRESHOLDS)}
+          onClick={() => onChange(DEFAULT_THRESHOLDS)}
           disabled={isAtDefaults}
           className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold"
           style={{
@@ -105,10 +97,7 @@ export default function ThresholdPanel({ dailyData, stationName, monthLabel }) {
                 step={range.step}
                 value={value}
                 onChange={(e) =>
-                  setThresholds((prev) => ({
-                    ...prev,
-                    [key]: Number(e.target.value),
-                  }))
+                  onChange({ ...thresholds, [key]: Number(e.target.value) })
                 }
                 aria-label={`${range.label} ${range.unit}`.trim()}
                 aria-valuemin={range.min}
