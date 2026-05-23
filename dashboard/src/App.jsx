@@ -19,6 +19,7 @@ import MinTempChart from "./components/charts/MinTempChart";
 import RainfallChart from "./components/charts/RainfallChart";
 import UVIndexChart from "./components/charts/UVIndexChart";
 import SuitabilityCalendar from "./components/calendar/SuitabilityCalendar";
+import ThresholdPanel from "./components/suitability/ThresholdPanel";
 import ConnectorLine from "./components/common/ConnectorLine";
 import StepBadge from "./components/common/StepBadge";
 import {
@@ -553,6 +554,12 @@ export default function App() {
               : "Assessment based on recorded max/min temperature, rainfall, and UV index observations."}
           </p>
         </header>
+
+        <ThresholdPanel
+          dailyData={dailyData}
+          stationName={selectedStation.name}
+          monthLabel={MONTH_NAMES_LONG[selectedMonthIndex]}
+        />
 
         <div className="grid gap-4 lg:grid-cols-[280px_1fr]">
           {/* Score card */}
