@@ -153,7 +153,7 @@ export default function App() {
   // Python expert verdict (baselineScore above); passRate is the share of
   // days whose four actual metrics meet the user's slider thresholds.
   // Climatology acts as a ceiling — the score can never exceed it.
-  const thresholdRows = isMonthly ? yearSeries : dailyData;
+  const thresholdRows = dailyData;
   const thresholdVerdict = useMemo(() => {
     const probability = computeProbability(thresholdRows, debouncedThresholds);
     const score = computeSuitabilityScore(baselineScore, probability);
@@ -652,8 +652,7 @@ export default function App() {
                 <>
                   {" "}
                   {thresholdVerdict.probability}% of {thresholdVerdict.total}{" "}
-                  {isMonthly ? "month" : "day"}
-                  {thresholdVerdict.total === 1 ? "" : "s"} pass.
+                  day{thresholdVerdict.total === 1 ? "" : "s"} pass.
                 </>
               )}
             </p>

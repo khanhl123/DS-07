@@ -5,8 +5,8 @@
 export { DEFAULT_THRESHOLDS } from "./suitabilityScore";
 
 export const THRESHOLD_RANGES = Object.freeze({
-  maxTemp: { min: 20, max: 40, step: 1, label: "Max temp (≤)", unit: "°C" },
-  minTemp: { min: 0, max: 20, step: 1, label: "Min temp (≥)", unit: "°C" },
+  maxTemp: { min: -5, max: 45, step: 1, label: "Max temp (≤)", unit: "°C" },
+  minTemp: { min: -5, max: 45, step: 1, label: "Min temp (≥)", unit: "°C" },
   rainfall: { min: 0, max: 20, step: 0.5, label: "Rainfall (≤)", unit: "mm" },
   uvIndex: { min: 3, max: 14, step: 1, label: "UV index (≤)", unit: "" },
 });
